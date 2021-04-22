@@ -83,7 +83,10 @@ function initializeSvg() {
         });
       }
     )
-    .attr("transform", (d) => `translate(${getXPoint(d)}, ${getYPoint(d)})`)
+    .attr(
+      "transform",
+      (d) => `translate(${getXCoordinate(d)}, ${getYCoordinate(d)})`
+    )
     .style("fill", "white")
     .attr("d", (d) => d3.symbol().size(6)());
 }
