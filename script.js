@@ -69,17 +69,14 @@ function initializeSvg() {
     )
     .attr("d", path)
     .on("click", function (event, d) {
-      console.log("Clicked on " + d.properties.ID);
       selectedDistricts.push(d.properties.ID);
     })
     .on("mouseover", function (event, d) {
-      console.log(d);
       d3.select(this)
         .style("stroke", "red")
         .style("stroke-width", "3px")
         .style("fill", "blue");
 
-      console.log("Hovering " + d.properties.ID);
 
       //tooltip.transition().duration(50).style("opacity", 0.95);
 
@@ -91,7 +88,6 @@ function initializeSvg() {
         .style("left", event.pageX + "px")
         .style("top", event.pageY + "px")
         .style("background", "bisque");
-      console.log(districtTooltip);
     })
     .on("mouseout", function (event, d) {
       d3.select(this)
