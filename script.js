@@ -4,6 +4,14 @@ let selectedDistricts = [];
 
 const width = 700;
 const height = 580;
+const albersProjection = d3
+  .geoAlbers()
+  .scale(190000)
+  .rotate([71.057, 0])
+  .center([0, 42.313])
+  .translate([width / 2, height / 2]);
+
+const albersProjection2 = d3.geoAlbers();
 
 function initializeSvg() {
   const svg = d3
@@ -11,13 +19,6 @@ function initializeSvg() {
     .append("svg")
     .attr("width", width)
     .attr("height", height);
-
-  const albersProjection = d3
-    .geoAlbers()
-    .scale(190000)
-    .rotate([71.057, 0])
-    .center([0, 42.313])
-    .translate([width / 2, height / 2]);
 
   const g = svg.append("g");
 
@@ -64,15 +65,42 @@ function initializeSvg() {
     .on("click", d => {
       selectedDistricts.push(d.target.__data__.properties.ID);
     }
+    );
+
+  const points = g.selectAll("path.crimePoints").data(data);
+
+  points
+    .join(
+      function (enter) {
+        return enter.append("path");
+      },
+      function (update) {
+        return update;
+      },
+      function (exit) {
+        exit.call((exit) => {
+          exit.remove();
+        });
+      }
     )
-    ;
+    .attr("transform", (d) => `translate(${getXPoint(d)}, ${getYPoint(d)})`)
+    .style("fill", "white")
+    .attr("d", (d) => d3.symbol().size(6)());
+}
+
+function getXCoordinate(d) {
+  return albersProjection([+d["Long"], +d["Lat"]])[0];
+}
+
+function getYCoordinate(d) {
+  return albersProjection([+d["Long"], +d["Lat"]])[1];
 }
 
 function getData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime.csv"
   ).then((allData) => {
-    data = allData.slice(0, 1500);
+    data = allData.slice(0, 100);
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
     ).then((topojsonBoston) => {
