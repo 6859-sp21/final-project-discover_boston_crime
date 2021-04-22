@@ -1,6 +1,7 @@
 let data = [];
 let policeDistricts = null;
 let selectedDistricts = [];
+let tooltip = null;
 
 const width = 700;
 const height = 580;
@@ -33,6 +34,8 @@ function initializeSvg() {
 
   console.log(drawDistricts);
 
+  tooltip = d3.select(".tooltip");
+
   drawDistricts
     .join(
       function (enter) {
@@ -63,9 +66,39 @@ function initializeSvg() {
     )
     .attr("d", path)
     .on("click", d => {
+      
+
+      console.log(d.target.__data__.properties.ID);
       selectedDistricts.push(d.target.__data__.properties.ID);
     }
-    );
+    )
+    .on("mouseover", function(d, event) {
+      d3.select(d.target)
+      .style("stroke", "red")
+      .style("stroke-width", "3px")
+      .style("fill", "blue");
+
+      console.log("Hovering " + d.target.__data__.properties.ID);
+      
+      //tooltip.transition().duration(50).style("opacity", 0.95);
+
+      tooltip.html('<div><p> ${d.target.__data__.properties.ID} </p><div>')
+      .style("left", event.pageX + 10 + "px")
+      .style("top", event.pageY - 15 + "px");
+      console.log(tooltip);
+    })
+    .on("mouseout", d=> {
+      d3.select(d.target)
+      .style("stroke", "white")
+      .style("stroke-width", "1px")
+      .style("fill", "black");
+
+      tooltip.transition().duration("0").style("opacity", 0);
+      tooltip.html("");
+
+
+    })
+    ;
 
   const points = g.selectAll("path.crimePoints").data(data);
 
