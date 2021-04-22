@@ -107,9 +107,12 @@ function initializeSvg() {
 
 function renderPoints() {
   console.log("rendering points");
+  console.log(currData);
   const points = g
     .selectAll("path.crimePoints")
     .data(currData, (d) => d["INCIDENT_NUMBER"]);
+
+  console.dir(points);
 
   points
     .join(
@@ -128,6 +131,7 @@ function renderPoints() {
       (d) => `translate(${getXCoordinate(d)}, ${getYCoordinate(d)})`
     )
     .attr("fill", "white")
+    .attr("class", "crimePoints")
     .on("mouseover", function (event, d) {
       d3.select(this).style("stroke", "yellow");
 
@@ -189,7 +193,7 @@ function initializeEventListeners() {
 }
 
 function filterData() {
-  if (offenseTypesSelected.length === 0) {
+  if (offenseTypesSelected.size === 0) {
     currData = data;
     return;
   }
