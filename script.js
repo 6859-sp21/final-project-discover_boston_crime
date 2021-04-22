@@ -107,7 +107,6 @@ function initializeSvg() {
 
 function renderPoints() {
   console.log("rendering points");
-  console.log(currData);
   const points = g
     .selectAll("path.crimePoints")
     .data(currData, (d) => d["INCIDENT_NUMBER"]);
