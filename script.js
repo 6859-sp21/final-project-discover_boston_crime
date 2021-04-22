@@ -10,7 +10,7 @@ const albersProjection = d3
   .center([0, 42.313])
   .translate([width / 2, height / 2]);
 
-const albersProjection2 = d3.geoAlbers();
+const pointTooltipD3Element = d3.select("#point-tooltip");
 
 function initializeSvg() {
   const svg = d3
@@ -80,8 +80,27 @@ function initializeSvg() {
       "transform",
       (d) => `translate(${getXCoordinate(d)}, ${getYCoordinate(d)})`
     )
-    .style("fill", "white")
-    .attr("d", (d) => d3.symbol().size(6)());
+    .attr("fill", "white")
+    .on("mouseover", function (event, d) {
+      d3.select(this).style("stroke", "yellow");
+
+      pointTooltipD3Element.transition().duration(300).style("opacity", 0.9);
+      pointTooltipD3Element
+        .transition()
+        .duration(300)
+        .style("opacity", 0.9)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY + "px")
+        .style("background", "bisque");
+      pointTooltipD3Element.html(`Offense Type: ${d["OFFENSE_CODE_GROUP"]}`);
+    })
+    .on("mouseout", function (event, d) {
+      d3.select(this).style("stroke", "white");
+      pointTooltipD3Element.transition().duration("0").style("opacity", 0);
+      pointTooltipD3Element.style("left", "0px").style("top", "0px");
+      pointTooltipD3Element.html("");
+    })
+    .attr("d", (d) => d3.symbol().size(30)());
 }
 
 function getXCoordinate(d) {
