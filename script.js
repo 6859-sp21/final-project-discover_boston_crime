@@ -1,5 +1,6 @@
 let data = [];
 let policeDistricts = null;
+let selectedDistricts = [];
 
 const width = 700;
 const height = 580;
@@ -42,7 +43,9 @@ function initializeSvg() {
               .duration(1000)
               .attr("fill", "black")
               .attr("stroke", "white")
-          );
+              
+          )
+          
       },
       function (update) {
         return update.call((update) =>
@@ -57,7 +60,12 @@ function initializeSvg() {
         return exit.remove();
       }
     )
-    .attr("d", path);
+    .attr("d", path)
+    .on("click", d => {
+      selectedDistricts.push(d.target.__data__.properties.ID);
+    }
+    )
+    ;
 }
 
 function getData() {
