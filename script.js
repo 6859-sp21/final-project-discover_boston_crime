@@ -1,7 +1,7 @@
 let data = [];
 let policeDistricts = null;
 let selectedDistricts = [];
-let tooltip = null;
+
 
 const width = 700;
 const height = 580;
@@ -13,6 +13,7 @@ const albersProjection = d3
   .translate([width / 2, height / 2]);
 
 const pointTooltipD3Element = d3.select("#point-tooltip");
+const districtTooltip = d3.select("#district-tooltip");
 
 function initializeSvg() {
   const svg = d3
@@ -33,8 +34,6 @@ function initializeSvg() {
   let drawDistricts = g.selectAll("path").data(allDistricts);
 
   console.log(drawDistricts);
-
-  tooltip = d3.select(".tooltip");
 
   drawDistricts
     .join(
@@ -65,36 +64,42 @@ function initializeSvg() {
       }
     )
     .attr("d", path)
-    .on("click", d => {
+    .on("click", function(event, d) {
       
 
-      console.log(d.target.__data__.properties.ID);
-      selectedDistricts.push(d.target.__data__.properties.ID);
+      console.log("Clicked on " + d.properties.ID);
+      selectedDistricts.push(d.properties.ID);
     }
     )
-    .on("mouseover", function(d, event) {
-      d3.select(d.target)
+    .on("mouseover", function(event, d) {
+      console.log(d);
+      d3.select(this)
       .style("stroke", "red")
       .style("stroke-width", "3px")
       .style("fill", "blue");
 
-      console.log("Hovering " + d.target.__data__.properties.ID);
+      console.log("Hovering " + d.properties.ID);
       
       //tooltip.transition().duration(50).style("opacity", 0.95);
 
-      tooltip.html('<div><p> ${d.target.__data__.properties.ID} </p><div>')
-      .style("left", event.pageX + 10 + "px")
-      .style("top", event.pageY - 15 + "px");
-      console.log(tooltip);
+      districtTooltip.html(`<div><p> ${d.properties.ID} </p><div>`)
+      .transition()
+        .duration(300)
+        .style("opacity", 0.9)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY + "px")
+        .style("background", "bisque");
+      console.log(districtTooltip);
     })
-    .on("mouseout", d=> {
-      d3.select(d.target)
+    .on("mouseout", function(event, d) {
+      d3.select(this)
       .style("stroke", "white")
       .style("stroke-width", "1px")
       .style("fill", "black");
 
-      tooltip.transition().duration("0").style("opacity", 0);
-      tooltip.html("");
+      districtTooltip.transition().duration("0").style("opacity", 0);
+      districtTooltip.style("left", "0px").style("top", "0px");
+      districtTooltip.html("");
 
 
     })
