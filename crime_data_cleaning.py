@@ -13,7 +13,7 @@ def showDistribution(df):
 
     for i in range(df.shape[0]):
         UCRPart = df.iloc[i,df.columns.get_loc("UCR_PART")]
-        offenseDescription = df.iloc[i,df.columns.get_loc("OFFENSE_DESCRIPTION")]
+        offenseDescription = df.iloc[i,df.columns.get_loc("Aggregated Offence Code Group")]
         offenseGroup = df.iloc[i,df.columns.get_loc("OFFENSE_CODE_GROUP")]
 
         if(offenseDescription in offenseDescriptionFrequencyDict.keys()):
@@ -98,6 +98,6 @@ def aggregateCodeGroups():
 
 
 if __name__ == "__main__":
-    #crimeCSV = pd.read_csv(crimeCSVPath, engine='python')
-    #showDistribution(crimeCSV)
-    aggregateCodeGroups()
+    crimeCSV = pd.read_csv(aggregatedGroupPath, engine='python')
+    showDistribution(crimeCSV)
+    #aggregateCodeGroups()
