@@ -3,6 +3,7 @@ let currData = [];
 let policeDistricts = null;
 const offenseTypes = new Set();
 const offenseTypesSelected = new Set();
+let selectedDistricts = [];
 
 const width = 700;
 const height = 580;
@@ -18,6 +19,7 @@ let g = null;
 
 const pointTooltipD3Element = d3.select("#point-tooltip");
 const filtersDivElement = document.querySelector("#offense-type-filters");
+const districtTooltip = d3.select("#district-tooltip");
 
 function initializeSvg() {
   svg = d3
@@ -65,7 +67,42 @@ function initializeSvg() {
         return exit.remove();
       }
     )
-    .attr("d", path);
+    .attr("d", path)
+    .on("click", function (event, d) {
+      console.log("Clicked on " + d.properties.ID);
+      selectedDistricts.push(d.properties.ID);
+    })
+    .on("mouseover", function (event, d) {
+      console.log(d);
+      d3.select(this)
+        .style("stroke", "red")
+        .style("stroke-width", "3px")
+        .style("fill", "blue");
+
+      console.log("Hovering " + d.properties.ID);
+
+      //tooltip.transition().duration(50).style("opacity", 0.95);
+
+      districtTooltip
+        .html(`<div><p> ${d.properties.ID} </p><div>`)
+        .transition()
+        .duration(300)
+        .style("opacity", 0.9)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY + "px")
+        .style("background", "bisque");
+      console.log(districtTooltip);
+    })
+    .on("mouseout", function (event, d) {
+      d3.select(this)
+        .style("stroke", "white")
+        .style("stroke-width", "1px")
+        .style("fill", "black");
+
+      districtTooltip.transition().duration("0").style("opacity", 0);
+      districtTooltip.style("left", "0px").style("top", "0px");
+      districtTooltip.html("");
+    });
 }
 
 function renderPoints() {
