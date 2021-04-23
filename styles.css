@@ -1,3 +1,7 @@
-#point-tooltip, #district-tooltip {
+#point-tooltip, #district-tooltip, #bar-tooltip{
     position: absolute;
+}
+
+body {
+    overflow: visible;
 }
