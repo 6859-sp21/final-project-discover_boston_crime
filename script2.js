@@ -2,11 +2,16 @@
 
 const width = 700;
 const height = 600;
-const margin = ({top: 10, right: 10, bottom: 40, left: 40})
+const margin = { top: 10, right: 10, bottom: 20, left: 40 };
+
+const neighborhoodFiltersDivElement = document.querySelector(
+  "#neighborhood-type-filters"
+);
 
 let data = null;
 let currData = null;
 let svg = null;
+let g = null;
 
 let x0 = null;
 let x1 = null;
@@ -15,111 +20,257 @@ let y = null;
 let yAxis = null;
 let xAxis = null;
 
-const ageGroups = ["0-17 years %", "18-34 years %", "35-59 years %", "60 and over  %"];
-const neighborhoods = [];
-const groupKey = "ageGroup";
-let transformedData = [];
 
 const barTooltip = d3.select("#bar-tooltip");
 
+const ageGroups = [
+  "0-17 years %",
+  "18-34 years %",
+  "35-59 years %",
+  "60 and over  %",
+];
+const allNeighborhoods = [];
+let currNeighborhoods = [];
+const groupKey = "ageGroup";
+let transformedData = [];
+const neighborhoodsSelected = new Set();
 
 function transformData() {
-    ageGroups.flatMap(ageGroup => {
-        const newObj = new Object();
-        newObj["ageGroup"] = ageGroup
-        currData.forEach(d => {
-            newObj[d["Neighborhood"]] = d[ageGroup];
-        });
-        transformedData.push(newObj);
-    })
-
-    currData.forEach(d => {
-        neighborhoods.push(d["Neighborhood"]);
-    })
+  transformedData = [];
+  ageGroups.flatMap((ageGroup) => {
+    const newObj = new Object();
+    newObj["ageGroup"] = ageGroup;
+    currData.forEach((d) => {
+      newObj[d["Neighborhood"]] = d[ageGroup];
+    });
+    transformedData.push(newObj);
+  });
+  currNeighborhoods = [];
+  currData.forEach((d) => {
+    currNeighborhoods.push(d["Neighborhood"]);
+  });
 }
 
+function initializeHTMLElements() {
+  allNeighborhoods.forEach((type) => {
+    // <label>
+    //   <input type="checkbox" class="filter" name="isPop" />
+    //   Pop
+    // </label>
+    const labelElement = document.createElement("label");
+    const inputElement = document.createElement("input");
+    const textElement = document.createTextNode(type);
+    inputElement.type = "checkbox";
+    inputElement.classList.add("neighborhood-filter");
+    inputElement.name = type;
+    labelElement.appendChild(inputElement);
+    labelElement.appendChild(textElement);
+    neighborhoodFiltersDivElement.appendChild(labelElement);
+    console.log("adding labels");
+  });
+}
+
+function initializeConstants() {
+  currData.forEach((d) => {
+    allNeighborhoods.push(d["Neighborhood"]);
+  });
+}
+
+function initializeEventListeners() {
+  d3.selectAll(".neighborhood-filter").on("change", function (d) {
+    if (d.target.checked) {
+      neighborhoodsSelected.add(d.target.name);
+    } else {
+      neighborhoodsSelected.delete(d.target.name);
+    }
+    filterData();
+    // renderPoints();
+  });
+}
+
+function updateBars() {
+  const update = g
+    .selectAll("g")
+    .data(transformedData, (d) => {
+      currNeighborsString = "";
+      currNeighborhoods.forEach((neighborhood) => {
+        currNeighborsString += neighborhood;
+      });
+      console.log(`curr neighborhood string ${currNeighborsString}`);
+      return currNeighborsString;
+    });
+  console.dir(update);
+
+  const update2 = update
+    .join(
+      (enter) => enter.append("g"),
+      (update) => update,
+      (exit) => exit.remove()
+    )
+    .attr("transform", (d) => `translate(${x0(d[groupKey])},0)`)
+    .selectAll("rect").data(
+        (d) =>
+          currNeighborhoods.map((neighborhood) => ({
+            key: neighborhood,
+            value: +d[neighborhood],
+            ageGroup: d[groupKey],
+          })),
+        (d) => {
+          let returnKey = "";
+          if (d["key"] && d["ageGroup"]) {
+            returnKey = `${d["key"]}_${d["ageGroup"]}`;
+            console.log(`returning unique key ${returnKey}`);
+          }
+          return returnKey;
+        }
+      );
+
+  console.dir(update2);
+
+  update2
+    .join(
+      (enter) => enter.append("rect"),
+      (update) => update,
+      (exit) => exit.remove()
+    )
+    .attr("x", (d) => x1(d.key))
+    .attr("y", (d) => y(d.value))
+    .attr("width", x1.bandwidth())
+    .attr("height", (d) => y(0) - y(d.value))
+    .attr("fill", (d) => color(d.key));
+}
+
+function filterData() {
+  if (neighborhoodsSelected.size === 0) {
+      currData = data;
+  } 
+  else {
+    currData = data.filter((d) => {
+        for (let neighborhood of neighborhoodsSelected) {
+          if (d["Neighborhood"] === neighborhood) {
+            return true;
+          }
+        }
+        return false;
+      });
+    
+      console.log(`neighborhood selected updated`);
+  }
+
+  transformData();
+  updateBars();
+}
 
 function initializeSvg() {
-    svg = d3.select("body")
+  svg = d3
+    .select("body")
     .append("svg")
     .attr("width", width)
-    .attr("height", height);;
+    .attr("height", height);
+ 
+    g = svg.append("g");
     
-    svg.append("g")
-        .selectAll("g")
-        .data(transformedData)
-        .join("g")
-        .attr("transform", d => `translate(${x0(d[groupKey])},0)`)
-        .selectAll("rect")
-        .data(d => neighborhoods.map(neighborhood => ({key: neighborhood, value: +d[neighborhood], ageGroup: d[groupKey]})))
-        .join("rect")
-        .attr("x", d => x1(d.key))
-        .attr("y", d => y(d.value))
-        .attr("width", x1.bandwidth())
-        .attr("height", d => y(0) - y(d.value))
-        .attr("fill", d => color(d.key))
-        .on("mouseover", function (event, d) {
-            d3.select(this)
-                .style("stroke", "white")
-                .style("stroke-width", "1px");
+    // svg.append("g")
+    //     .selectAll("g")
+    //     .data(transformedData)
+    //     .join("g")
+    //     .attr("transform", d => `translate(${x0(d[groupKey])},0)`)
+    //     .selectAll("rect")
+    //     .data(d => currNeighborhoods.map(neighborhood => ({key: neighborhood, value: +d[neighborhood], ageGroup: d[groupKey]})))
+    //     .join("rect")
+    //     .attr("x", d => x1(d.key))
+    //     .attr("y", d => y(d.value))
+    //     .attr("width", x1.bandwidth())
+    //     .attr("height", d => y(0) - y(d.value))
+    //     .attr("fill", d => color(d.key))
+    //     .on("mouseover", function (event, d) {
+    //         d3.select(this)
+    //             .style("stroke", "white")
+    //             .style("stroke-width", "1px");
 
-            const hoveredNeighborhood = d.key;
-            const hoveredAgeGroup = d.ageGroup.split('%')[0].trim();
-            const totalPopulation = data.find(x => x.Neighborhood = hoveredNeighborhood)["Total Population"];
-            const agePopulation = data.find(x => x.Neighborhood = hoveredNeighborhood)[hoveredAgeGroup];
+    //         const hoveredNeighborhood = d.key;
+    //         const hoveredAgeGroup = d.ageGroup.split('%')[0].trim();
+    //         const totalPopulation = data.find(x => x.Neighborhood = hoveredNeighborhood)["Total Population"];
+    //         const agePopulation = data.find(x => x.Neighborhood = hoveredNeighborhood)[hoveredAgeGroup];
 
-            const tooltipString = `<div> 
-            <p> Neighborhood: ${hoveredNeighborhood} </p>
-            <p> Age Group: ${hoveredAgeGroup} </p>
-            <p> Percent of Population: ${d.value.toFixed(4)} </p>
-            <p> Age Population: ${agePopulation} </p>
-            <p> Total Population: ${totalPopulation} </p>
-            </div>`
+    //         const tooltipString = `<div> 
+    //         <p> Neighborhood: ${hoveredNeighborhood} </p>
+    //         <p> Age Group: ${hoveredAgeGroup} </p>
+    //         <p> Percent of Population: ${d.value.toFixed(4)} </p>
+    //         <p> Age Population: ${agePopulation} </p>
+    //         <p> Total Population: ${totalPopulation} </p>
+    //         </div>`
             
-            barTooltip
-                .html(tooltipString)
-                .transition()
-                .duration(300)
-                .style("opacity", 0.9)
-                .style("left", event.pageX + "px")
-                .style("top", event.pageY + "px")
-                .style("background", "bisque");
-        })
-        .on("mouseout", function (event, d){
-            d3.select(this)
-                .style("stroke-width", "0px");
+    //         barTooltip
+    //             .html(tooltipString)
+    //             .transition()
+    //             .duration(300)
+    //             .style("opacity", 0.9)
+    //             .style("left", event.pageX + "px")
+    //             .style("top", event.pageY + "px")
+    //             .style("background", "bisque");
+    //     })
+    //     .on("mouseout", function (event, d){
+    //         d3.select(this)
+    //             .style("stroke-width", "0px");
 
-            barTooltip.transition().duration("0").style("opacity", 0);
-            barTooltip.style("left", "0px").style("top", "0px");
-            barTooltip.html("");
-        })
-        ;
+    //         barTooltip.transition().duration("0").style("opacity", 0);
+    //         barTooltip.style("left", "0px").style("top", "0px");
+    //         barTooltip.html("");
+    //     })
+        
+    //     ;
     
+    
+        updateBars();
+
+        console.log("done initializing svg");
+
+
+  // svg.append("g")
+  //     .call(xAxis);
+
+  // svg.append("g")
+  //     .call(yAxis);
+
+  // svg.append("g")
+  //     .call(legend);
 }
 
 function updateAxis() {
-    x1 = d3.scaleBand()
-    .domain(neighborhoods)
+  x1 = d3
+    .scaleBand()
+    .domain(currNeighborhoods)
     .rangeRound([0, x0.bandwidth()])
-    .padding(0.05)
+    .padding(0.05);
 }
 
 function initializeScales() {
-    x0 = d3.scaleBand()
+  x0 = d3
+    .scaleBand()
     .domain(ageGroups)
     .rangeRound([margin.left, width - margin.right])
-    .paddingInner(0.1)
+    .paddingInner(0.1);
 
-    x1 = d3.scaleBand()
-    .domain(neighborhoods)
+  x1 = d3
+    .scaleBand()
+    .domain(allNeighborhoods)
     .rangeRound([0, x0.bandwidth()])
-    .padding(0.05)
+    .padding(0.05);
 
-    y = d3.scaleLinear()
-    .domain([0, d3.max(transformedData, d => d3.max(neighborhoods, neighborhood => d[neighborhood]))]).nice()
-    .rangeRound([height - margin.bottom, margin.top])
+  y = d3
+    .scaleLinear()
+    .domain([
+      0,
+      d3.max(transformedData, (d) =>
+        d3.max(allNeighborhoods, (neighborhood) => d[neighborhood])
+      ),
+    ])
+    .nice()
+    .rangeRound([height - margin.bottom, margin.top]);
 
-    color = d3.scaleOrdinal(d3.schemeTableau10)
+  color = d3
+    .scaleOrdinal(d3.schemeTableau10)
     .domain(currData.map((d) => d["Neighborhood"]));
 }
 
@@ -209,14 +360,17 @@ function getData() {
       data = allData;
       currData = data;
       console.log(currData);
+      initializeConstants()
       transformData();
       initializeScales();
       initializeSvg();
+      initializeHTMLElements();
+        initializeEventListeners();
       axis();
       legend();
       labels();
     });
-  }
+}
   
-  getData();
-  
+
+getData();
