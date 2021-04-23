@@ -2,8 +2,10 @@ let data = [];
 let currData = [];
 let policeDistricts = null;
 const offenseTypes = new Set();
-const offenseTypesSelected = new Set();
+const filtersSelected = new Map();
 let selectedDistricts = [];
+const hourBins = 8;
+const hourIdToBins = new Map();
 
 const width = 700;
 const height = 580;
@@ -18,7 +20,10 @@ let svg = null;
 let g = null;
 
 const pointTooltipD3Element = d3.select("#point-tooltip");
-const filtersDivElement = document.querySelector("#offense-type-filters");
+const offenseFiltersDivElement = document.querySelector(
+  "#offense-type-filters"
+);
+const timeFiltersDivElement = document.querySelector("#time-filters");
 const districtTooltip = d3.select("#district-tooltip");
 
 function initializeSvg() {
@@ -76,7 +81,6 @@ function initializeSvg() {
         .style("stroke", "red")
         .style("stroke-width", "3px")
         .style("fill", "blue");
-
 
       //tooltip.transition().duration(50).style("opacity", 0.95);
 
@@ -155,6 +159,14 @@ function initializeDataTransforms() {
       offenseTypes.add(d["OFFENSE_CODE_GROUP"]);
     }
   });
+
+  filtersSelected["OFFENSE_CODE_GROUP"] = new Set();
+
+  for (i = 0; i < hourBins; i++) {
+    hourIdToBins[i] = [(i * 24) / hourBins, ((i + 1) * 24) / hourBins - 1];
+  }
+
+  filtersSelected["HOUR"] = new Set();
 }
 
 function initializeHTMLElements() {
@@ -171,16 +183,40 @@ function initializeHTMLElements() {
     inputElement.name = type;
     labelElement.appendChild(inputElement);
     labelElement.appendChild(textElement);
-    filtersDivElement.appendChild(labelElement);
+    offenseFiltersDivElement.appendChild(labelElement);
+  });
+
+  Object.keys(hourIdToBins).forEach((id) => {
+    const labelElement = document.createElement("label");
+    const inputElement = document.createElement("input");
+    const textElement = document.createTextNode(
+      `${hourIdToBins[id][0]} - ${hourIdToBins[id][1]}`
+    );
+    inputElement.type = "checkbox";
+    inputElement.classList.add("time-filter");
+    inputElement.name = id;
+    labelElement.appendChild(inputElement);
+    labelElement.appendChild(textElement);
+    timeFiltersDivElement.appendChild(labelElement);
   });
 }
 
 function initializeEventListeners() {
   d3.selectAll(".offense-type-filter").on("change", function (d) {
     if (d.target.checked) {
-      offenseTypesSelected.add(d.target.name);
+      filtersSelected["OFFENSE_CODE_GROUP"].add(d.target.name);
     } else {
-      offenseTypesSelected.delete(d.target.name);
+      filtersSelected["OFFENSE_CODE_GROUP"].delete(d.target.name);
+    }
+    filterData();
+    renderPoints();
+  });
+
+  d3.selectAll(".time-filter").on("change", function (d) {
+    if (d.target.checked) {
+      filtersSelected["HOUR"].add(d.target.name);
+    } else {
+      filtersSelected["HOUR"].delete(d.target.name);
     }
     filterData();
     renderPoints();
@@ -188,20 +224,44 @@ function initializeEventListeners() {
 }
 
 function filterData() {
-  if (offenseTypesSelected.size === 0) {
+  const allFiltersSelected = new Set();
+  Object.keys(filtersSelected).forEach((filterType) => {
+    filtersSelected[filterType].forEach((filter) => {
+      allFiltersSelected.add(filter);
+    });
+  });
+  if (allFiltersSelected.size === 0) {
     currData = data;
     return;
   }
   console.log("filtering data");
   currData = data.filter((d) => {
-    let isNeeded = false;
-    for (let type of offenseTypesSelected) {
+    let skip = true;
+    if (filtersSelected["OFFENSE_CODE_GROUP"].size === 0) {
+      return true;
+    }
+    for (let type of filtersSelected["OFFENSE_CODE_GROUP"]) {
       if (d["OFFENSE_CODE_GROUP"] === type) {
-        isNeeded = true;
+        skip = false;
         break;
       }
     }
-    return isNeeded;
+    return skip !== true;
+  });
+
+  currData = currData.filter((d) => {
+    let skip = true;
+    if (filtersSelected["HOUR"].size === 0) {
+      return true;
+    }
+    for (let hourId of filtersSelected["HOUR"]) {
+      [hourStart, hourEnd] = hourIdToBins[hourId];
+      if (hourStart <= +d["HOUR"] && +d["HOUR"] <= hourEnd) {
+        skip = false;
+        break;
+      }
+    }
+    return skip !== true;
   });
 }
 
