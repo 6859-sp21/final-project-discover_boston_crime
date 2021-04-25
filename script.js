@@ -157,7 +157,10 @@ function renderPoints() {
     .attr(
       "class",
       (d) =>
-        `crimePoints ${d["Aggregated Offence Code Group"].replace(/\s/g, "_")}`
+        `crimePoints ${d["Aggregated Offence Code Group"].replace(
+          /\s/g,
+          "_"
+        )} hour_${d["HOUR_ID"]}`
     )
     .on("mouseover", function (event, d) {
       d3.select(this).style("stroke", "yellow");
@@ -203,6 +206,17 @@ function initializeDataTransforms() {
   }
 
   filtersSelected["HOUR"] = new Set();
+
+  const hourIds = Object.keys(hourIdToBins);
+
+  data.forEach((d) => {
+    const hourOfOffense = +d["HOUR"];
+    const offenseHourId = hourIds.find((hourId) => {
+      [hourStart, hourEnd] = hourIdToBins[hourId];
+      return hourStart <= hourOfOffense && hourOfOffense <= hourEnd;
+    });
+    d["HOUR_ID"] = offenseHourId;
+  });
 }
 
 function initializeHTMLElements() {
@@ -222,14 +236,14 @@ function initializeHTMLElements() {
     offenseFiltersDivElement.appendChild(labelElement);
 
     labelElement.addEventListener("mouseover", () => {
-      console.log(`hovering over ${type}`);
+      // console.log(`hovering over ${type}`);
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
         .attr("fill", "red")
         .attr("d", () => d3.symbol().size(50)());
     });
 
     labelElement.addEventListener("mouseout", () => {
-      console.log(`hovering over ${type}`);
+      // console.log(`hovering over ${type}`);
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
         .attr("fill", "white")
         .attr("d", () => d3.symbol().size(5)());
@@ -248,6 +262,20 @@ function initializeHTMLElements() {
     labelElement.appendChild(inputElement);
     labelElement.appendChild(textElement);
     timeFiltersDivElement.appendChild(labelElement);
+
+    labelElement.addEventListener("mouseover", () => {
+      // console.log(`hovering over hour ${id}`);
+      d3.selectAll(`.hour_${id}`)
+        .attr("fill", "red")
+        .attr("d", () => d3.symbol().size(50)());
+    });
+
+    labelElement.addEventListener("mouseout", () => {
+      // console.log(`hovering over hour ${id}`);
+      d3.selectAll(`.hour_${id}`)
+        .attr("fill", "white")
+        .attr("d", () => d3.symbol().size(5)());
+    });
   });
 }
 
@@ -327,7 +355,7 @@ function getData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
-    data = allData.slice(0, 100);
+    data = allData.slice(0, 1000);
     currData = data;
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
