@@ -18,6 +18,7 @@ const albersProjection = d3
 
 let svg = null;
 let g = null;
+let color = null;
 
 const pointTooltipD3Element = d3.select("#point-tooltip");
 const offenseFiltersDivElement = document.querySelector(
@@ -84,24 +85,26 @@ function initializeSvg() {
         .style("stroke-width", "5px")
         .style("fill", "blue");
 
-      let neighborhoodToNeighborhoodNameMap = {
-        "A1" : ["North End", "West End", "Downtown", "Beacon Hill"],
-        "A7" : ["East Boston"],
-        "A15" : ["Charlestown"],
-        "B2" : ["Mission Hill", "Roxbury", "Longwood"],
-        "B3" : ["Mattapan"],
-        "C6" : ["South Boston", "South Boston Waterfront"],
-        "C11" : ["Dorchester"], 
-        "D4" : ["Fenway", "Back Bay", "South End"],
-        "D14" : ["Allston", "Brighton"],
-        "E5" : ["West Roxbury", "Roslindale"],
-        "E13" : ["Jamaica Plain"],
-        "E18" : ["Hyde Park"]
+      let districtToNeighborhoodMap = {
+        A1: ["North End", "West End", "Downtown", "Beacon Hill"],
+        A7: ["East Boston"],
+        A15: ["Charlestown"],
+        B2: ["Mission Hill", "Roxbury", "Longwood"],
+        B3: ["Mattapan"],
+        C6: ["South Boston", "South Boston Waterfront"],
+        C11: ["Dorchester"],
+        D4: ["Fenway", "Back Bay", "South End"],
+        D14: ["Allston", "Brighton"],
+        E5: ["West Roxbury", "Roslindale"],
+        E13: ["Jamaica Plain"],
+        E18: ["Hyde Park"],
       };
       const tooltipString = `<div> 
               <p> Police District: ${d.properties.ID} </p>
-              <p> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[d.properties.ID].sort().join(', ')} </p>
-              </div>`
+              <p> Neighborhoods: ${districtToNeighborhoodMap[d.properties.ID]
+                .sort()
+                .join(", ")} </p>
+              </div>`;
       //tooltip.transition().duration(50).style("opacity", 0.95);
 
       districtTooltip
@@ -149,7 +152,7 @@ function renderPoints() {
       "transform",
       (d) => `translate(${getXCoordinate(d)}, ${getYCoordinate(d)})`
     )
-    .attr("fill", "white")
+    .attr("fill", (d) => color(d["Aggregated Offence Code Group"]))
     .attr("class", "crimePoints")
     .on("mouseover", function (event, d) {
       d3.select(this).style("stroke", "yellow");
@@ -162,7 +165,9 @@ function renderPoints() {
         .style("left", event.pageX + "px")
         .style("top", event.pageY + "px")
         .style("background", "bisque");
-      pointTooltipD3Element.html(`Offense Type: ${d["Aggregated Offence Code Group"]}`);
+      pointTooltipD3Element.html(
+        `Offense Type: ${d["Aggregated Offence Code Group"]}`
+      );
     })
     .on("mouseout", function (event, d) {
       d3.select(this).style("stroke", "white");
@@ -170,7 +175,13 @@ function renderPoints() {
       pointTooltipD3Element.style("left", "0px").style("top", "0px");
       pointTooltipD3Element.html("");
     })
-    .attr("d", (d) => d3.symbol().size(2)());
+    .attr("d", (d) => d3.symbol().size(5)());
+}
+
+function initializeScales() {
+  color = d3
+    .scaleOrdinal(d3.schemeTableau10)
+    .domain(currData.map((d) => d["Aggregated Offence Code Group"]));
 }
 
 function initializeDataTransforms() {
@@ -308,6 +319,7 @@ function getData() {
       initializeSvg();
       initializeHTMLElements();
       initializeEventListeners();
+      initializeScales();
       renderPoints();
     });
   });
