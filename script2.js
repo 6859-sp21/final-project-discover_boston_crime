@@ -31,21 +31,24 @@ const ageGroups = [
   "35-59 years %",
   "60 and over %",
 ];
+
+const defaultNeighborhoods = new Set(["Boston"]);
 const allNeighborhoods = [];
 let currNeighborhoods = [];
 const groupKey = "ageGroup";
-let transformedData = [];
+let transformedCurrData = [];
+const transformedData = [];
 const neighborhoodsSelected = new Set();
 
 function transformData() {
-  transformedData = [];
+  transformedCurrData = [];
   ageGroups.flatMap((ageGroup) => {
     const newObj = new Object();
     newObj["ageGroup"] = ageGroup;
     currData.forEach((d) => {
       newObj[d["Neighborhood"]] = d[ageGroup];
     });
-    transformedData.push(newObj);
+    transformedCurrData.push(newObj);
   });
   currNeighborhoods = [];
   currData.forEach((d) => {
@@ -60,22 +63,33 @@ function initializeHTMLElements() {
     //   <input type="checkbox" class="filter" name="isPop" />
     //   Pop
     // </label>
-    const labelElement = document.createElement("label");
-    const inputElement = document.createElement("input");
-    const textElement = document.createTextNode(type);
-    inputElement.type = "checkbox";
-    inputElement.classList.add("neighborhood-filter");
-    inputElement.name = type;
-    labelElement.appendChild(inputElement);
-    labelElement.appendChild(textElement);
-    neighborhoodFiltersDivElement.appendChild(labelElement);
-    console.log("adding labels");
+    if (!defaultNeighborhoods.has(type)) {
+      const labelElement = document.createElement("label");
+      const inputElement = document.createElement("input");
+      const textElement = document.createTextNode(type);
+      inputElement.type = "checkbox";
+      inputElement.classList.add("neighborhood-filter");
+      inputElement.name = type;
+      labelElement.appendChild(inputElement);
+      labelElement.appendChild(textElement);
+      neighborhoodFiltersDivElement.appendChild(labelElement);
+      console.log("adding labels");
+    }
   });
 }
 
 function initializeConstants() {
-  currData.forEach((d) => {
+  data.forEach((d) => {
     allNeighborhoods.push(d["Neighborhood"]);
+  });
+
+  ageGroups.flatMap((ageGroup) => {
+    const newObj = new Object();
+    newObj["ageGroup"] = ageGroup;
+    data.forEach((d) => {
+      newObj[d["Neighborhood"]] = d[ageGroup];
+    });
+    transformedData.push(newObj);
   });
 }
 
@@ -98,7 +112,7 @@ function updateBars() {
   console.log("selection");
   console.dir(selection);
 
-  const update = selection.data(transformedData, (d, i) => {
+  const update = selection.data(transformedCurrData, (d, i) => {
     currNeighborsString = Object.keys(d).join(" ");
     currNeighborsString += i;
     console.log(`curr neighborhood string ${currNeighborsString}`);
@@ -169,23 +183,27 @@ function updateBars() {
       )[hoveredAgeGroup];
 
       let neighborhoodToNeighborhoodNameMap = {
-        "A1" : ["North End", "West End", "Downtown", "Beacon Hill"],
-        "A7" : ["East Boston"],
-        "A15" : ["Charlestown"],
-        "B2" : ["Mission Hill", "Roxbury", "Longwood"],
-        "B3" : ["Mattapan"],
-        "C6" : ["South Boston", "South Boston Waterfront"],
-        "C11" : ["Dorchester"], 
-        "D4" : ["Fenway", "Back Bay", "South End"],
-        "D14" : ["Allston", "Brighton"],
-        "E5" : ["West Roxbury", "Roslindale"],
-        "E13" : ["Jamaica Plain"],
-        "E18" : ["Hyde Park"]
+        A1: ["North End", "West End", "Downtown", "Beacon Hill"],
+        A7: ["East Boston"],
+        A15: ["Charlestown"],
+        B2: ["Mission Hill", "Roxbury", "Longwood"],
+        B3: ["Mattapan"],
+        C6: ["South Boston", "South Boston Waterfront"],
+        C11: ["Dorchester"],
+        D4: ["Fenway", "Back Bay", "South End"],
+        D14: ["Allston", "Brighton"],
+        E5: ["West Roxbury", "Roslindale"],
+        E13: ["Jamaica Plain"],
+        E18: ["Hyde Park"],
       };
 
       const tooltipString = `<div>
         <p> Police District: ${hoveredNeighborhood}</p>
-        <p> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[hoveredNeighborhood].sort().join(', ')} </p>
+        <p> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[
+          hoveredNeighborhood
+        ]
+          .sort()
+          .join(", ")} </p>
         <p> Age Group: ${hoveredAgeGroup} </p>
         <p> Percent of Population: ${d.value.toFixed(4)} </p>
         <p> Age Population: ${agePopulation} </p>
@@ -211,10 +229,15 @@ function updateBars() {
 
 function filterData() {
   if (neighborhoodsSelected.size === 0) {
-    currData = data;
+    setDefaultData();
   } else {
     currData = data.filter((d) => {
       for (let neighborhood of neighborhoodsSelected) {
+        if (d["Neighborhood"] === neighborhood) {
+          return true;
+        }
+      }
+      for (let neighborhood of defaultNeighborhoods) {
         if (d["Neighborhood"] === neighborhood) {
           return true;
         }
@@ -228,6 +251,17 @@ function filterData() {
   transformData();
   updateAxis();
   updateBars();
+}
+
+function setDefaultData() {
+  currData = data.filter((d) => {
+    for (let neighborhood of defaultNeighborhoods) {
+      if (d["Neighborhood"] === neighborhood) {
+        return true;
+      }
+    }
+    return false;
+  });
 }
 
 function initializeSvg() {
@@ -264,7 +298,7 @@ function initializeScales() {
 
   x1 = d3
     .scaleBand()
-    .domain(allNeighborhoods)
+    .domain(currNeighborhoods)
     .rangeRound([0, x0.bandwidth()])
     .padding(0.05);
 
@@ -281,7 +315,7 @@ function initializeScales() {
 
   color = d3
     .scaleOrdinal(d3.schemeTableau10)
-    .domain(currData.map((d) => d["Neighborhood"]));
+    .domain(data.map((d) => d["Neighborhood"]));
 }
 
 function axis() {
@@ -355,7 +389,7 @@ function getData() {
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_age.csv"
   ).then((allData) => {
     data = allData;
-    currData = data;
+    setDefaultData();
     console.log(currData);
     initializeConstants();
     transformData();

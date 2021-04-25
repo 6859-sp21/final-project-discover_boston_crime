@@ -327,7 +327,7 @@ function getData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
-    data = allData.slice(0, 50000);
+    data = allData.slice(0, 100);
     currData = data;
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
