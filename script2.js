@@ -195,6 +195,7 @@ function updateBars() {
         E5: ["West Roxbury", "Roslindale"],
         E13: ["Jamaica Plain"],
         E18: ["Hyde Park"],
+        Boston: ["Boston"],
       };
 
       const tooltipString = `<div>
