@@ -20,6 +20,8 @@ let y = null;
 let yAxis = null;
 let xAxis = null;
 
+const animationDelay = 500;
+let transition = null;
 
 const barTooltip = d3.select("#bar-tooltip");
 
@@ -49,6 +51,7 @@ function transformData() {
   currData.forEach((d) => {
     currNeighborhoods.push(d["Neighborhood"]);
   });
+  console.log(`new curr neighbors ${currNeighborhoods}`);
 }
 
 function initializeHTMLElements() {
@@ -89,16 +92,20 @@ function initializeEventListeners() {
 }
 
 function updateBars() {
-  const update = g
-    .selectAll("g")
-    .data(transformedData, (d) => {
-      currNeighborsString = "";
-      currNeighborhoods.forEach((neighborhood) => {
-        currNeighborsString += neighborhood;
-      });
-      console.log(`curr neighborhood string ${currNeighborsString}`);
-      return currNeighborsString;
-    });
+  console.log(`updating bars`);
+  const selection = g.selectAll("g.group");
+
+  console.log("selection");
+  console.dir(selection);
+
+  const update = selection.data(transformedData, (d, i) => {
+    currNeighborsString = Object.keys(d).join(" ");
+    currNeighborsString += i;
+    console.log(`curr neighborhood string ${currNeighborsString}`);
+    return currNeighborsString;
+  });
+
+  console.log("update");
   console.dir(update);
 
   const update2 = update
@@ -108,56 +115,102 @@ function updateBars() {
       (exit) => exit.remove()
     )
     .attr("transform", (d) => `translate(${x0(d[groupKey])},0)`)
-    .selectAll("rect").data(
-        (d) =>
-          currNeighborhoods.map((neighborhood) => ({
-            key: neighborhood,
-            value: +d[neighborhood],
-            ageGroup: d[groupKey],
-          })),
-        (d) => {
-          let returnKey = "";
-          if (d["key"] && d["ageGroup"]) {
-            returnKey = `${d["key"]}_${d["ageGroup"]}`;
-            console.log(`returning unique key ${returnKey}`);
-          }
-          return returnKey;
-        }
-      );
+    .attr("class", "group")
+    .selectAll("rect")
+    .data(
+      (d) =>
+        currNeighborhoods.map((neighborhood) => ({
+          key: neighborhood,
+          value: +d[neighborhood],
+          ageGroup: d[groupKey],
+        })),
+      (d) => {
+        console.log(`returning unique key ${`${d["key"]}_${d["ageGroup"]}`}`);
+        return `${d["key"]}_${d["ageGroup"]}`;
+      }
+    );
 
+  console.log("update2");
   console.dir(update2);
 
   update2
     .join(
-      (enter) => enter.append("rect"),
+      (enter) => {
+        return enter
+          .append("rect")
+          .attr("x", (d) => x1(d.key))
+          .attr("y", (d) => y(d.value))
+          .attr("width", x1.bandwidth())
+          .attr("fill", (d) => {
+            return color(d.key);
+          })
+          .call((enter) =>
+            enter
+              .transition()
+              .duration(1000)
+              .attr("height", (d) => y(0) - y(d.value))
+          );
+      },
       (update) => update,
-      (exit) => exit.remove()
+      (exit) => {
+        exit.remove();
+      }
     )
-    .attr("x", (d) => x1(d.key))
-    .attr("y", (d) => y(d.value))
-    .attr("width", x1.bandwidth())
-    .attr("height", (d) => y(0) - y(d.value))
-    .attr("fill", (d) => color(d.key));
+    .on("mouseover", function (event, d) {
+      d3.select(this).style("stroke", "white").style("stroke-width", "1px");
+
+      const hoveredNeighborhood = d.key;
+      const hoveredAgeGroup = d.ageGroup.split("%")[0].trim();
+      const totalPopulation = data.find(
+        (x) => (x.Neighborhood = hoveredNeighborhood)
+      )["Total Population"];
+      const agePopulation = data.find(
+        (x) => (x.Neighborhood = hoveredNeighborhood)
+      )[hoveredAgeGroup];
+
+      const tooltipString = `<div>
+        <p> Neighborhood: ${hoveredNeighborhood} </p>
+        <p> Age Group: ${hoveredAgeGroup} </p>
+        <p> Percent of Population: ${d.value.toFixed(4)} </p>
+        <p> Age Population: ${agePopulation} </p>
+        <p> Total Population: ${totalPopulation} </p>
+        </div>`;
+
+      barTooltip
+        .html(tooltipString)
+        .transition()
+        .duration(300)
+        .style("opacity", 0.9)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY + "px")
+        .style("background", "bisque");
+    })
+    .on("mouseout", function (event, d) {
+      d3.select(this).style("stroke-width", "0px");
+
+      barTooltip.transition().duration("0").style("opacity", 0);
+      barTooltip.html("");
+    });
 }
 
 function filterData() {
   if (neighborhoodsSelected.size === 0) {
-      currData = data;
-  } 
-  else {
+    currData = data;
+  } else {
     currData = data.filter((d) => {
-        for (let neighborhood of neighborhoodsSelected) {
-          if (d["Neighborhood"] === neighborhood) {
-            return true;
-          }
+      for (let neighborhood of neighborhoodsSelected) {
+        if (d["Neighborhood"] === neighborhood) {
+          return true;
         }
-        return false;
-      });
-    
-      console.log(`neighborhood selected updated`);
+      }
+      return false;
+    });
+
+    console.log(`neighborhood selected updated`);
   }
 
   transformData();
+  updateAxis();
   updateBars();
 }
 
@@ -167,65 +220,14 @@ function initializeSvg() {
     .append("svg")
     .attr("width", width)
     .attr("height", height);
- 
-    g = svg.append("g");
-    
-    // svg.append("g")
-    //     .selectAll("g")
-    //     .data(transformedData)
-    //     .join("g")
-    //     .attr("transform", d => `translate(${x0(d[groupKey])},0)`)
-    //     .selectAll("rect")
-    //     .data(d => currNeighborhoods.map(neighborhood => ({key: neighborhood, value: +d[neighborhood], ageGroup: d[groupKey]})))
-    //     .join("rect")
-    //     .attr("x", d => x1(d.key))
-    //     .attr("y", d => y(d.value))
-    //     .attr("width", x1.bandwidth())
-    //     .attr("height", d => y(0) - y(d.value))
-    //     .attr("fill", d => color(d.key))
-    //     .on("mouseover", function (event, d) {
-    //         d3.select(this)
-    //             .style("stroke", "white")
-    //             .style("stroke-width", "1px");
 
-    //         const hoveredNeighborhood = d.key;
-    //         const hoveredAgeGroup = d.ageGroup.split('%')[0].trim();
-    //         const totalPopulation = data.find(x => x.Neighborhood = hoveredNeighborhood)["Total Population"];
-    //         const agePopulation = data.find(x => x.Neighborhood = hoveredNeighborhood)[hoveredAgeGroup];
+  transition = svg.transition().duration(animationDelay).ease(d3.easeLinear);
 
-    //         const tooltipString = `<div> 
-    //         <p> Neighborhood: ${hoveredNeighborhood} </p>
-    //         <p> Age Group: ${hoveredAgeGroup} </p>
-    //         <p> Percent of Population: ${d.value.toFixed(4)} </p>
-    //         <p> Age Population: ${agePopulation} </p>
-    //         <p> Total Population: ${totalPopulation} </p>
-    //         </div>`
-            
-    //         barTooltip
-    //             .html(tooltipString)
-    //             .transition()
-    //             .duration(300)
-    //             .style("opacity", 0.9)
-    //             .style("left", event.pageX + "px")
-    //             .style("top", event.pageY + "px")
-    //             .style("background", "bisque");
-    //     })
-    //     .on("mouseout", function (event, d){
-    //         d3.select(this)
-    //             .style("stroke-width", "0px");
+  g = svg.append("g");
 
-    //         barTooltip.transition().duration("0").style("opacity", 0);
-    //         barTooltip.style("left", "0px").style("top", "0px");
-    //         barTooltip.html("");
-    //     })
-        
-    //     ;
-    
-    
-        updateBars();
+  updateBars();
 
-        console.log("done initializing svg");
-
+  console.log("done initializing svg");
 
   // svg.append("g")
   //     .call(xAxis);
@@ -275,102 +277,109 @@ function initializeScales() {
 }
 
 function axis() {
-    svg
+  svg
     .append("g")
     .attr("transform", `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).ticks(null, "s"))
-    .call(g => g.select(".domain").remove())
-    .call(g => g.select(".tick:last-of-type text").clone()
+    .call((g) => g.select(".domain").remove())
+    .call((g) =>
+      g
+        .select(".tick:last-of-type text")
+        .clone()
         .attr("x", 3)
         .attr("text-anchor", "start")
         .attr("font-weight", "bold")
         .attr("font-size", "16px")
-        .text(data.y))
-    
-    let lowerLabels = ["0-17", "18-34", "35-59", "60 and over"];
+        .text(data.y)
+    );
 
-    let yAxis = d3.axisBottom(x0).tickSizeOuter(0)
-        .tickValues(ageGroups)
-        .tickFormat((d, i) => {
-                return lowerLabels[i]
-        });
-        
+  let lowerLabels = ["0-17", "18-34", "35-59", "60 and over"];
 
-    svg
-        .append("g")
-        .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(yAxis)
-        .attr("font-size", "16px")
-        .call(g => g.select(".domain").remove());
+  let yAxis = d3
+    .axisBottom(x0)
+    .tickSizeOuter(0)
+    .tickValues(ageGroups)
+    .tickFormat((d, i) => {
+      return lowerLabels[i];
+    });
+
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(yAxis)
+    .attr("font-size", "16px")
+    .call((g) => g.select(".domain").remove());
 }
 
 function legend() {
-    const g = svg
-        .append("g")
-        .attr("transform", `translate(${width},0)`)
-        .attr("text-anchor", "end")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", 10)
-        .selectAll("g")
-        .data(color.domain().slice())
-        .join("g")
-        .attr("transform", (d, i) => `translate(0,${i * 20})`);
-  
-    g.append("rect")
-        .attr("x", -19)
-        .attr("width", 19)
-        .attr("height", 19)
-        .attr("fill", color);
-  
-    g.append("text")
-        .attr("x", -24)
-        .attr("y", 9.5)
-        .attr("dy", "0.35em")
-        .text(d => d);
-  }
+  const g = svg
+    .append("g")
+    .attr("transform", `translate(${width},0)`)
+    .attr("text-anchor", "end")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+    .selectAll("g")
+    .data(color.domain().slice())
+    .join("g")
+    .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+  g.append("rect")
+    .attr("x", -19)
+    .attr("width", 19)
+    .attr("height", 19)
+    .attr("fill", color);
+
+  g.append("text")
+    .attr("x", -24)
+    .attr("y", 9.5)
+    .attr("dy", "0.35em")
+    .text((d) => d);
+}
 
 function labels() {
-    svg
-        .append("text")
-        .style("font-size", "16px")
-        .call(d3.axisBottom(x0))
-        .attr("fill", "black")
-        .attr("font-size", "16px")
-        .attr("font-weight", "bold")
-        .attr("x", width / 2)
-        .attr("y", height - margin.bottom/10)
-        .text("Age Group (in Years)");
+  svg
+    .append("text")
+    .style("font-size", "16px")
+    .call(d3.axisBottom(x0))
+    .attr("fill", "black")
+    .attr("font-size", "16px")
+    .attr("font-weight", "bold")
+    .attr("x", width / 2)
+    .attr("y", height - margin.bottom / 10)
+    .text("Age Group (in Years)");
 
-    svg
-        .append("text")
-        .call(d3.axisLeft(y))
-        .attr("transform", `translate(${margin.left/4}, ${height/2.75}) rotate(-90)`)
-        
-        .attr("text-anchor", "end")
-        .attr("fill", "black")
-        .attr("font-size", "16px")
-        .attr("font-weight", "bold")
-        .text("Percent");
+  svg
+    .append("text")
+    .call(d3.axisLeft(y))
+    .attr(
+      "transform",
+      `translate(${margin.left / 4}, ${height / 2.75}) rotate(-90)`
+    )
+
+    .attr("text-anchor", "end")
+    .attr("fill", "black")
+    .attr("font-size", "16px")
+    .attr("font-weight", "bold")
+    .text("Percent");
 }
 
 function getData() {
-    d3.csv(
-      "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_age.csv"
-    ).then((allData) => {
-      data = allData;
-      currData = data;
-      console.log(currData);
-      initializeConstants()
-      transformData();
-      initializeScales();
-      initializeSvg();
-      initializeHTMLElements();
-        initializeEventListeners();
-      axis();
-      legend();
-      labels();
-    });
+  d3.csv(
+    "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_age.csv"
+  ).then((allData) => {
+    data = allData;
+    currData = data;
+    console.log(currData);
+    initializeConstants();
+    transformData();
+    initializeScales();
+    initializeSvg();
+    initializeHTMLElements();
+    initializeEventListeners();
+    axis();
+    legend();
+    labels();
+  });
 }
-  
 
 getData();
