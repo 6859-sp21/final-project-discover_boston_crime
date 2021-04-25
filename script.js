@@ -4,7 +4,7 @@ let policeDistricts = null;
 const offenseTypes = new Set();
 const filtersSelected = new Map();
 let selectedDistricts = [];
-const hourBins = 8;
+const hourBins = 4;
 const hourIdToBins = new Map();
 
 const width = 700;
@@ -82,10 +82,28 @@ function initializeSvg() {
         .style("stroke-width", "3px")
         .style("fill", "blue");
 
+      let districtToNeighborhoodMap = {
+        "A1" : ["North End", "West End", "Downtown", "Beacon Hill"],
+        "A7" : ["East Boston"],
+        "A15" : ["Charlestown"],
+        "B2" : ["Mission Hill", "Roxbury", "Longwood"],
+        "B3" : ["Mattapan"],
+        "C6" : ["South Boston", "South Boston Waterfront"],
+        "C11" : ["Dorchester"], 
+        "D4" : ["Fenway", "Back Bay", "South End"],
+        "D14" : ["Allston", "Brighton"],
+        "E5" : ["West Roxbury", "Roslindale"],
+        "E13" : ["Jamaica Plain"],
+        "E18" : ["Hyde Park"]
+      };
+      const tooltipString = `<div> 
+              <p> Police District: ${d.properties.ID} </p>
+              <p> Neighborhoods: ${districtToNeighborhoodMap[d.properties.ID].sort().join(', ')} </p>
+              </div>`
       //tooltip.transition().duration(50).style("opacity", 0.95);
 
       districtTooltip
-        .html(`<div><p> ${d.properties.ID} </p><div>`)
+        .html(`<div><p> ${tooltipString} </p><div>`)
         .transition()
         .duration(300)
         .style("opacity", 0.9)
