@@ -58,6 +58,7 @@ function initializeSvg() {
               .duration(1000)
               .attr("fill", "black")
               .attr("stroke", "white")
+              .style("stroke-width", "3px")
           );
       },
       function (update) {
@@ -67,6 +68,7 @@ function initializeSvg() {
             .duration(1000)
             .attr("fill", "black")
             .attr("stroke", "white")
+            .style("stroke-width", "3px")
         );
       },
       function (exit) {
@@ -80,7 +82,7 @@ function initializeSvg() {
     .on("mouseover", function (event, d) {
       d3.select(this)
         .style("stroke", "red")
-        .style("stroke-width", "3px")
+        .style("stroke-width", "5px")
         .style("fill", "blue");
 
       let districtToNeighborhoodMap = {
@@ -117,7 +119,7 @@ function initializeSvg() {
     .on("mouseout", function (event, d) {
       d3.select(this)
         .style("stroke", "white")
-        .style("stroke-width", "1px")
+        .style("stroke-width", "3px")
         .style("fill", "black");
 
       districtTooltip.transition().duration("0").style("opacity", 0);
@@ -325,7 +327,7 @@ function getData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
-    data = allData.slice(0, 1000);
+    data = allData.slice(0, 10000);
     currData = data;
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
