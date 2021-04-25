@@ -29,7 +29,7 @@ const ageGroups = [
   "0-17 years %",
   "18-34 years %",
   "35-59 years %",
-  "60 and over  %",
+  "60 and over %",
 ];
 const allNeighborhoods = [];
 let currNeighborhoods = [];
@@ -168,8 +168,24 @@ function updateBars() {
         (x) => (x.Neighborhood = hoveredNeighborhood)
       )[hoveredAgeGroup];
 
+      let neighborhoodToNeighborhoodNameMap = {
+        "A1" : ["North End", "West End", "Downtown", "Beacon Hill"],
+        "A7" : ["East Boston"],
+        "A15" : ["Charlestown"],
+        "B2" : ["Mission Hill", "Roxbury", "Longwood"],
+        "B3" : ["Mattapan"],
+        "C6" : ["South Boston", "South Boston Waterfront"],
+        "C11" : ["Dorchester"], 
+        "D4" : ["Fenway", "Back Bay", "South End"],
+        "D14" : ["Allston", "Brighton"],
+        "E5" : ["West Roxbury", "Roslindale"],
+        "E13" : ["Jamaica Plain"],
+        "E18" : ["Hyde Park"]
+      };
+
       const tooltipString = `<div>
-        <p> Neighborhood: ${hoveredNeighborhood} </p>
+        <p> Police District: ${hoveredNeighborhood}</p>
+        <p> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[hoveredNeighborhood].sort().join(', ')} </p>
         <p> Age Group: ${hoveredAgeGroup} </p>
         <p> Percent of Population: ${d.value.toFixed(4)} </p>
         <p> Age Population: ${agePopulation} </p>

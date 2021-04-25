@@ -82,7 +82,7 @@ function initializeSvg() {
         .style("stroke-width", "3px")
         .style("fill", "blue");
 
-      let districtToNeighborhoodMap = {
+      let neighborhoodToNeighborhoodNameMap = {
         "A1" : ["North End", "West End", "Downtown", "Beacon Hill"],
         "A7" : ["East Boston"],
         "A15" : ["Charlestown"],
@@ -98,7 +98,7 @@ function initializeSvg() {
       };
       const tooltipString = `<div> 
               <p> Police District: ${d.properties.ID} </p>
-              <p> Neighborhoods: ${districtToNeighborhoodMap[d.properties.ID].sort().join(', ')} </p>
+              <p> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[d.properties.ID].sort().join(', ')} </p>
               </div>`
       //tooltip.transition().duration(50).style("opacity", 0.95);
 
