@@ -57,6 +57,7 @@ function initializeSvg() {
               .duration(1000)
               .attr("fill", "black")
               .attr("stroke", "white")
+              .style("stroke-width", "3px")
           );
       },
       function (update) {
@@ -66,6 +67,7 @@ function initializeSvg() {
             .duration(1000)
             .attr("fill", "black")
             .attr("stroke", "white")
+            .style("stroke-width", "3px")
         );
       },
       function (exit) {
@@ -79,7 +81,7 @@ function initializeSvg() {
     .on("mouseover", function (event, d) {
       d3.select(this)
         .style("stroke", "red")
-        .style("stroke-width", "3px")
+        .style("stroke-width", "5px")
         .style("fill", "blue");
 
       let neighborhoodToNeighborhoodNameMap = {
@@ -114,7 +116,7 @@ function initializeSvg() {
     .on("mouseout", function (event, d) {
       d3.select(this)
         .style("stroke", "white")
-        .style("stroke-width", "1px")
+        .style("stroke-width", "3px")
         .style("fill", "black");
 
       districtTooltip.transition().duration("0").style("opacity", 0);
@@ -160,7 +162,7 @@ function renderPoints() {
         .style("left", event.pageX + "px")
         .style("top", event.pageY + "px")
         .style("background", "bisque");
-      pointTooltipD3Element.html(`Offense Type: ${d["OFFENSE_CODE_GROUP"]}`);
+      pointTooltipD3Element.html(`Offense Type: ${d["Aggregated Offence Code Group"]}`);
     })
     .on("mouseout", function (event, d) {
       d3.select(this).style("stroke", "white");
@@ -168,17 +170,17 @@ function renderPoints() {
       pointTooltipD3Element.style("left", "0px").style("top", "0px");
       pointTooltipD3Element.html("");
     })
-    .attr("d", (d) => d3.symbol().size(30)());
+    .attr("d", (d) => d3.symbol().size(2)());
 }
 
 function initializeDataTransforms() {
   data.forEach((d) => {
-    if (!offenseTypes.has(d["OFFENSE_CODE_GROUP"])) {
-      offenseTypes.add(d["OFFENSE_CODE_GROUP"]);
+    if (!offenseTypes.has(d["Aggregated Offence Code Group"])) {
+      offenseTypes.add(d["Aggregated Offence Code Group"]);
     }
   });
 
-  filtersSelected["OFFENSE_CODE_GROUP"] = new Set();
+  filtersSelected["Aggregated Offence Code Group"] = new Set();
 
   for (i = 0; i < hourBins; i++) {
     hourIdToBins[i] = [(i * 24) / hourBins, ((i + 1) * 24) / hourBins - 1];
@@ -222,9 +224,9 @@ function initializeHTMLElements() {
 function initializeEventListeners() {
   d3.selectAll(".offense-type-filter").on("change", function (d) {
     if (d.target.checked) {
-      filtersSelected["OFFENSE_CODE_GROUP"].add(d.target.name);
+      filtersSelected["Aggregated Offence Code Group"].add(d.target.name);
     } else {
-      filtersSelected["OFFENSE_CODE_GROUP"].delete(d.target.name);
+      filtersSelected["Aggregated Offence Code Group"].delete(d.target.name);
     }
     filterData();
     renderPoints();
@@ -255,11 +257,11 @@ function filterData() {
   console.log("filtering data");
   currData = data.filter((d) => {
     let skip = true;
-    if (filtersSelected["OFFENSE_CODE_GROUP"].size === 0) {
+    if (filtersSelected["Aggregated Offence Code Group"].size === 0) {
       return true;
     }
-    for (let type of filtersSelected["OFFENSE_CODE_GROUP"]) {
-      if (d["OFFENSE_CODE_GROUP"] === type) {
+    for (let type of filtersSelected["Aggregated Offence Code Group"]) {
+      if (d["Aggregated Offence Code Group"] === type) {
         skip = false;
         break;
       }
@@ -293,9 +295,9 @@ function getYCoordinate(d) {
 
 function getData() {
   d3.csv(
-    "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime.csv"
+    "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
-    data = allData.slice(0, 100);
+    data = allData.slice(0, 10000);
     currData = data;
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
