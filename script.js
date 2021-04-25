@@ -152,8 +152,13 @@ function renderPoints() {
       "transform",
       (d) => `translate(${getXCoordinate(d)}, ${getYCoordinate(d)})`
     )
-    .attr("fill", (d) => color(d["Aggregated Offence Code Group"]))
-    .attr("class", "crimePoints")
+    // .attr("fill", (d) => color(d["Aggregated Offence Code Group"]))
+    .attr("fill", "white")
+    .attr(
+      "class",
+      (d) =>
+        `crimePoints ${d["Aggregated Offence Code Group"].replace(/\s/g, "_")}`
+    )
     .on("mouseover", function (event, d) {
       d3.select(this).style("stroke", "yellow");
 
@@ -215,6 +220,20 @@ function initializeHTMLElements() {
     labelElement.appendChild(inputElement);
     labelElement.appendChild(textElement);
     offenseFiltersDivElement.appendChild(labelElement);
+
+    labelElement.addEventListener("mouseover", () => {
+      console.log(`hovering over ${type}`);
+      d3.selectAll(`.${type.replace(/\s/g, "_")}`)
+        .attr("fill", "red")
+        .attr("d", () => d3.symbol().size(50)());
+    });
+
+    labelElement.addEventListener("mouseout", () => {
+      console.log(`hovering over ${type}`);
+      d3.selectAll(`.${type.replace(/\s/g, "_")}`)
+        .attr("fill", "white")
+        .attr("d", () => d3.symbol().size(5)());
+    });
   });
 
   Object.keys(hourIdToBins).forEach((id) => {
