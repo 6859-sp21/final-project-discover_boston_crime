@@ -5,3 +5,8 @@
 body {
     overflow: visible;
 }
+
+.bar-viz {
+    padding: 2em;
+    overflow: visible;
+}

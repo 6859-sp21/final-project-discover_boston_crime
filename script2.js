@@ -29,7 +29,7 @@ const ageGroups = [
   "0-17 years %",
   "18-34 years %",
   "35-59 years %",
-  "60 and over  %",
+  "60 and over %",
 ];
 const allNeighborhoods = [];
 let currNeighborhoods = [];
@@ -216,10 +216,11 @@ function filterData() {
 
 function initializeSvg() {
   svg = d3
-    .select("body")
+    .select(".container")
     .append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .attr("class", "bar-viz");
 
   transition = svg.transition().duration(animationDelay).ease(d3.easeLinear);
 
@@ -228,15 +229,6 @@ function initializeSvg() {
   updateBars();
 
   console.log("done initializing svg");
-
-  // svg.append("g")
-  //     .call(xAxis);
-
-  // svg.append("g")
-  //     .call(yAxis);
-
-  // svg.append("g")
-  //     .call(legend);
 }
 
 function updateAxis() {
@@ -280,24 +272,12 @@ function axis() {
   svg
     .append("g")
     .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(null, "s"))
-    .call((g) => g.select(".domain").remove())
-    .call((g) =>
-      g
-        .select(".tick:last-of-type text")
-        .clone()
-        .attr("x", 3)
-        .attr("text-anchor", "start")
-        .attr("font-weight", "bold")
-        .attr("font-size", "16px")
-        .text(data.y)
-    );
+    .call(d3.axisLeft(y));
 
   let lowerLabels = ["0-17", "18-34", "35-59", "60 and over"];
 
-  let yAxis = d3
+  let xAxis = d3
     .axisBottom(x0)
-    .tickSizeOuter(0)
     .tickValues(ageGroups)
     .tickFormat((d, i) => {
       return lowerLabels[i];
@@ -306,18 +286,14 @@ function axis() {
   svg
     .append("g")
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(yAxis)
-    .attr("font-size", "16px")
-    .call((g) => g.select(".domain").remove());
+    .call(xAxis);
 }
 
 function legend() {
   const g = svg
     .append("g")
-    .attr("transform", `translate(${width},0)`)
+    .attr("transform", `translate(${width + margin.right * 7},0)`)
     .attr("text-anchor", "end")
-    .attr("font-family", "sans-serif")
-    .attr("font-size", 10)
     .selectAll("g")
     .data(color.domain().slice())
     .join("g")
@@ -339,26 +315,21 @@ function legend() {
 function labels() {
   svg
     .append("text")
-    .style("font-size", "16px")
     .call(d3.axisBottom(x0))
     .attr("fill", "black")
-    .attr("font-size", "16px")
+    .attr("font-size", "14px")
     .attr("font-weight", "bold")
     .attr("x", width / 2)
-    .attr("y", height - margin.bottom / 10)
+    .attr("y", height + margin.bottom)
     .text("Age Group (in Years)");
 
   svg
     .append("text")
     .call(d3.axisLeft(y))
-    .attr(
-      "transform",
-      `translate(${margin.left / 4}, ${height / 2.75}) rotate(-90)`
-    )
-
+    .attr("transform", `translate(0, ${height / 2.25}) rotate(-90)`)
     .attr("text-anchor", "end")
     .attr("fill", "black")
-    .attr("font-size", "16px")
+    .attr("font-size", "14px")
     .attr("font-weight", "bold")
     .text("Percent");
 }
