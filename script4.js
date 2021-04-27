@@ -3,12 +3,12 @@ const allNeighborhoods = [];
 let currNeighborhoods = [];
 let neighborhoodsSelected = new Set();
 
-const width = 700;
-const height = 600;
+const barWidth = 700;
+const barHeight = 600;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 const svgs = [];
 let sampleData = null;
-let color = null;
+let barColor = null;
 const animationDelay = 500;
 
 const colorScheme = [
@@ -116,7 +116,7 @@ class SVG {
     this.x0 = d3
       .scaleBand()
       .domain(this.labelGroups)
-      .rangeRound([margin.left, width - margin.right])
+      .rangeRound([margin.left, barWidth - margin.right])
       .paddingInner(0.1);
 
     this.x1 = d3
@@ -134,7 +134,7 @@ class SVG {
         ),
       ])
       .nice()
-      .rangeRound([height - margin.bottom, margin.top]);
+      .rangeRound([barHeight - margin.bottom, margin.top]);
   }
 
   filterData(neighborhoodsSelected) {
@@ -191,7 +191,7 @@ class SVG {
 
     this.svg
       .append("g")
-      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .attr("transform", `translate(0,${barHeight - margin.bottom})`)
       .call(xAxis);
   }
 
@@ -199,7 +199,7 @@ class SVG {
     this.svg
       .append("g")
       .attr("class", "legend")
-      .attr("transform", `translate(${width + margin.right * 7},0)`)
+      .attr("transform", `translate(${barWidth + margin.right * 7},0)`)
       .attr("text-anchor", "end");
 
     this.updateLegend();
@@ -212,14 +212,14 @@ class SVG {
       .attr("fill", "black")
       .attr("font-size", "14px")
       .attr("font-weight", "bold")
-      .attr("x", width / 2)
-      .attr("y", height + margin.bottom)
+      .attr("x", barWidth / 2)
+      .attr("y", barHeight + margin.bottom)
       .text(`${this.bottomAxisLabel}`);
 
     this.svg
       .append("text")
       .call(d3.axisLeft(this.y))
-      .attr("transform", `translate(0, ${height / 2.25}) rotate(-90)`)
+      .attr("transform", `translate(0, ${barHeight / 2.25}) rotate(-90)`)
       .attr("text-anchor", "end")
       .attr("fill", "black")
       .attr("font-size", "14px")
@@ -296,15 +296,15 @@ class SVG {
               console.log(d);
               return this.y(d.value);
             })
-            .attr("width", this.x1.bandwidth())
+            .attr("barWidth", this.x1.bandwidth())
             .attr("fill", (d) => {
-              return color(d.key);
+              return barColor(d.key);
             })
             .call((enter) =>
               enter
                 .transition()
                 .duration(1000)
-                .attr("height", (d) => this.y(0) - this.y(d.value))
+                .attr("barHeight", (d) => this.y(0) - this.y(d.value))
             );
         },
         (update) => update,
@@ -317,7 +317,7 @@ class SVG {
         function (event, d) {
           d3.select(event.target)
             .style("stroke", "white")
-            .style("stroke-width", "1px");
+            .style("stroke-barWidth", "1px");
           const hoveredNeighborhood = d.key;
           const hoveredAgeGroup = d[this.bottomAxisLabel].split("%")[0].trim();
           const totalPopulation = this.data.find(
@@ -367,7 +367,7 @@ class SVG {
         }.bind(this)
       )
       .on("mouseout", function (event, d) {
-        d3.select(this).style("stroke-width", "0px");
+        d3.select(this).style("stroke-barWidth", "0px");
 
         barTooltip.transition().duration("0").style("opacity", 0);
         barTooltip.html("");
@@ -394,11 +394,11 @@ class SVG {
           const e = enter.append("g");
           e.append("rect")
             .attr("x", -19)
-            .attr("width", 19)
-            .attr("height", 19)
+            .attr("barWidth", 19)
+            .attr("barHeight", 19)
             .attr("fill", (d) => {
               //console.log(d);
-              return color(d);
+              return barColor(d);
             });
           e.append("text")
             .attr("x", -24)
@@ -426,12 +426,13 @@ function initConstants() {
 
   currNeighborhoods = Array.from(defaultNeighborhoods);
 
-  color = d3
+  barColor = d3
     .scaleOrdinal(colorScheme)
     .domain(sampleData.map((d) => d["Neighborhood"]));
 }
 
 function initializeHTMLElements() {
+  return
   allNeighborhoods.forEach((type) => {
     // <label>
     //   <input type="checkbox" class="filter" name="isPop" />
@@ -470,12 +471,22 @@ function initializeEventListeners() {
   });
 }
 
+function update() {
+  currNeighborhoods = Array.from([
+    ...selectedDistricts,
+    ...defaultNeighborhoods,
+  ]);
+  svgs.forEach((svg) => {
+    svg.filterData(selectedDistricts);
+    svg.update();
+  });
+}
 function createSvg() {
   const svg = d3
     .select(".container")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("barWidth", barWidth)
+    .attr("barHeight", barHeight)
     .attr("class", "bar-viz");
 
   transition = svg.transition().duration(animationDelay).ease(d3.easeLinear);

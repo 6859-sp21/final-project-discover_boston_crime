@@ -76,9 +76,6 @@ function initializeSvg() {
       }
     )
     .attr("d", path)
-    .on("click", function (event, d) {
-      selectedDistricts.push(d.properties.ID);
-    })
     .on("mouseover", function (event, d) {
       d3.select(this)
         .style("stroke", "red")
@@ -135,6 +132,8 @@ function initializeSvg() {
         .style("fill", "black");
 
         selectedDistricts.splice(selectedDistricts.indexOf(d.properties.ID), deleteCount = 1);
+        update();
+        //selectedDistricts.splice(selectedDistricts.indexOf(d.properties.ID), deleteCount = 1);
         console.log(selectedDistricts);
       }
       else {
@@ -145,6 +144,8 @@ function initializeSvg() {
         
 
         selectedDistricts.push(d.properties.ID);
+        //currNeighborhoods.push(d.properties.ID);
+        update();
         console.log(selectedDistricts);
       }
     });
@@ -396,6 +397,13 @@ function getData() {
       initializeEventListeners();
       initializeScales();
       renderPoints();
+
+      console.log("adding script2.js in script.js");
+      let head = document.getElementsByTagName("head")[0];
+      let script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "script4.js";
+      head.appendChild(script);
     });
   });
 }
