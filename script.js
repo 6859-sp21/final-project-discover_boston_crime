@@ -27,6 +27,42 @@ const offenseFiltersDivElement = document.querySelector(
 const timeFiltersDivElement = document.querySelector("#time-filters");
 const districtTooltip = d3.select("#district-tooltip");
 
+//from script4.js
+// const defaultNeighborhoods = new Set(["Boston"]);
+// const allNeighborhoods = [];
+// let currNeighborhoods = [];
+// let neighborhoodsSelected = new Set();
+
+// const barWidth = 700;
+// const barHeight = 600;
+// const margin = { top: 10, right: 10, bottom: 20, left: 40 };
+// const svgs = [];
+// let sampleData = null;
+// let barColor = null;
+// const animationDelay = 500;
+
+// const colorScheme = [
+//   "#a6cee3",
+//   "#1f78b4",
+//   "#b2df8a",
+//   "#33a02c",
+//   "#fb9a99",
+//   "#e31a1c",
+//   "#fdbf6f",
+//   "#ff7f00",
+//   "#cab2d6",
+//   "#6a3d9a",
+//   "#ffff99",
+//   "#b15928",
+//   "#000000",
+// ];
+// const neighborhoodFiltersDivElement = document.querySelector(
+//   "#neighborhood-type-filters"
+// );
+// const barTooltip = d3.select("#bar-tooltip");
+
+// let transition = null;
+
 function initializeSvg() {
   svg = d3
     .select("body")
@@ -398,12 +434,22 @@ function getData() {
       initializeScales();
       renderPoints();
 
-      console.log("adding script2.js in script.js");
-      let head = document.getElementsByTagName("head")[0];
-      let script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = "script4.js";
-      head.appendChild(script);
+    //   function wait(ms){
+    //     var start = new Date().getTime();
+    //     var end = start;
+    //     while(end < start + ms) {
+    //       end = new Date().getTime();
+    //    }
+    //  }
+    //   wait(5000);
+    //   console.log("adding script4.js in script.js");
+    //   let head = document.getElementsByTagName("head")[0];
+    //   let script = document.createElement("script");
+    //   script.type = "text/javascript";
+    //   script.src = "script4.js";
+    //   head.appendChild(script);
+
+      
     });
   });
 }

@@ -4,7 +4,7 @@
 }
 
 body {
-    overflow: visible;
+    padding: 2em;
 }
 
 .bar-viz {

@@ -1,3 +1,4 @@
+console.log('fuck')
 const defaultNeighborhoods = new Set(["Boston"]);
 const allNeighborhoods = [];
 let currNeighborhoods = [];
@@ -432,7 +433,7 @@ function initConstants() {
 }
 
 function initializeHTMLElements() {
-  return
+  
   allNeighborhoods.forEach((type) => {
     // <label>
     //   <input type="checkbox" class="filter" name="isPop" />
