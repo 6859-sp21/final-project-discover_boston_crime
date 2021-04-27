@@ -76,13 +76,13 @@ class SVG {
     // });
 
     this.currData = [];
-    this.data.forEach(d => {
+    this.data.forEach((d) => {
       for (let neighborhood of defaultNeighborhoods) {
         if (d["Neighborhood"] === neighborhood) {
           this.currData.push(Object.assign({}, d));
         }
       }
-    })
+    });
   }
 
   initializeConstants() {
@@ -157,7 +157,7 @@ class SVG {
             }
           }
         }
-      }); 
+      });
       // this.data.filter((d) => {
       //   for (let neighborhood of neighborhoodsSelected) {
       //     if (d["Neighborhood"] === neighborhood) {
@@ -293,10 +293,9 @@ class SVG {
             .append("rect")
             .attr("x", (d) => this.x1(d.key))
             .attr("y", (d) => {
-              console.log(d)
-              return this.y(d.value)
-              
-            } )
+              console.log(d);
+              return this.y(d.value);
+            })
             .attr("width", this.x1.bandwidth())
             .attr("fill", (d) => {
               return color(d.key);
@@ -386,7 +385,7 @@ class SVG {
     );
     // .join("g")
 
-   // console.log(color.domain().slice());
+    // console.log(color.domain().slice());
     //console.dir(legendData);
 
     const legendUpdate = legendData
@@ -504,7 +503,13 @@ function getData() {
 
     let lowerLabels = ["0-17", "18-34", "35-59", "60 and over"];
 
-    const svgObj = new SVG(svg, allData, labelGroups, "Age Group (in Years)", lowerLabels);
+    const svgObj = new SVG(
+      svg,
+      allData,
+      labelGroups,
+      "Age Group (in Years)",
+      lowerLabels
+    );
     svgs.push(svgObj);
     //race
     d3.csv(
@@ -516,48 +521,73 @@ function getData() {
         "Black/African-American %",
         "Hispanic %",
         "Asian alone %",
-        "Other Races %"
-      ]
-      let lowerLabels = ["White Alone",
-      "Black/African-American",
-      "Hispanic",
-      "Asian alone",
-      "Other Races"];
+        "Other Races %",
+      ];
+      let lowerLabels = [
+        "White Alone",
+        "Black/African-American",
+        "Hispanic",
+        "Asian alone",
+        "Other Races",
+      ];
       const svgObj = new SVG(svg, allData, labelGroups, "Race", lowerLabels);
       svgs.push(svgObj);
-      d3.csv("https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_poverty_rate.csv")
-        .then((allData) =>  {
-          const svg = createSvg();
-          const labelGroups = [
-            "0 to 17 Poverty Rate",
-            "18 to 34 Poverty Rate",
-            "35 to 64 years Poverty Rate",
-            "65 years and over Poverty Rate"
-          ]
-          let lowerLabels = ["0 to 17",
+      d3.csv(
+        "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_poverty_rate.csv"
+      ).then((allData) => {
+        const svg = createSvg();
+        const labelGroups = [
+          "0 to 17 Poverty Rate",
+          "18 to 34 Poverty Rate",
+          "35 to 64 years Poverty Rate",
+          "65 years and over Poverty Rate",
+        ];
+        let lowerLabels = [
+          "0 to 17",
           "18 to 34",
           "35 to 64",
-          "65 years and over"];
-          const svgObj = new SVG(svg, allData, labelGroups, "Poverty Rate by Age", lowerLabels);
-          svgs.push(svgObj);
+          "65 years and over",
+        ];
+        const svgObj = new SVG(
+          svg,
+          allData,
+          labelGroups,
+          "Poverty Rate by Age",
+          lowerLabels
+        );
+        svgs.push(svgObj);
 
-          d3.csv("https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_family_income.csv")
-          .then((allData) =>  {
+        d3.csv(
+          "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_family_income.csv"
+        ).then((allData) => {
           const svg = createSvg();
           const labelGroups = [
             "$24,999 and under %",
             "$25,000 to $49,999 %",
             "$50,000 to $99,999 %",
-            "$100,000+ %"
-          ]
-          let lowerLabels = ["$24,999 and under",
-          "$25,000 to $49,999 %",
-          "$50,000 to $99,999",
-          "$100,000+"];
-          const svgObj = new SVG(svg, allData, labelGroups, "Poverty Rate by Age", lowerLabels);
+            "$100,000+ %",
+          ];
+          let lowerLabels = [
+            "$24,999 and under",
+            "$25,000 to $49,999 %",
+            "$50,000 to $99,999",
+            "$100,000+",
+          ];
+          const svgObj = new SVG(
+            svg,
+            allData,
+            labelGroups,
+            "Poverty Rate by Age",
+            lowerLabels
+          );
           svgs.push(svgObj);
 
-          
+          console.log("adding script3.js in script4.js");
+          let head = document.getElementsByTagName("head")[0];
+          let script = document.createElement("script");
+          script.type = "text/javascript";
+          script.src = "script3.js";
+          head.appendChild(script);
         });
       });
     });
