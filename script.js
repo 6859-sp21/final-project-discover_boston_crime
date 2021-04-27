@@ -124,7 +124,6 @@ function initializeSvg() {
           .style("fill", "black");
 
         districtTooltip.transition().duration("0").style("opacity", 0);
-        districtTooltip.style("left", "0px").style("top", "0px");
         districtTooltip.html("");
       }
     })
@@ -157,7 +156,7 @@ function renderPoints() {
     .selectAll("path.crimePoints")
     .data(currData, (d) => d["INCIDENT_NUMBER"]);
 
-  console.dir(points);
+  // console.dir(points);
 
   points
     .join(
@@ -180,29 +179,32 @@ function renderPoints() {
     .attr(
       "class",
       (d) =>
-        `crimePoints ${d["Aggregated Offence Code Group"].replace(/\s/g, "_")}`
+        `crimePoints ${d["Aggregated Offence Code Group"].replace(
+          /\s/g,
+          "_"
+        )} hour_${d["HOUR_ID"]}`
     )
-    .on("mouseover", function (event, d) {
-      d3.select(this).style("stroke", "yellow");
+    // .on("mouseover", function (event, d) {
+    //   d3.select(this).style("stroke", "yellow");
 
-      pointTooltipD3Element.transition().duration(300).style("opacity", 0.9);
-      pointTooltipD3Element
-        .transition()
-        .duration(300)
-        .style("opacity", 0.9)
-        .style("left", event.pageX + "px")
-        .style("top", event.pageY + "px")
-        .style("background", "bisque");
-      pointTooltipD3Element.html(
-        `Offense Type: ${d["Aggregated Offence Code Group"]}`
-      );
-    })
-    .on("mouseout", function (event, d) {
-      d3.select(this).style("stroke", "white");
-      pointTooltipD3Element.transition().duration("0").style("opacity", 0);
-      pointTooltipD3Element.style("left", "0px").style("top", "0px");
-      pointTooltipD3Element.html("");
-    })
+    //   pointTooltipD3Element.transition().duration(300).style("opacity", 0.9);
+    //   pointTooltipD3Element
+    //     .transition()
+    //     .duration(300)
+    //     .style("opacity", 0.9)
+    //     .style("left", event.pageX + "px")
+    //     .style("top", event.pageY + "px")
+    //     .style("background", "bisque");
+    //   pointTooltipD3Element.html(
+    //     `Offense Type: ${d["Aggregated Offence Code Group"]}`
+    //   );
+    // })
+    // .on("mouseout", function (event, d) {
+    //   d3.select(this).style("stroke", "white");
+    //   pointTooltipD3Element.transition().duration("0").style("opacity", 0);
+    //   pointTooltipD3Element.style("left", "0px").style("top", "0px");
+    //   pointTooltipD3Element.html("");
+    // })
     .attr("d", (d) => d3.symbol().size(5)());
 }
 
@@ -226,6 +228,17 @@ function initializeDataTransforms() {
   }
 
   filtersSelected["HOUR"] = new Set();
+
+  const hourIds = Object.keys(hourIdToBins);
+
+  data.forEach((d) => {
+    const hourOfOffense = +d["HOUR"];
+    const offenseHourId = hourIds.find((hourId) => {
+      [hourStart, hourEnd] = hourIdToBins[hourId];
+      return hourStart <= hourOfOffense && hourOfOffense <= hourEnd;
+    });
+    d["HOUR_ID"] = offenseHourId;
+  });
 }
 
 function initializeHTMLElements() {
@@ -235,24 +248,26 @@ function initializeHTMLElements() {
     //   Pop
     // </label>
     const labelElement = document.createElement("label");
+    labelElement.classList.add("btn");
+    labelElement.classList.add("btn-outline-dark");
+    labelElement.classList.add("offense-type-filter");
     const inputElement = document.createElement("input");
     const textElement = document.createTextNode(type);
     inputElement.type = "checkbox";
-    inputElement.classList.add("offense-type-filter");
     inputElement.name = type;
     labelElement.appendChild(inputElement);
     labelElement.appendChild(textElement);
     offenseFiltersDivElement.appendChild(labelElement);
 
     labelElement.addEventListener("mouseover", () => {
-      console.log(`hovering over ${type}`);
+      // console.log(`hovering over ${type}`);
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
         .attr("fill", "red")
         .attr("d", () => d3.symbol().size(20)());
     });
 
     labelElement.addEventListener("mouseout", () => {
-      console.log(`hovering over ${type}`);
+      // console.log(`hovering over ${type}`);
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
         .attr("fill", "white")
         .attr("d", () => d3.symbol().size(5)());
@@ -261,35 +276,53 @@ function initializeHTMLElements() {
 
   Object.keys(hourIdToBins).forEach((id) => {
     const labelElement = document.createElement("label");
+    labelElement.classList.add("btn");
+    labelElement.classList.add("btn-outline-dark");
+    labelElement.classList.add("time-filter");
     const inputElement = document.createElement("input");
     const textElement = document.createTextNode(
       `${hourIdToBins[id][0]} - ${hourIdToBins[id][1]}`
     );
     inputElement.type = "checkbox";
-    inputElement.classList.add("time-filter");
     inputElement.name = id;
     labelElement.appendChild(inputElement);
     labelElement.appendChild(textElement);
     timeFiltersDivElement.appendChild(labelElement);
+
+    labelElement.addEventListener("mouseover", () => {
+      // console.log(`hovering over hour ${id}`);
+      d3.selectAll(`.hour_${id}`)
+        .attr("fill", "red")
+        .attr("d", () => d3.symbol().size(50)());
+    });
+
+    labelElement.addEventListener("mouseout", () => {
+      // console.log(`hovering over hour ${id}`);
+      d3.selectAll(`.hour_${id}`)
+        .attr("fill", "white")
+        .attr("d", () => d3.symbol().size(5)());
+    });
   });
 }
 
 function initializeEventListeners() {
-  d3.selectAll(".offense-type-filter").on("change", function (d) {
-    if (d.target.checked) {
-      filtersSelected["Aggregated Offence Code Group"].add(d.target.name);
+  d3.selectAll(".offense-type-filter").on("click", function (d) {
+    const inputChild = d.target.querySelector("input");
+    if (!inputChild.checked) {
+      filtersSelected["Aggregated Offence Code Group"].add(inputChild.name);
     } else {
-      filtersSelected["Aggregated Offence Code Group"].delete(d.target.name);
+      filtersSelected["Aggregated Offence Code Group"].delete(inputChild.name);
     }
     filterData();
     renderPoints();
   });
 
-  d3.selectAll(".time-filter").on("change", function (d) {
-    if (d.target.checked) {
-      filtersSelected["HOUR"].add(d.target.name);
+  d3.selectAll(".time-filter").on("click", function (d) {
+    const inputChild = d.target.querySelector("input");
+    if (!inputChild.checked) {
+      filtersSelected["HOUR"].add(inputChild.name);
     } else {
-      filtersSelected["HOUR"].delete(d.target.name);
+      filtersSelected["HOUR"].delete(inputChild.name);
     }
     filterData();
     renderPoints();
@@ -350,7 +383,7 @@ function getData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
-    data = allData.slice(0, 10000);
+    data = allData.slice(0, 1000);
     currData = data;
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
