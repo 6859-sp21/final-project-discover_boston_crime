@@ -34,11 +34,11 @@ const barTooltip = d3.select("#bar-tooltip");
 let transition = null;
 
 class SVG {
-  constructor(svg, data, labelGroups, labelGroupName, axisLabels) {
+  constructor(svg, data, labelGroups, bottomAxisLabel, axisLabels) {
     this.svg = svg;
     this.data = data;
     this.labelGroups = labelGroups; // ["0-17", ]
-    this.labelGroupName = labelGroupName; //"ageGroup"
+    this.bottomAxisLabel = bottomAxisLabel; //"ageGroup"
     this.axisLabels = axisLabels; // ["0-17", "18-34", "35-59", "60 and over"];
 
     this.transformedData = [];
@@ -79,7 +79,7 @@ class SVG {
   initializeConstants() {
     this.labelGroups.flatMap((labelGroup) => {
       const newObj = new Object();
-      newObj[this.labelGroupName] = labelGroup;
+      newObj[this.bottomAxisLabel] = labelGroup;
       this.data.forEach((d) => {
         newObj[d["Neighborhood"]] = d[labelGroup];
       });
@@ -91,7 +91,7 @@ class SVG {
     this.transformedCurrData = [];
     this.labelGroups.flatMap((labelGroup) => {
       const newObj = new Object();
-      newObj[this.labelGroupName] = labelGroup;
+      newObj[this.bottomAxisLabel] = labelGroup;
       this.currData.forEach((d) => {
         newObj[d["Neighborhood"]] = d[labelGroup];
       });
@@ -188,7 +188,7 @@ class SVG {
       .attr("font-weight", "bold")
       .attr("x", width / 2)
       .attr("y", height + margin.bottom)
-      .text("Age Group (in Years)");
+      .text(`${this.bottomAxisLabel}`);
 
     this.svg
       .append("text")
@@ -240,7 +240,7 @@ class SVG {
       )
       .attr(
         "transform",
-        (d) => `translate(${this.x0(d[this.labelGroupName])},0)`
+        (d) => `translate(${this.x0(d[this.bottomAxisLabel])},0)`
       )
       .attr("class", "group")
       .selectAll("rect")
@@ -249,11 +249,11 @@ class SVG {
           currNeighborhoods.map((neighborhood) => ({
             key: neighborhood,
             value: +d[neighborhood],
-            [this.labelGroupName]: d[this.labelGroupName],
+            [this.bottomAxisLabel]: d[this.bottomAxisLabel],
           })),
         (d) => {
           console.log(`returning unique key ${`${d["key"]}_${d["ageGroup"]}`}`);
-          return `${d["key"]}_${d[this.labelGroupName]}`;
+          return `${d["key"]}_${d[this.bottomAxisLabel]}`;
         }
       );
 
@@ -266,7 +266,11 @@ class SVG {
           return enter
             .append("rect")
             .attr("x", (d) => this.x1(d.key))
-            .attr("y", (d) => this.y(d.value))
+            .attr("y", (d) => {
+              console.log(d)
+              return this.y(d.value)
+              
+            } )
             .attr("width", this.x1.bandwidth())
             .attr("fill", (d) => {
               return color(d.key);
@@ -290,7 +294,7 @@ class SVG {
             .style("stroke", "white")
             .style("stroke-width", "1px");
           const hoveredNeighborhood = d.key;
-          const hoveredAgeGroup = d[this.labelGroupName].split("%")[0].trim();
+          const hoveredAgeGroup = d[this.bottomAxisLabel].split("%")[0].trim();
           const totalPopulation = this.data.find(
             (x) => (x.Neighborhood = hoveredNeighborhood)
           )["Total Population"];
@@ -455,6 +459,7 @@ function createSvg() {
 }
 
 function getData() {
+  //age
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_age.csv"
   ).then((allData) => {
@@ -473,8 +478,31 @@ function getData() {
 
     let lowerLabels = ["0-17", "18-34", "35-59", "60 and over"];
 
-    const svgObj = new SVG(svg, allData, labelGroups, "ageGroup", lowerLabels);
+    const svgObj = new SVG(svg, allData, labelGroups, "Age Group (in Years)", lowerLabels);
     svgs.push(svgObj);
+    //race
+    d3.csv(
+      "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
+    ).then((allData) => {
+      console.log(allData);
+      const svg = createSvg();
+      const labelGroups = [
+        "White Alone %",
+        "Black/African-American %",
+        "Hispanic %",
+        "Asian alone %",
+        "Other Races %"
+      ]
+      let lowerLabels = ["White Alone",
+      "Black/African-American",
+      "Hispanic",
+      "Asian alone",
+      "Other Races"];
+      const svgObj = new SVG(svg, allData, labelGroups, "Race", lowerLabels);
+      svgs.push(svgObj);
+    }
+
+    )
   });
 }
 
