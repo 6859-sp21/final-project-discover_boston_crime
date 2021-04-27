@@ -117,14 +117,37 @@ function initializeSvg() {
         .style("background", "bisque");
     })
     .on("mouseout", function (event, d) {
-      d3.select(this)
+      if(! selectedDistricts.includes(d.properties.ID)){
+        d3.select(this)
+          .style("stroke", "white")
+          .style("stroke-width", "3px")
+          .style("fill", "black");
+
+        districtTooltip.transition().duration("0").style("opacity", 0);
+        districtTooltip.style("left", "0px").style("top", "0px");
+        districtTooltip.html("");
+      }
+    })
+    .on("click", function (event, d){
+      if(selectedDistricts.includes(d.properties.ID)){
+        d3.select(this)
         .style("stroke", "white")
         .style("stroke-width", "3px")
         .style("fill", "black");
 
-      districtTooltip.transition().duration("0").style("opacity", 0);
-      districtTooltip.style("left", "0px").style("top", "0px");
-      districtTooltip.html("");
+        selectedDistricts.splice(selectedDistricts.indexOf(d.properties.ID), deleteCount = 1);
+        console.log(selectedDistricts);
+      }
+      else {
+        d3.select(this)
+        .style("stroke", "red")
+        .style("stroke-width", "5px")
+        .style("fill", "blue");
+        
+
+        selectedDistricts.push(d.properties.ID);
+        console.log(selectedDistricts);
+      }
     });
 }
 
@@ -225,7 +248,7 @@ function initializeHTMLElements() {
       console.log(`hovering over ${type}`);
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
         .attr("fill", "red")
-        .attr("d", () => d3.symbol().size(50)());
+        .attr("d", () => d3.symbol().size(20)());
     });
 
     labelElement.addEventListener("mouseout", () => {
@@ -327,7 +350,7 @@ function getData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
-    data = allData.slice(0, 50000);
+    data = allData.slice(0, 10000);
     currData = data;
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"

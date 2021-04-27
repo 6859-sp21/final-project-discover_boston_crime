@@ -51,7 +51,7 @@ function transformData() {
   currData.forEach((d) => {
     currNeighborhoods.push(d["Neighborhood"]);
   });
-  console.log(`new curr neighbors ${currNeighborhoods}`);
+  //console.log(`new curr neighbors ${currNeighborhoods}`);
 }
 
 function initializeHTMLElements() {
@@ -69,7 +69,7 @@ function initializeHTMLElements() {
     labelElement.appendChild(inputElement);
     labelElement.appendChild(textElement);
     neighborhoodFiltersDivElement.appendChild(labelElement);
-    console.log("adding labels");
+    //console.log("adding labels");
   });
 }
 
@@ -92,21 +92,21 @@ function initializeEventListeners() {
 }
 
 function updateBars() {
-  console.log(`updating bars`);
+  //console.log(`updating bars`);
   const selection = g.selectAll("g.group");
 
-  console.log("selection");
-  console.dir(selection);
+  //console.log("selection");
+  //console.dir(selection);
 
   const update = selection.data(transformedData, (d, i) => {
     currNeighborsString = Object.keys(d).join(" ");
     currNeighborsString += i;
-    console.log(`curr neighborhood string ${currNeighborsString}`);
+    //console.log(`curr neighborhood string ${currNeighborsString}`);
     return currNeighborsString;
   });
 
-  console.log("update");
-  console.dir(update);
+  //console.log("update");
+  //console.dir(update);
 
   const update2 = update
     .join(
@@ -125,13 +125,13 @@ function updateBars() {
           ageGroup: d[groupKey],
         })),
       (d) => {
-        console.log(`returning unique key ${`${d["key"]}_${d["ageGroup"]}`}`);
+        //console.log(`returning unique key ${`${d["key"]}_${d["ageGroup"]}`}`);
         return `${d["key"]}_${d["ageGroup"]}`;
       }
     );
 
-  console.log("update2");
-  console.dir(update2);
+  //console.log("update2");
+  //console.dir(update2);
 
   update2
     .join(
@@ -222,12 +222,13 @@ function filterData() {
       return false;
     });
 
-    console.log(`neighborhood selected updated`);
+    //console.log(`neighborhood selected updated`);
   }
 
   transformData();
   updateAxis();
   updateBars();
+  updateLegend();
 }
 
 function initializeSvg() {
@@ -244,7 +245,7 @@ function initializeSvg() {
 
   updateBars();
 
-  console.log("done initializing svg");
+  //console.log("done initializing svg");
 }
 
 function updateAxis() {
@@ -253,6 +254,10 @@ function updateAxis() {
     .domain(currNeighborhoods)
     .rangeRound([0, x0.bandwidth()])
     .padding(0.05);
+
+  color = d3
+    .scaleOrdinal(d3.schemeTableau10)
+    .domain(currData.map((d) => d["Neighborhood"]));
 }
 
 function initializeScales() {
@@ -305,27 +310,51 @@ function axis() {
     .call(xAxis);
 }
 
-function legend() {
-  const g = svg
-    .append("g")
-    .attr("transform", `translate(${width + margin.right * 7},0)`)
-    .attr("text-anchor", "end")
-    .selectAll("g")
+function updateLegend() {
+  var legend = svg.select("g.legend");
+  
+  var legendData = legend.selectAll("g")
     .data(color.domain().slice())
     .join("g")
     .attr("transform", (d, i) => `translate(0,${i * 20})`);
 
-  g.append("rect")
+  const legendUpdate = legendData.data(color.domain().slice())
+    .join(
+    (enter) => {
+      enter.append('g')
+    },
+    (update) => update,
+    (exit) => {
+      exit.remove();
+      console.log('exit');
+      console.log(exit);
+    }
+  )
+  legendUpdate
+    .append("rect")
     .attr("x", -19)
     .attr("width", 19)
     .attr("height", 19)
-    .attr("fill", color);
+    .attr("fill", color)
 
-  g.append("text")
+  legendUpdate
+    .append("text")
     .attr("x", -24)
     .attr("y", 9.5)
     .attr("dy", "0.35em")
-    .text((d) => d);
+    .text((d) => d)
+    .attr("text-anchor", "end");
+}
+
+function legend() {
+  svg
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width + margin.right * 7},0)`)
+    .attr("text-anchor", "end")
+
+  updateLegend();
+  
 }
 
 function labels() {
@@ -356,7 +385,7 @@ function getData() {
   ).then((allData) => {
     data = allData;
     currData = data;
-    console.log(currData);
+    //console.log(currData);
     initializeConstants();
     transformData();
     initializeScales();
