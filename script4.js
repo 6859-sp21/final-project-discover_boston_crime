@@ -66,14 +66,23 @@ class SVG {
   }
 
   setDefaultData() {
-    this.currData = this.data.filter((d) => {
+    // this.currData = this.data.filter((d) => {
+    //   for (let neighborhood of defaultNeighborhoods) {
+    //     if (d["Neighborhood"] === neighborhood) {
+    //       return true;
+    //     }
+    //   }
+    //   return false;
+    // });
+
+    this.currData = [];
+    this.data.forEach(d => {
       for (let neighborhood of defaultNeighborhoods) {
         if (d["Neighborhood"] === neighborhood) {
-          return true;
+          this.currData.push(Object.assign({}, d));
         }
       }
-      return false;
-    });
+    })
   }
 
   initializeConstants() {
@@ -132,21 +141,38 @@ class SVG {
     if (neighborhoodsSelected.size === 0) {
       this.setDefaultData();
     } else {
-      this.currData = this.data.filter((d) => {
+      this.currData = [];
+      this.data.forEach((d) => {
+        let added = false;
         for (let neighborhood of neighborhoodsSelected) {
           if (d["Neighborhood"] === neighborhood) {
-            return true;
+            added = true;
+            this.currData.push(Object.assign({}, d));
           }
         }
-        for (let neighborhood of defaultNeighborhoods) {
-          if (d["Neighborhood"] === neighborhood) {
-            return true;
+        if (!added) {
+          for (let neighborhood of defaultNeighborhoods) {
+            if (d["Neighborhood"] === neighborhood) {
+              this.currData.push(Object.assign({}, d));
+            }
           }
         }
-        return false;
-      });
+      }); 
+      // this.data.filter((d) => {
+      //   for (let neighborhood of neighborhoodsSelected) {
+      //     if (d["Neighborhood"] === neighborhood) {
+      //       return true;
+      //     }
+      //   }
+      //   for (let neighborhood of defaultNeighborhoods) {
+      //     if (d["Neighborhood"] === neighborhood) {
+      //       return true;
+      //     }
+      //   }
+      //   return false;
+      // });
 
-      console.log(`neighborhood selected updated`);
+      //console.log(`neighborhood selected updated`);
     }
   }
 
@@ -252,7 +278,7 @@ class SVG {
             [this.bottomAxisLabel]: d[this.bottomAxisLabel],
           })),
         (d) => {
-          console.log(`returning unique key ${`${d["key"]}_${d["ageGroup"]}`}`);
+          //console.log(`returning unique key ${`${d["key"]}_${d[this.bottomAxisLabel]}`}`);
           return `${d["key"]}_${d[this.bottomAxisLabel]}`;
         }
       );
@@ -360,8 +386,8 @@ class SVG {
     );
     // .join("g")
 
-    console.log(color.domain().slice());
-    console.dir(legendData);
+   // console.log(color.domain().slice());
+    //console.dir(legendData);
 
     const legendUpdate = legendData
       .join(
@@ -372,7 +398,7 @@ class SVG {
             .attr("width", 19)
             .attr("height", 19)
             .attr("fill", (d) => {
-              console.log(d);
+              //console.log(d);
               return color(d);
             });
           e.append("text")
@@ -386,8 +412,8 @@ class SVG {
         (update) => update,
         (exit) => {
           exit.remove();
-          console.log("exit");
-          console.log(exit);
+          //console.log("exit");
+          //console.log(exit);
         }
       )
       .attr("transform", (d, i) => `translate(0,${i * 20})`);
@@ -422,7 +448,7 @@ function initializeHTMLElements() {
       labelElement.appendChild(inputElement);
       labelElement.appendChild(textElement);
       neighborhoodFiltersDivElement.appendChild(labelElement);
-      console.log("adding labels");
+      //console.log("adding labels");
     }
   });
 }
@@ -508,18 +534,33 @@ function getData() {
             "35 to 64 years Poverty Rate",
             "65 years and over Poverty Rate"
           ]
-          let lowerLabels = ["0-17",
+          let lowerLabels = ["0 to 17",
           "18 to 34",
           "35 to 64",
-          "35 to 64 years",
           "65 years and over"];
           const svgObj = new SVG(svg, allData, labelGroups, "Poverty Rate by Age", lowerLabels);
           svgs.push(svgObj);
-        }   
-        )
-    }
 
-    )
+          d3.csv("https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_family_income.csv")
+          .then((allData) =>  {
+          const svg = createSvg();
+          const labelGroups = [
+            "$24,999 and under %",
+            "$25,000 to $49,999 %",
+            "$50,000 to $99,999 %",
+            "$100,000+ %"
+          ]
+          let lowerLabels = ["$24,999 and under",
+          "$25,000 to $49,999 %",
+          "$50,000 to $99,999",
+          "$100,000+"];
+          const svgObj = new SVG(svg, allData, labelGroups, "Poverty Rate by Age", lowerLabels);
+          svgs.push(svgObj);
+
+          
+        });
+      });
+    });
   });
 }
 
