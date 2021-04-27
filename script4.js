@@ -484,7 +484,6 @@ function getData() {
     d3.csv(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
     ).then((allData) => {
-      console.log(allData);
       const svg = createSvg();
       const labelGroups = [
         "White Alone %",
@@ -500,6 +499,24 @@ function getData() {
       "Other Races"];
       const svgObj = new SVG(svg, allData, labelGroups, "Race", lowerLabels);
       svgs.push(svgObj);
+      d3.csv("https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_poverty_rate.csv")
+        .then((allData) =>  {
+          const svg = createSvg();
+          const labelGroups = [
+            "0 to 17 Poverty Rate",
+            "18 to 34 Poverty Rate",
+            "35 to 64 years Poverty Rate",
+            "65 years and over Poverty Rate"
+          ]
+          let lowerLabels = ["0-17",
+          "18 to 34",
+          "35 to 64",
+          "35 to 64 years",
+          "65 years and over"];
+          const svgObj = new SVG(svg, allData, labelGroups, "Poverty Rate by Age", lowerLabels);
+          svgs.push(svgObj);
+        }   
+        )
     }
 
     )
