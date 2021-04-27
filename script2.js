@@ -20,6 +20,22 @@ let y = null;
 let yAxis = null;
 let xAxis = null;
 
+const colorScheme = [
+  "#a6cee3",
+  "#1f78b4",
+  "#b2df8a",
+  "#33a02c",
+  "#fb9a99",
+  "#e31a1c",
+  "#fdbf6f",
+  "#ff7f00",
+  "#cab2d6",
+  "#6a3d9a",
+  "#ffff99",
+  "#b15928",
+  "#000000",
+];
+
 const animationDelay = 500;
 let transition = null;
 
@@ -54,7 +70,7 @@ function transformData() {
   currData.forEach((d) => {
     currNeighborhoods.push(d["Neighborhood"]);
   });
-  console.log(`new curr neighbors ${currNeighborhoods}`);
+  //console.log(`new curr neighbors ${currNeighborhoods}`);
 }
 
 function initializeHTMLElements() {
@@ -106,21 +122,21 @@ function initializeEventListeners() {
 }
 
 function updateBars() {
-  console.log(`updating bars`);
+  //console.log(`updating bars`);
   const selection = g.selectAll("g.group");
 
-  console.log("selection");
-  console.dir(selection);
+  //console.log("selection");
+  //console.dir(selection);
 
   const update = selection.data(transformedCurrData, (d, i) => {
     currNeighborsString = Object.keys(d).join(" ");
     currNeighborsString += i;
-    console.log(`curr neighborhood string ${currNeighborsString}`);
+    //console.log(`curr neighborhood string ${currNeighborsString}`);
     return currNeighborsString;
   });
 
-  console.log("update");
-  console.dir(update);
+  //console.log("update");
+  //console.dir(update);
 
   const update2 = update
     .join(
@@ -139,13 +155,13 @@ function updateBars() {
           ageGroup: d[groupKey],
         })),
       (d) => {
-        console.log(`returning unique key ${`${d["key"]}_${d["ageGroup"]}`}`);
+        //console.log(`returning unique key ${`${d["key"]}_${d["ageGroup"]}`}`);
         return `${d["key"]}_${d["ageGroup"]}`;
       }
     );
 
-  console.log("update2");
-  console.dir(update2);
+  //console.log("update2");
+  //console.dir(update2);
 
   update2
     .join(
@@ -246,12 +262,13 @@ function filterData() {
       return false;
     });
 
-    console.log(`neighborhood selected updated`);
+    //console.log(`neighborhood selected updated`);
   }
 
   transformData();
   updateAxis();
   updateBars();
+  updateLegend();
 }
 
 function setDefaultData() {
@@ -279,7 +296,7 @@ function initializeSvg() {
 
   updateBars();
 
-  console.log("done initializing svg");
+  //console.log("done initializing svg");
 }
 
 function updateAxis() {
@@ -288,6 +305,10 @@ function updateAxis() {
     .domain(currNeighborhoods)
     .rangeRound([0, x0.bandwidth()])
     .padding(0.05);
+
+  // color = d3
+  //   .scaleOrdinal(d3.schemeTableau10)
+  //   .domain(currData.map((d) => d["Neighborhood"]));
 }
 
 function initializeScales() {
@@ -315,7 +336,7 @@ function initializeScales() {
     .rangeRound([height - margin.bottom, margin.top]);
 
   color = d3
-    .scaleOrdinal(d3.schemeTableau10)
+    .scaleOrdinal(colorScheme)
     .domain(data.map((d) => d["Neighborhood"]));
 }
 
@@ -340,27 +361,81 @@ function axis() {
     .call(xAxis);
 }
 
-function legend() {
-  const g = svg
-    .append("g")
-    .attr("transform", `translate(${width + margin.right * 7},0)`)
-    .attr("text-anchor", "end")
-    .selectAll("g")
-    .data(color.domain().slice())
-    .join("g")
+function updateLegend() {
+  // color = d3
+  //   .scaleOrdinal(d3.schemeTableau10)
+  //   .domain(neighborhoodsSelected);
+
+  const legend = svg.select("g.legend");
+
+  const legendData = legend.selectAll("g").data(
+    currData.map((d) => d["Neighborhood"]),
+    (d, i) => {
+      return d;
+    }
+  );
+  // .join("g")
+
+  console.log(color.domain().slice());
+  console.dir(legendData);
+
+  const legendUpdate = legendData
+    .join(
+      (enter) => {
+        const e = enter.append("g");
+        e.append("rect")
+          .attr("x", -19)
+          .attr("width", 19)
+          .attr("height", 19)
+          .attr("fill", (d) => {
+            console.log(d);
+            return color(d);
+          });
+        e.append("text")
+          .attr("x", -24)
+          .attr("y", 9.5)
+          .attr("dy", "0.35em")
+          .text((d) => d)
+          .attr("text-anchor", "end");
+        return e;
+      },
+      (update) => update,
+      (exit) => {
+        exit.remove();
+        console.log("exit");
+        console.log(exit);
+      }
+    )
     .attr("transform", (d, i) => `translate(0,${i * 20})`);
 
-  g.append("rect")
-    .attr("x", -19)
-    .attr("width", 19)
-    .attr("height", 19)
-    .attr("fill", color);
+  //   legendData
+  //   .selectAll("rect")
+  //   .data(d => d)
+  // .join(
+  //   (enter) => {
+  //     enter.append("rect")
+  //   .attr("x", -19)
+  //   .attr("width", 19)
+  //   .attr("height", 19)
+  //   .attr("fill", color)
+  //   },
+  //   (update) => update,
+  //   (exit) => {
+  //     exit.remove();
+  //     console.log('exit');
+  //     console.log(exit);
+  //   }
+  // )
+}
 
-  g.append("text")
-    .attr("x", -24)
-    .attr("y", 9.5)
-    .attr("dy", "0.35em")
-    .text((d) => d);
+function legend() {
+  svg
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width + margin.right * 7},0)`)
+    .attr("text-anchor", "end");
+
+  updateLegend();
 }
 
 function labels() {
