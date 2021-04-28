@@ -63,9 +63,9 @@ const districtTooltip = d3.select("#district-tooltip");
 
 // let transition = null;
 
-function initializeSvg() {
+function initializeMapSvg() {
   svg = d3
-    .select("body")
+    .select("#map")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
@@ -150,7 +150,7 @@ function initializeSvg() {
         .style("background", "bisque");
     })
     .on("mouseout", function (event, d) {
-      if(! selectedDistricts.includes(d.properties.ID)){
+      if (!selectedDistricts.includes(d.properties.ID)) {
         d3.select(this)
           .style("stroke", "white")
           .style("stroke-width", "3px")
@@ -160,34 +160,35 @@ function initializeSvg() {
         districtTooltip.html("");
       }
     })
-    .on("click", function (event, d){
-      if(selectedDistricts.includes(d.properties.ID)){
+    .on("click", function (event, d) {
+      if (selectedDistricts.includes(d.properties.ID)) {
         d3.select(this)
-        .style("stroke", "white")
-        .style("stroke-width", "3px")
-        .style("fill", "black");
+          .style("stroke", "white")
+          .style("stroke-width", "3px")
+          .style("fill", "black");
 
-        selectedDistricts.splice(selectedDistricts.indexOf(d.properties.ID), deleteCount = 1);
-        update();
+        selectedDistricts.splice(
+          selectedDistricts.indexOf(d.properties.ID),
+          (deleteCount = 1)
+        );
+        updateSecondaryCharts();
         //selectedDistricts.splice(selectedDistricts.indexOf(d.properties.ID), deleteCount = 1);
-        console.log(selectedDistricts);
-      }
-      else {
+        console.log(`selected districts are ${selectedDistricts}`);
+      } else {
         d3.select(this)
-        .style("stroke", "red")
-        .style("stroke-width", "5px")
-        .style("fill", "blue");
-        
+          .style("stroke", "red")
+          .style("stroke-width", "5px")
+          .style("fill", "blue");
 
         selectedDistricts.push(d.properties.ID);
         //currNeighborhoods.push(d.properties.ID);
-        update();
-        console.log(selectedDistricts);
+        updateSecondaryCharts();
+        console.log(`selected districts are ${selectedDistricts}`);
       }
     });
 }
 
-function renderPoints() {
+function renderMapPoints() {
   console.log("rendering points");
   const points = g
     .selectAll("path.crimePoints")
@@ -245,13 +246,13 @@ function renderPoints() {
     .attr("d", (d) => d3.symbol().size(5)());
 }
 
-function initializeScales() {
+function initializeMapScales() {
   color = d3
     .scaleOrdinal(d3.schemeTableau10)
     .domain(currData.map((d) => d["Aggregated Offence Code Group"]));
 }
 
-function initializeDataTransforms() {
+function initializeMapDataTransforms() {
   data.forEach((d) => {
     if (!offenseTypes.has(d["Aggregated Offence Code Group"])) {
       offenseTypes.add(d["Aggregated Offence Code Group"]);
@@ -278,7 +279,7 @@ function initializeDataTransforms() {
   });
 }
 
-function initializeHTMLElements() {
+function initializeMapHTMLElements() {
   offenseTypes.forEach((type) => {
     // <label>
     //   <input type="checkbox" class="filter" name="isPop" />
@@ -342,7 +343,7 @@ function initializeHTMLElements() {
   });
 }
 
-function initializeEventListeners() {
+function initializeMapEventListeners() {
   d3.selectAll(".offense-type-filter").on("click", function (d) {
     const inputChild = d.target.querySelector("input");
     if (!inputChild.checked) {
@@ -350,8 +351,8 @@ function initializeEventListeners() {
     } else {
       filtersSelected["Aggregated Offence Code Group"].delete(inputChild.name);
     }
-    filterData();
-    renderPoints();
+    filterMapData();
+    renderMapPoints();
   });
 
   d3.selectAll(".time-filter").on("click", function (d) {
@@ -361,12 +362,12 @@ function initializeEventListeners() {
     } else {
       filtersSelected["HOUR"].delete(inputChild.name);
     }
-    filterData();
-    renderPoints();
+    filterMapData();
+    renderMapPoints();
   });
 }
 
-function filterData() {
+function filterMapData() {
   const allFiltersSelected = new Set();
   Object.keys(filtersSelected).forEach((filterType) => {
     filtersSelected[filterType].forEach((filter) => {
@@ -416,7 +417,7 @@ function getYCoordinate(d) {
   return albersProjection([+d["Long"], +d["Lat"]])[1];
 }
 
-function getData() {
+function getMapData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
@@ -427,31 +428,21 @@ function getData() {
     ).then((topojsonBoston) => {
       policeDistricts = topojsonBoston;
       console.log(policeDistricts);
-      initializeDataTransforms();
-      initializeSvg();
-      initializeHTMLElements();
-      initializeEventListeners();
-      initializeScales();
-      renderPoints();
+      initializeMapDataTransforms();
+      initializeMapSvg();
+      initializeMapHTMLElements();
+      initializeMapEventListeners();
+      initializeMapScales();
+      renderMapPoints();
 
-    //   function wait(ms){
-    //     var start = new Date().getTime();
-    //     var end = start;
-    //     while(end < start + ms) {
-    //       end = new Date().getTime();
-    //    }
-    //  }
-    //   wait(5000);
-    //   console.log("adding script4.js in script.js");
-    //   let head = document.getElementsByTagName("head")[0];
-    //   let script = document.createElement("script");
-    //   script.type = "text/javascript";
-    //   script.src = "script4.js";
-    //   head.appendChild(script);
-
-      
+      console.log("adding secondaryCharts.js in map.js");
+      let head = document.getElementsByTagName("head")[0];
+      let script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "secondaryCharts.js";
+      head.appendChild(script);
     });
   });
 }
 
-getData();
+getMapData();

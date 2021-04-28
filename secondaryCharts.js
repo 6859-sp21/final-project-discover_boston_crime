@@ -1,4 +1,4 @@
-console.log('fuck')
+console.log("fuck");
 const defaultNeighborhoods = new Set(["Boston"]);
 const allNeighborhoods = [];
 let currNeighborhoods = [];
@@ -246,8 +246,8 @@ class SVG {
   updateBars() {
     const selection = this.g.selectAll("g.group");
 
-    //console.log("selection");
-    //console.dir(selection);
+    console.log("selection");
+    console.dir(selection);
 
     const update = selection.data(this.transformedCurrData, (d, i) => {
       let currNeighborsString = Object.keys(d).join(" ");
@@ -297,7 +297,7 @@ class SVG {
               console.log(d);
               return this.y(d.value);
             })
-            .attr("barWidth", this.x1.bandwidth())
+            .attr("width", this.x1.bandwidth())
             .attr("fill", (d) => {
               return barColor(d.key);
             })
@@ -305,7 +305,7 @@ class SVG {
               enter
                 .transition()
                 .duration(1000)
-                .attr("barHeight", (d) => this.y(0) - this.y(d.value))
+                .attr("height", (d) => this.y(0) - this.y(d.value))
             );
         },
         (update) => update,
@@ -318,7 +318,7 @@ class SVG {
         function (event, d) {
           d3.select(event.target)
             .style("stroke", "white")
-            .style("stroke-barWidth", "1px");
+            .style("stroke-width", "1px");
           const hoveredNeighborhood = d.key;
           const hoveredAgeGroup = d[this.bottomAxisLabel].split("%")[0].trim();
           const totalPopulation = this.data.find(
@@ -368,7 +368,7 @@ class SVG {
         }.bind(this)
       )
       .on("mouseout", function (event, d) {
-        d3.select(this).style("stroke-barWidth", "0px");
+        d3.select(this).style("stroke-width", "0px");
 
         barTooltip.transition().duration("0").style("opacity", 0);
         barTooltip.html("");
@@ -395,8 +395,8 @@ class SVG {
           const e = enter.append("g");
           e.append("rect")
             .attr("x", -19)
-            .attr("barWidth", 19)
-            .attr("barHeight", 19)
+            .attr("width", 19)
+            .attr("height", 19)
             .attr("fill", (d) => {
               //console.log(d);
               return barColor(d);
@@ -433,7 +433,6 @@ function initConstants() {
 }
 
 function initializeHTMLElements() {
-  
   allNeighborhoods.forEach((type) => {
     // <label>
     //   <input type="checkbox" class="filter" name="isPop" />
@@ -472,7 +471,7 @@ function initializeEventListeners() {
   });
 }
 
-function update() {
+function updateSecondaryCharts() {
   currNeighborhoods = Array.from([
     ...selectedDistricts,
     ...defaultNeighborhoods,
@@ -482,12 +481,13 @@ function update() {
     svg.update();
   });
 }
+
 function createSvg() {
   const svg = d3
-    .select(".container")
+    .select("#side-charts")
     .append("svg")
-    .attr("barWidth", barWidth)
-    .attr("barHeight", barHeight)
+    .attr("width", barWidth)
+    .attr("height", barHeight)
     .attr("class", "bar-viz");
 
   transition = svg.transition().duration(animationDelay).ease(d3.easeLinear);
@@ -495,7 +495,7 @@ function createSvg() {
   return svg;
 }
 
-function getData() {
+function getDemographicsData() {
   //age
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_age.csv"
@@ -503,8 +503,8 @@ function getData() {
     const svg = createSvg();
     sampleData = allData;
     initConstants();
-    initializeHTMLElements();
-    initializeEventListeners();
+    // initializeHTMLElements();
+    // initializeEventListeners();
 
     const labelGroups = [
       "0-17 years %",
@@ -589,21 +589,14 @@ function getData() {
             svg,
             allData,
             labelGroups,
-            "Poverty Rate by Age",
+            "Income",
             lowerLabels
           );
           svgs.push(svgObj);
-
-          console.log("adding script3.js in script4.js");
-          let head = document.getElementsByTagName("head")[0];
-          let script = document.createElement("script");
-          script.type = "text/javascript";
-          script.src = "script3.js";
-          head.appendChild(script);
         });
       });
     });
   });
 }
 
-getData();
+getDemographicsData();

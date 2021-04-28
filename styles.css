@@ -9,5 +9,19 @@ body {
 
 .bar-viz {
     padding: 2em;
-    overflow: visible;
+    overflow: visible !important;
+    box-sizing: initial !important;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    height: 1000px;
+    overflow-y: scroll;
+    width: 50%;
 }
