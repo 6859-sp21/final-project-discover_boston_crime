@@ -3,7 +3,7 @@ let currData = [];
 let policeDistricts = null;
 const offenseTypes = new Set();
 const filtersSelected = new Map();
-let selectedDistricts = [];
+let selectedDistricts = new Set();
 const hourBins = 4;
 const hourIdToBins = new Map();
 
@@ -150,7 +150,7 @@ function initializeMapSvg() {
         .style("background", "bisque");
     })
     .on("mouseout", function (event, d) {
-      if (!selectedDistricts.includes(d.properties.ID)) {
+      if (!selectedDistricts.has(d.properties.ID)) {
         d3.select(this)
           .style("stroke", "white")
           .style("stroke-width", "3px")
@@ -161,16 +161,13 @@ function initializeMapSvg() {
       }
     })
     .on("click", function (event, d) {
-      if (selectedDistricts.includes(d.properties.ID)) {
+      if (selectedDistricts.has(d.properties.ID)) {
         d3.select(this)
           .style("stroke", "white")
           .style("stroke-width", "3px")
           .style("fill", "black");
 
-        selectedDistricts.splice(
-          selectedDistricts.indexOf(d.properties.ID),
-          (deleteCount = 1)
-        );
+        selectedDistricts.delete(d.properties.ID);
         updateSecondaryCharts();
         //selectedDistricts.splice(selectedDistricts.indexOf(d.properties.ID), deleteCount = 1);
         console.log(`selected districts are ${selectedDistricts}`);
@@ -180,7 +177,7 @@ function initializeMapSvg() {
           .style("stroke-width", "5px")
           .style("fill", "blue");
 
-        selectedDistricts.push(d.properties.ID);
+        selectedDistricts.add(d.properties.ID);
         //currNeighborhoods.push(d.properties.ID);
         updateSecondaryCharts();
         console.log(`selected districts are ${selectedDistricts}`);

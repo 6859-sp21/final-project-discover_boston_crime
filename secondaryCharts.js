@@ -144,18 +144,9 @@ class SVG {
     } else {
       this.currData = [];
       this.data.forEach((d) => {
-        let added = false;
         for (let neighborhood of neighborhoodsSelected) {
           if (d["Neighborhood"] === neighborhood) {
-            added = true;
             this.currData.push(Object.assign({}, d));
-          }
-        }
-        if (!added) {
-          for (let neighborhood of defaultNeighborhoods) {
-            if (d["Neighborhood"] === neighborhood) {
-              this.currData.push(Object.assign({}, d));
-            }
           }
         }
       });
@@ -246,8 +237,8 @@ class SVG {
   updateBars() {
     const selection = this.g.selectAll("g.group");
 
-    console.log("selection");
-    console.dir(selection);
+    // console.log("selection");
+    // console.dir(selection);
 
     const update = selection.data(this.transformedCurrData, (d, i) => {
       let currNeighborsString = Object.keys(d).join(" ");
@@ -294,7 +285,7 @@ class SVG {
             .append("rect")
             .attr("x", (d) => this.x1(d.key))
             .attr("y", (d) => {
-              console.log(d);
+              // console.log(d);
               return this.y(d.value);
             })
             .attr("width", this.x1.bandwidth())
@@ -477,7 +468,7 @@ function updateSecondaryCharts() {
     ...defaultNeighborhoods,
   ]);
   svgs.forEach((svg) => {
-    svg.filterData(selectedDistricts);
+    svg.filterData(currNeighborhoods);
     svg.update();
   });
 }
