@@ -20,6 +20,9 @@ let svg = null;
 let g = null;
 let color = null;
 
+const selectedDistrictFillColor = "#052755"; //"#03254c";
+const selectedDistrictBorderColor = "#C62033";
+
 const pointTooltipD3Element = d3.select("#point-tooltip");
 const offenseFiltersDivElement = document.querySelector(
   "#offense-type-filters"
@@ -114,9 +117,9 @@ function initializeMapSvg() {
     .attr("d", path)
     .on("mouseover", function (event, d) {
       d3.select(this)
-        .style("stroke", "red")
-        .style("stroke-width", "5px")
-        .style("fill", "blue");
+        .style("stroke", selectedDistrictBorderColor)
+        .style("stroke-width", "3px")
+        .style("fill", selectedDistrictFillColor);
 
       let districtToNeighborhoodMap = {
         A1: ["North End", "West End", "Downtown", "Beacon Hill"],
@@ -173,9 +176,9 @@ function initializeMapSvg() {
         //console.log(`selected districts are ${selectedDistricts}`);
       } else {
         d3.select(this)
-          .style("stroke", "red")
-          .style("stroke-width", "5px")
-          .style("fill", "blue");
+          .style("stroke", selectedDistrictBorderColor)
+          .style("stroke-width", "3px")
+          .style("fill", selectedDistrictFillColor);
 
         selectedDistricts.add(d.properties.ID);
         //currNeighborhoods.push(d.properties.ID);
