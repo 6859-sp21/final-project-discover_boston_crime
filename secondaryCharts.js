@@ -4,6 +4,9 @@ const allNeighborhoods = [];
 let currNeighborhoods = [];
 let neighborhoodsSelected = new Set();
 
+const tabsElement = document.querySelector("#myTab");
+const tabsContentElement = document.querySelector("#myTabContent");
+
 const barWidth = 700;
 const barHeight = 600;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
@@ -139,33 +142,29 @@ class SVG {
   }
 
   filterData(neighborhoodsSelected) {
-    if (neighborhoodsSelected.size === 0) {
-      this.setDefaultData();
-    } else {
-      this.currData = [];
-      this.data.forEach((d) => {
-        for (let neighborhood of neighborhoodsSelected) {
-          if (d["Neighborhood"] === neighborhood) {
-            this.currData.push(Object.assign({}, d));
-          }
+    this.currData = [];
+    this.data.forEach((d) => {
+      for (let neighborhood of neighborhoodsSelected) {
+        if (d["Neighborhood"] === neighborhood) {
+          this.currData.push(Object.assign({}, d));
         }
-      });
-      // this.data.filter((d) => {
-      //   for (let neighborhood of neighborhoodsSelected) {
-      //     if (d["Neighborhood"] === neighborhood) {
-      //       return true;
-      //     }
-      //   }
-      //   for (let neighborhood of defaultNeighborhoods) {
-      //     if (d["Neighborhood"] === neighborhood) {
-      //       return true;
-      //     }
-      //   }
-      //   return false;
-      // });
+      }
+    });
+    // this.data.filter((d) => {
+    //   for (let neighborhood of neighborhoodsSelected) {
+    //     if (d["Neighborhood"] === neighborhood) {
+    //       return true;
+    //     }
+    //   }
+    //   for (let neighborhood of defaultNeighborhoods) {
+    //     if (d["Neighborhood"] === neighborhood) {
+    //       return true;
+    //     }
+    //   }
+    //   return false;
+    // });
 
-      //console.log(`neighborhood selected updated`);
-    }
+    //console.log(`neighborhood selected updated`);
   }
 
   axis() {
@@ -243,7 +242,7 @@ class SVG {
     const update = selection.data(this.transformedCurrData, (d, i) => {
       let currNeighborsString = Object.keys(d).join(" ");
       currNeighborsString += i;
-      //console.log(`curr neighborhood string ${currNeighborsString}`);
+      // console.log(`curr neighborhood string ${currNeighborsString}`);
       return currNeighborsString;
     });
 
@@ -313,10 +312,10 @@ class SVG {
           const hoveredNeighborhood = d.key;
           const hoveredAgeGroup = d[this.bottomAxisLabel].split("%")[0].trim();
           const totalPopulation = this.data.find(
-            (x) => (x.Neighborhood = hoveredNeighborhood)
+            (x) => x.Neighborhood === hoveredNeighborhood
           )["Total Population"];
           const agePopulation = this.data.find(
-            (x) => (x.Neighborhood = hoveredNeighborhood)
+            (x) => x.Neighborhood === hoveredNeighborhood
           )[hoveredAgeGroup];
 
           let neighborhoodToNeighborhoodNameMap = {
@@ -456,7 +455,7 @@ function initializeEventListeners() {
       ...defaultNeighborhoods,
     ]);
     svgs.forEach((svg) => {
-      svg.filterData(neighborhoodsSelected);
+      svg.filterData(currNeighborhoods);
       svg.update();
     });
   });
@@ -467,15 +466,16 @@ function updateSecondaryCharts() {
     ...selectedDistricts,
     ...defaultNeighborhoods,
   ]);
+  // console.log(`currNeighborhoods ${currNeighborhoods}`);
   svgs.forEach((svg) => {
     svg.filterData(currNeighborhoods);
     svg.update();
   });
 }
 
-function createSvg() {
+function createSvg(containerId) {
   const svg = d3
-    .select("#side-charts")
+    .select(`#${containerId}`)
     .append("svg")
     .attr("width", barWidth)
     .attr("height", barHeight)
@@ -486,25 +486,86 @@ function createSvg() {
   return svg;
 }
 
+function addTabsChart(id, tabName, active = false) {
+  // <li class="nav-item" role="presentation">
+  //   <button
+  //     class="nav-link active"
+  //     id="home-tab"
+  //     data-bs-toggle="tab"
+  //     data-bs-target="#home"
+  //     type="button"
+  //     role="tab"
+  //     aria-controls="home"
+  //     aria-selected="true"
+  //   >
+  //     Home
+  //   </button>
+  // </li>;
+
+  // <div
+  //   class="tab-pane fade show active"
+  //   id="home"
+  //   role="tabpanel"
+  //   aria-labelledby="home-tab"
+  // >
+  //   home
+  // </div>;
+  const listElement = document.createElement("li");
+  listElement.classList.add("nav-item");
+  listElement.setAttribute("role", "presentation");
+  const buttonElement = document.createElement("button");
+  buttonElement.classList.add("nav-link");
+  buttonElement.setAttribute("id", `${id}-tab`);
+  buttonElement.setAttribute("data-bs-toggle", "tab");
+  buttonElement.setAttribute("data-bs-target", `#${id}`);
+  buttonElement.setAttribute("type", "button");
+  buttonElement.setAttribute("role", "tab");
+  buttonElement.setAttribute("aria-controls", id);
+  const textElement = document.createTextNode(tabName);
+  buttonElement.appendChild(textElement);
+  listElement.appendChild(buttonElement);
+
+  tabsElement.appendChild(listElement);
+
+  const divElement = document.createElement("div");
+  divElement.classList.add("tab-pane");
+  divElement.classList.add("fade");
+  divElement.setAttribute("id", id);
+  divElement.setAttribute("role", "tabpanel");
+  divElement.setAttribute("aria-labelledby", `${id}-tab`);
+
+  tabsContentElement.appendChild(divElement);
+
+  if (active) {
+    buttonElement.classList.add("active");
+    buttonElement.setAttribute("aria-selected", "true");
+
+    divElement.classList.add("show");
+    divElement.classList.add("active");
+  }
+}
+
 function getDemographicsData() {
   //age
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_age.csv"
   ).then((allData) => {
-    const svg = createSvg();
-    sampleData = allData;
-    initConstants();
-    // initializeHTMLElements();
-    // initializeEventListeners();
-
+    const id = "age_group";
+    const labelGroupName = "Age Group (in Years)";
     const labelGroups = [
       "0-17 years %",
       "18-34 years %",
       "35-59 years %",
       "60 and over %",
     ];
+    const lowerLabels = ["0-17", "18-34", "35-59", "60 and over"];
 
-    let lowerLabels = ["0-17", "18-34", "35-59", "60 and over"];
+    addTabsChart(id, labelGroupName, true);
+    const svg = createSvg(id);
+    sampleData = allData;
+    initConstants();
+    // initializeHTMLElements();
+    // initializeEventListeners();
 
     const svgObj = new SVG(
       svg,
@@ -514,11 +575,13 @@ function getDemographicsData() {
       lowerLabels
     );
     svgs.push(svgObj);
+    console.log(svg["_groups"]);
     //race
     d3.csv(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
     ).then((allData) => {
-      const svg = createSvg();
+      const id = "race_group";
+      const labelGroupName = "Race";
       const labelGroups = [
         "White Alone %",
         "Black/African-American %",
@@ -526,31 +589,38 @@ function getDemographicsData() {
         "Asian alone %",
         "Other Races %",
       ];
-      let lowerLabels = [
+      const lowerLabels = [
         "White Alone",
         "Black/African-American",
         "Hispanic",
         "Asian alone",
         "Other Races",
       ];
+
+      addTabsChart(id, labelGroupName);
+      const svg = createSvg(id);
       const svgObj = new SVG(svg, allData, labelGroups, "Race", lowerLabels);
       svgs.push(svgObj);
       d3.csv(
         "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_poverty_rate.csv"
       ).then((allData) => {
-        const svg = createSvg();
+        const id = "poverty_group";
+        const labelGroupName = "Poverty Rate by Age";
         const labelGroups = [
           "0 to 17 Poverty Rate",
           "18 to 34 Poverty Rate",
           "35 to 64 years Poverty Rate",
           "65 years and over Poverty Rate",
         ];
-        let lowerLabels = [
+        const lowerLabels = [
           "0 to 17",
           "18 to 34",
           "35 to 64",
           "65 years and over",
         ];
+
+        addTabsChart(id, labelGroupName);
+        const svg = createSvg(id);
         const svgObj = new SVG(
           svg,
           allData,
@@ -563,19 +633,23 @@ function getDemographicsData() {
         d3.csv(
           "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_family_income.csv"
         ).then((allData) => {
-          const svg = createSvg();
+          const id = "income_group";
+          const labelGroupName = "Income";
           const labelGroups = [
             "$24,999 and under %",
             "$25,000 to $49,999 %",
             "$50,000 to $99,999 %",
             "$100,000+ %",
           ];
-          let lowerLabels = [
+          const lowerLabels = [
             "$24,999 and under",
             "$25,000 to $49,999 %",
             "$50,000 to $99,999",
             "$100,000+",
           ];
+
+          addTabsChart(id, labelGroupName);
+          const svg = createSvg(id);
           const svgObj = new SVG(
             svg,
             allData,

@@ -21,7 +21,6 @@ body {
 .column {
     display: flex;
     flex-direction: column;
-    height: 1000px;
-    overflow-y: scroll;
+    align-items: center;
     width: 50%;
 }

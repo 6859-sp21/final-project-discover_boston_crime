@@ -278,30 +278,31 @@ function initializeMapDataTransforms() {
 
 function initializeMapHTMLElements() {
   offenseTypes.forEach((type) => {
-    // <label>
-    //   <input type="checkbox" class="filter" name="isPop" />
-    //   Pop
-    // </label>
-    const labelElement = document.createElement("label");
-    labelElement.classList.add("btn");
-    labelElement.classList.add("btn-outline-dark");
-    labelElement.classList.add("offense-type-filter");
-    const inputElement = document.createElement("input");
+    // <button
+    //   type="button"
+    //   class="btn btn-primary"
+    //   data-bs-toggle="button"
+    //   autocomplete="off"
+    // >
+    //   Toggle button
+    // </button>;
+    const buttonElement = document.createElement("button");
+    buttonElement.classList.add("btn");
+    buttonElement.classList.add("btn-outline-dark");
+    buttonElement.classList.add("offense-type-filter");
+    buttonElement.setAttribute("data-bs-toggle", "button");
+    buttonElement.setAttribute("name", type);
     const textElement = document.createTextNode(type);
-    inputElement.type = "checkbox";
-    inputElement.name = type;
-    labelElement.appendChild(inputElement);
-    labelElement.appendChild(textElement);
-    offenseFiltersDivElement.appendChild(labelElement);
+    buttonElement.appendChild(textElement);
+    offenseFiltersDivElement.appendChild(buttonElement);
 
-    labelElement.addEventListener("mouseover", () => {
-      // console.log(`hovering over ${type}`);
+    buttonElement.addEventListener("mouseover", () => {
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
         .attr("fill", "red")
         .attr("d", () => d3.symbol().size(20)());
     });
 
-    labelElement.addEventListener("mouseout", () => {
+    buttonElement.addEventListener("mouseout", () => {
       // console.log(`hovering over ${type}`);
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
         .attr("fill", "white")
@@ -310,28 +311,26 @@ function initializeMapHTMLElements() {
   });
 
   Object.keys(hourIdToBins).forEach((id) => {
-    const labelElement = document.createElement("label");
-    labelElement.classList.add("btn");
-    labelElement.classList.add("btn-outline-dark");
-    labelElement.classList.add("time-filter");
-    const inputElement = document.createElement("input");
+    const buttonElement = document.createElement("button");
+    buttonElement.classList.add("btn");
+    buttonElement.classList.add("btn-outline-dark");
+    buttonElement.classList.add("time-filter");
+    buttonElement.setAttribute("data-bs-toggle", "button");
+    buttonElement.setAttribute("name", id);
     const textElement = document.createTextNode(
       `${hourIdToBins[id][0]} - ${hourIdToBins[id][1]}`
     );
-    inputElement.type = "checkbox";
-    inputElement.name = id;
-    labelElement.appendChild(inputElement);
-    labelElement.appendChild(textElement);
-    timeFiltersDivElement.appendChild(labelElement);
+    buttonElement.appendChild(textElement);
+    timeFiltersDivElement.appendChild(buttonElement);
 
-    labelElement.addEventListener("mouseover", () => {
+    buttonElement.addEventListener("mouseover", () => {
       // console.log(`hovering over hour ${id}`);
       d3.selectAll(`.hour_${id}`)
         .attr("fill", "red")
         .attr("d", () => d3.symbol().size(50)());
     });
 
-    labelElement.addEventListener("mouseout", () => {
+    buttonElement.addEventListener("mouseout", () => {
       // console.log(`hovering over hour ${id}`);
       d3.selectAll(`.hour_${id}`)
         .attr("fill", "white")
@@ -342,22 +341,24 @@ function initializeMapHTMLElements() {
 
 function initializeMapEventListeners() {
   d3.selectAll(".offense-type-filter").on("click", function (d) {
-    const inputChild = d.target.querySelector("input");
-    if (!inputChild.checked) {
-      filtersSelected["Aggregated Offence Code Group"].add(inputChild.name);
+    // console.log(d);
+    const isActive = d.target.classList.contains("active");
+    // console.log(isActive);
+    if (isActive) {
+      filtersSelected["Aggregated Offence Code Group"].add(d.target.name);
     } else {
-      filtersSelected["Aggregated Offence Code Group"].delete(inputChild.name);
+      filtersSelected["Aggregated Offence Code Group"].delete(d.target.name);
     }
     filterMapData();
     renderMapPoints();
   });
 
   d3.selectAll(".time-filter").on("click", function (d) {
-    const inputChild = d.target.querySelector("input");
-    if (!inputChild.checked) {
-      filtersSelected["HOUR"].add(inputChild.name);
+    const isActive = d.target.classList.contains("active");
+    if (isActive) {
+      filtersSelected["HOUR"].add(d.target.name);
     } else {
-      filtersSelected["HOUR"].delete(inputChild.name);
+      filtersSelected["HOUR"].delete(d.target.name);
     }
     filterMapData();
     renderMapPoints();
