@@ -368,7 +368,7 @@ class SVG {
 
         resultString += 
             `<p class="tooltipp"> Age Group: ${groupLabel} </p>
-            <p class="tooltipp"> Percent of Population: ${value.toFixed(4)} </p>
+            <p class="tooltipp"> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
             <p class="tooltipp"> Age Population: ${agePopulation} </p>
             <p class="tooltipp"> Total Population: ${totalPopulation} </p>`;
         break;
@@ -378,7 +378,7 @@ class SVG {
         const racePopulation = dataObject[groupLabel];
         resultString += 
           `<p> Race: ${groupLabel} </p>
-          <p> Percent of Population: ${value.toFixed(4)} </p>
+          <p> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
           <p> Race Population: ${racePopulation} </p>
           <p> Total Population: ${totalPopulation} </p>`;
 
@@ -393,7 +393,7 @@ class SVG {
 
         resultString += 
           `<p> Age Group: ${groupLabel} </p>
-          <p> Percent of Population: ${value.toFixed(4)} </p>
+          <p> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
           <p> Age Poverty Population: ${povertyPopulation} </p>
           <p> Total Age Population: ${totalPopulation} </p>`;
         break;
@@ -404,7 +404,7 @@ class SVG {
 
         resultString += 
         `<p> Income Bracket: ${groupLabel} </p>
-        <p> Percent of Population: ${value.toFixed(4)} </p>
+        <p> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
         <p> Families in Income Bracket: ${incomePopulation} </p>
         <p> Total Families: ${totalPopulation} </p>`
         break;
@@ -417,7 +417,7 @@ class SVG {
 
         resultString += 
         `<p> Highest Education Attained: ${groupLabel} </p>
-        <p> Percent of Population: ${value.toFixed(4)} </p>
+        <p> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
         <p> Number of Adults: ${educationGroupPopulation} </p>
         <p> Total Population over 25: ${totalPopulation} </p>`
         break;
