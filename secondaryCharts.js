@@ -275,6 +275,7 @@ class SVG {
         }
       );
 
+
     //console.log("update2");
     //console.dir(update2);
 
@@ -310,13 +311,14 @@ class SVG {
           d3.select(event.target)
             .style("stroke", "white")
             .style("stroke-width", "1px");
+          console.log('hovering');
           const hoveredNeighborhood = d.key;
           const hoveredAgeGroup = d[this.bottomAxisLabel].split("%")[0].trim();
           const totalPopulation = this.data.find(
-            (x) => (x.Neighborhood = hoveredNeighborhood)
+            (x) => (x.Neighborhood === hoveredNeighborhood)
           )["Total Population"];
           const agePopulation = this.data.find(
-            (x) => (x.Neighborhood = hoveredNeighborhood)
+            (x) => (x.Neighborhood === hoveredNeighborhood)
           )[hoveredAgeGroup];
 
           let neighborhoodToNeighborhoodNameMap = {
@@ -473,6 +475,8 @@ function updateSecondaryCharts() {
   });
 }
 
+
+
 function createSvg() {
   const svg = d3
     .select("#side-charts")
@@ -589,5 +593,6 @@ function getDemographicsData() {
     });
   });
 }
+
 
 getDemographicsData();

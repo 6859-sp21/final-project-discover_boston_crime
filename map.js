@@ -170,7 +170,7 @@ function initializeMapSvg() {
         selectedDistricts.delete(d.properties.ID);
         updateSecondaryCharts();
         //selectedDistricts.splice(selectedDistricts.indexOf(d.properties.ID), deleteCount = 1);
-        console.log(`selected districts are ${selectedDistricts}`);
+        //console.log(`selected districts are ${selectedDistricts}`);
       } else {
         d3.select(this)
           .style("stroke", "red")
@@ -180,7 +180,7 @@ function initializeMapSvg() {
         selectedDistricts.add(d.properties.ID);
         //currNeighborhoods.push(d.properties.ID);
         updateSecondaryCharts();
-        console.log(`selected districts are ${selectedDistricts}`);
+        //console.log(`selected districts are ${selectedDistricts}`);
       }
     });
 }
