@@ -15,6 +15,22 @@ let sampleData = null;
 let barColor = null;
 const animationDelay = 500;
 
+let neighborhoodToNeighborhoodNameMap = {
+  A1: ["North End", "West End", "Downtown", "Beacon Hill"],
+  A7: ["East Boston"],
+  A15: ["Charlestown"],
+  B2: ["Mission Hill", "Roxbury", "Longwood"],
+  B3: ["Mattapan"],
+  C6: ["South Boston", "South Boston Waterfront"],
+  C11: ["Dorchester"],
+  D4: ["Fenway", "Back Bay", "South End"],
+  D14: ["Allston", "Brighton"],
+  E5: ["West Roxbury", "Roslindale"],
+  E13: ["Jamaica Plain"],
+  E18: ["Hyde Park"],
+  Boston: ["Boston"],
+};
+
 const colorScheme = [
   "#a6cee3",
   "#1f78b4",
@@ -307,48 +323,24 @@ class SVG {
         "mouseover",
         function (event, d) {
           d3.select(event.target)
-            .style("stroke", "white")
-            .style("stroke-width", "1px");
+            .style("stroke", "black")
+            .style("stroke-width", "3px");
+
           const hoveredNeighborhood = d.key;
-          const hoveredAgeGroup = d[this.bottomAxisLabel].split("%")[0].trim();
-          const totalPopulation = this.data.find(
-            (x) => x.Neighborhood === hoveredNeighborhood
-          )["Total Population"];
-          const agePopulation = this.data.find(
-            (x) => x.Neighborhood === hoveredNeighborhood
-          )[hoveredAgeGroup];
+          const groupLabel = d[this.bottomAxisLabel].split("%")[0].trim();
 
-          let neighborhoodToNeighborhoodNameMap = {
-            A1: ["North End", "West End", "Downtown", "Beacon Hill"],
-            A7: ["East Boston"],
-            A15: ["Charlestown"],
-            B2: ["Mission Hill", "Roxbury", "Longwood"],
-            B3: ["Mattapan"],
-            C6: ["South Boston", "South Boston Waterfront"],
-            C11: ["Dorchester"],
-            D4: ["Fenway", "Back Bay", "South End"],
-            D14: ["Allston", "Brighton"],
-            E5: ["West Roxbury", "Roslindale"],
-            E13: ["Jamaica Plain"],
-            E18: ["Hyde Park"],
-            Boston: ["Boston"],
-          };
-
-          const tooltipString = `<div>
-        <p> Police District: ${hoveredNeighborhood}</p>
-        <p> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[
-          hoveredNeighborhood
-        ]
-          .sort()
-          .join(", ")} </p>
-        <p> Age Group: ${hoveredAgeGroup} </p>
-        <p> Percent of Population: ${d.value.toFixed(4)} </p>
-        <p> Age Population: ${agePopulation} </p>
-        <p> Total Population: ${totalPopulation} </p>
-        </div>`;
+          const dataObject = this.data.find(
+            (x) => x.Neighborhood === hoveredNeighborhood
+          );
+          const tooltipString = this.getTooltipString(
+            hoveredNeighborhood,
+            groupLabel,
+            dataObject,
+            d.value
+          );
 
           barTooltip
-            .html(tooltipString)
+            .html(`<div> ${tooltipString} <div>`)
             .transition()
             .duration(300)
             .style("opacity", 0.9)
@@ -363,6 +355,83 @@ class SVG {
         barTooltip.transition().duration("0").style("opacity", 0);
         barTooltip.html("");
       });
+  }
+
+  getTooltipString(hoveredNeighborhood, groupLabel, dataObject, value) {
+    let resultString = `
+    <p class="tooltipp"> Police District: ${hoveredNeighborhood}</p>
+    <p class="tooltipp"> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[
+      hoveredNeighborhood
+    ]
+      .sort()
+      .join(", ")} </p>`;
+
+    switch (this.bottomAxisLabel) {
+      case "Age Group (in Years)": {
+        const totalPopulation = dataObject["Total Population"];
+        const agePopulation = dataObject[groupLabel];
+
+        resultString += `<p class="tooltipp"> Age Group: ${groupLabel} </p>
+            <p class="tooltipp"> Percent of Population: ${
+              (value * 100).toFixed(2) + "%"
+            } </p>
+            <p class="tooltipp"> Age Population: ${agePopulation} </p>
+            <p class="tooltipp"> Total Population: ${totalPopulation} </p>`;
+        break;
+      }
+      case "Race": {
+        const totalPopulation = dataObject["Total Population"];
+        const racePopulation = dataObject[groupLabel];
+        resultString += `<p> Race: ${groupLabel} </p>
+          <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
+          <p> Race Population: ${racePopulation} </p>
+          <p> Total Population: ${totalPopulation} </p>`;
+
+        break;
+      }
+      case "Poverty Rate by Age": {
+        let groupLabelPrefix = groupLabel.split(" ").slice(0, 3).join(" ");
+        if (groupLabelPrefix == "65 years and") groupLabelPrefix += " over";
+
+        const totalPopulation = dataObject[groupLabelPrefix + " Total"];
+        const povertyPopulation =
+          dataObject[groupLabelPrefix + " Total Poverty"];
+
+        resultString += `<p> Age Group: ${groupLabel} </p>
+          <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
+          <p> Age Poverty Population: ${povertyPopulation} </p>
+          <p> Total Age Population: ${totalPopulation} </p>`;
+        break;
+      }
+      case "Family Income Bracket": {
+        const totalPopulation = dataObject["Total Families"];
+        const incomePopulation = dataObject[groupLabel];
+
+        resultString += `<p> Income Bracket: ${groupLabel} </p>
+        <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
+        <p> Families in Income Bracket: ${incomePopulation} </p>
+        <p> Total Families: ${totalPopulation} </p>`;
+        break;
+      }
+      case "Education Attainment": {
+        const educationGroupPopulation = dataObject[groupLabel];
+        console.log(groupLabel);
+        console.log(dataObject[groupLabel]);
+        const totalPopulation =
+          dataObject["Total population 25 years and over"];
+
+        resultString += `<p> Highest Education Attained: ${groupLabel} </p>
+        <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
+        <p> Number of Adults: ${educationGroupPopulation} </p>
+        <p> Total Population over 25: ${totalPopulation} </p>`;
+        break;
+      }
+      default:
+        console.log("ERROR: SHOULD NEVER REACH HERE");
+        resultString = "ERROR";
+    }
+
+    return resultString;
   }
 
   updateLegend() {
@@ -616,7 +685,7 @@ function getDemographicsData() {
           "0 to 17",
           "18 to 34",
           "35 to 64",
-          "65 years and over",
+          "65 years and over ",
         ];
 
         addTabsChart(id, labelGroupName);
@@ -641,9 +710,9 @@ function getDemographicsData() {
             "$50,000 to $99,999 %",
             "$100,000+ %",
           ];
-          const lowerLabels = [
-            "$24,999 and under",
-            "$25,000 to $49,999 %",
+          let lowerLabels = [
+            "$24,999 and Under",
+            "$25,000 to $49,999",
             "$50,000 to $99,999",
             "$100,000+",
           ];
@@ -654,10 +723,37 @@ function getDemographicsData() {
             svg,
             allData,
             labelGroups,
-            "Income",
+            "Family Income Bracket",
             lowerLabels
           );
           svgs.push(svgObj);
+          d3.csv(
+            "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_educational_attainment.csv"
+          ).then((allData) => {
+            const svg = createSvg();
+            const labelGroups = [
+              "Less than High School %",
+              "High School Graduate or GED %",
+              "Associate's or Some College %",
+              "Bachelor's Degree %",
+              "Master's Degree or more %",
+            ];
+            let lowerLabels = [
+              "Less Than High School",
+              "High School Graduate/GED",
+              "Associate's/Some College",
+              "Bachelor's Degree",
+              "Master's Degree/More",
+            ];
+            const svgObj = new SVG(
+              svg,
+              allData,
+              labelGroups,
+              "Education Attainment",
+              lowerLabels
+            );
+            svgs.push(svgObj);
+          });
         });
       });
     });
