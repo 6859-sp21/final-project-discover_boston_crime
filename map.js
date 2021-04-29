@@ -302,7 +302,7 @@ function initializeMapHTMLElements() {
     buttonElement.addEventListener("mouseover", () => {
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
         .attr("fill", selectedPointColor)
-        .attr("d", () => d3.symbol().size(20)());
+        .attr("d", () => d3.symbol().size(25)());
     });
 
     buttonElement.addEventListener("mouseout", () => {
@@ -329,8 +329,8 @@ function initializeMapHTMLElements() {
     buttonElement.addEventListener("mouseover", () => {
       // console.log(`hovering over hour ${id}`);
       d3.selectAll(`.hour_${id}`)
-        .attr("fill", "red")
-        .attr("d", () => d3.symbol().size(50)());
+        .attr("fill", selectedPointColor)
+        .attr("d", () => d3.symbol().size(25)());
     });
 
     buttonElement.addEventListener("mouseout", () => {
