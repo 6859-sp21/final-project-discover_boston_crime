@@ -1,4 +1,4 @@
-#point-tooltip, #district-tooltip, #bar-tooltip{
+#bar-tooltip, #point-tooltip, #district-tooltip  {
     position: absolute;
     pointer-events: none;
 }
@@ -24,4 +24,8 @@ body {
     height: 1000px;
     overflow-y: scroll;
     width: 50%;
+}
+
+.tooltipp {
+    margin: 0,0,0,0;
 }
