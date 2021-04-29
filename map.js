@@ -20,8 +20,8 @@ let svg = null;
 let g = null;
 let color = null;
 
-const selectedDistrictFillColor = "#052755"; //"#03254c";
-const selectedDistrictBorderColor = "#C62033";
+const selectedDistrictFillColor = "#1167b1"; //"#052755";
+const selectedPointColor = "#FFA500";
 
 const pointTooltipD3Element = d3.select("#point-tooltip");
 const offenseFiltersDivElement = document.querySelector(
@@ -117,7 +117,7 @@ function initializeMapSvg() {
     .attr("d", path)
     .on("mouseover", function (event, d) {
       d3.select(this)
-        .style("stroke", selectedDistrictBorderColor)
+        .style("stroke", "white")
         .style("stroke-width", "3px")
         .style("fill", selectedDistrictFillColor);
 
@@ -176,7 +176,7 @@ function initializeMapSvg() {
         //console.log(`selected districts are ${selectedDistricts}`);
       } else {
         d3.select(this)
-          .style("stroke", selectedDistrictBorderColor)
+          .style("stroke", "white")
           .style("stroke-width", "3px")
           .style("fill", selectedDistrictFillColor);
 
@@ -300,7 +300,7 @@ function initializeMapHTMLElements() {
     labelElement.addEventListener("mouseover", () => {
       // console.log(`hovering over ${type}`);
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)
-        .attr("fill", "red")
+        .attr("fill", selectedPointColor)
         .attr("d", () => d3.symbol().size(20)());
     });
 
