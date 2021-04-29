@@ -4,6 +4,9 @@ const allNeighborhoods = [];
 let currNeighborhoods = [];
 let neighborhoodsSelected = new Set();
 
+const tabsElement = document.querySelector("#myTab");
+const tabsContentElement = document.querySelector("#myTabContent");
+
 const barWidth = 700;
 const barHeight = 600;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
@@ -155,33 +158,29 @@ class SVG {
   }
 
   filterData(neighborhoodsSelected) {
-    if (neighborhoodsSelected.size === 0) {
-      this.setDefaultData();
-    } else {
-      this.currData = [];
-      this.data.forEach((d) => {
-        for (let neighborhood of neighborhoodsSelected) {
-          if (d["Neighborhood"] === neighborhood) {
-            this.currData.push(Object.assign({}, d));
-          }
+    this.currData = [];
+    this.data.forEach((d) => {
+      for (let neighborhood of neighborhoodsSelected) {
+        if (d["Neighborhood"] === neighborhood) {
+          this.currData.push(Object.assign({}, d));
         }
-      });
-      // this.data.filter((d) => {
-      //   for (let neighborhood of neighborhoodsSelected) {
-      //     if (d["Neighborhood"] === neighborhood) {
-      //       return true;
-      //     }
-      //   }
-      //   for (let neighborhood of defaultNeighborhoods) {
-      //     if (d["Neighborhood"] === neighborhood) {
-      //       return true;
-      //     }
-      //   }
-      //   return false;
-      // });
+      }
+    });
+    // this.data.filter((d) => {
+    //   for (let neighborhood of neighborhoodsSelected) {
+    //     if (d["Neighborhood"] === neighborhood) {
+    //       return true;
+    //     }
+    //   }
+    //   for (let neighborhood of defaultNeighborhoods) {
+    //     if (d["Neighborhood"] === neighborhood) {
+    //       return true;
+    //     }
+    //   }
+    //   return false;
+    // });
 
-      //console.log(`neighborhood selected updated`);
-    }
+    //console.log(`neighborhood selected updated`);
   }
 
   axis() {
@@ -259,7 +258,7 @@ class SVG {
     const update = selection.data(this.transformedCurrData, (d, i) => {
       let currNeighborsString = Object.keys(d).join(" ");
       currNeighborsString += i;
-      //console.log(`curr neighborhood string ${currNeighborsString}`);
+      // console.log(`curr neighborhood string ${currNeighborsString}`);
       return currNeighborsString;
     });
 
@@ -290,7 +289,6 @@ class SVG {
           return `${d["key"]}_${d[this.bottomAxisLabel]}`;
         }
       );
-
 
     //console.log("update2");
     //console.dir(update2);
@@ -327,13 +325,19 @@ class SVG {
           d3.select(event.target)
             .style("stroke", "black")
             .style("stroke-width", "3px");
-          
-          
+
           const hoveredNeighborhood = d.key;
           const groupLabel = d[this.bottomAxisLabel].split("%")[0].trim();
 
-          const dataObject = this.data.find((x) => (x.Neighborhood === hoveredNeighborhood));
-          const tooltipString = this.getTooltipString(hoveredNeighborhood, groupLabel, dataObject, d.value);
+          const dataObject = this.data.find(
+            (x) => x.Neighborhood === hoveredNeighborhood
+          );
+          const tooltipString = this.getTooltipString(
+            hoveredNeighborhood,
+            groupLabel,
+            dataObject,
+            d.value
+          );
 
           barTooltip
             .html(`<div> ${tooltipString} <div>`)
@@ -343,7 +347,6 @@ class SVG {
             .style("left", event.pageX + "px")
             .style("top", event.pageY + "px")
             .style("background", "bisque");
-
         }.bind(this)
       )
       .on("mouseout", function (event, d) {
@@ -357,18 +360,21 @@ class SVG {
   getTooltipString(hoveredNeighborhood, groupLabel, dataObject, value) {
     let resultString = `
     <p class="tooltipp"> Police District: ${hoveredNeighborhood}</p>
-    <p class="tooltipp"> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[hoveredNeighborhood]
+    <p class="tooltipp"> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[
+      hoveredNeighborhood
+    ]
       .sort()
       .join(", ")} </p>`;
 
-    switch(this.bottomAxisLabel){
+    switch (this.bottomAxisLabel) {
       case "Age Group (in Years)": {
         const totalPopulation = dataObject["Total Population"];
         const agePopulation = dataObject[groupLabel];
 
-        resultString += 
-            `<p class="tooltipp"> Age Group: ${groupLabel} </p>
-            <p class="tooltipp"> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
+        resultString += `<p class="tooltipp"> Age Group: ${groupLabel} </p>
+            <p class="tooltipp"> Percent of Population: ${
+              (value * 100).toFixed(2) + "%"
+            } </p>
             <p class="tooltipp"> Age Population: ${agePopulation} </p>
             <p class="tooltipp"> Total Population: ${totalPopulation} </p>`;
         break;
@@ -376,24 +382,23 @@ class SVG {
       case "Race": {
         const totalPopulation = dataObject["Total Population"];
         const racePopulation = dataObject[groupLabel];
-        resultString += 
-          `<p> Race: ${groupLabel} </p>
-          <p> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
+        resultString += `<p> Race: ${groupLabel} </p>
+          <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
           <p> Race Population: ${racePopulation} </p>
           <p> Total Population: ${totalPopulation} </p>`;
 
         break;
       }
       case "Poverty Rate by Age": {
-        let groupLabelPrefix = groupLabel.split(" ").slice(0,3).join(" ");
+        let groupLabelPrefix = groupLabel.split(" ").slice(0, 3).join(" ");
         if (groupLabelPrefix == "65 years and") groupLabelPrefix += " over";
 
         const totalPopulation = dataObject[groupLabelPrefix + " Total"];
-        const povertyPopulation = dataObject[groupLabelPrefix + " Total Poverty"];
+        const povertyPopulation =
+          dataObject[groupLabelPrefix + " Total Poverty"];
 
-        resultString += 
-          `<p> Age Group: ${groupLabel} </p>
-          <p> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
+        resultString += `<p> Age Group: ${groupLabel} </p>
+          <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
           <p> Age Poverty Population: ${povertyPopulation} </p>
           <p> Total Age Population: ${totalPopulation} </p>`;
         break;
@@ -402,29 +407,28 @@ class SVG {
         const totalPopulation = dataObject["Total Families"];
         const incomePopulation = dataObject[groupLabel];
 
-        resultString += 
-        `<p> Income Bracket: ${groupLabel} </p>
-        <p> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
+        resultString += `<p> Income Bracket: ${groupLabel} </p>
+        <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
         <p> Families in Income Bracket: ${incomePopulation} </p>
-        <p> Total Families: ${totalPopulation} </p>`
+        <p> Total Families: ${totalPopulation} </p>`;
         break;
       }
       case "Education Attainment": {
         const educationGroupPopulation = dataObject[groupLabel];
         console.log(groupLabel);
         console.log(dataObject[groupLabel]);
-        const totalPopulation = dataObject["Total population 25 years and over"];
+        const totalPopulation =
+          dataObject["Total population 25 years and over"];
 
-        resultString += 
-        `<p> Highest Education Attained: ${groupLabel} </p>
-        <p> Percent of Population: ${(value*100).toFixed(2) + "%"} </p>
+        resultString += `<p> Highest Education Attained: ${groupLabel} </p>
+        <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
         <p> Number of Adults: ${educationGroupPopulation} </p>
-        <p> Total Population over 25: ${totalPopulation} </p>`
+        <p> Total Population over 25: ${totalPopulation} </p>`;
         break;
       }
       default:
         console.log("ERROR: SHOULD NEVER REACH HERE");
-        resultString =  "ERROR";
+        resultString = "ERROR";
     }
 
     return resultString;
@@ -520,7 +524,7 @@ function initializeEventListeners() {
       ...defaultNeighborhoods,
     ]);
     svgs.forEach((svg) => {
-      svg.filterData(neighborhoodsSelected);
+      svg.filterData(currNeighborhoods);
       svg.update();
     });
   });
@@ -531,17 +535,16 @@ function updateSecondaryCharts() {
     ...selectedDistricts,
     ...defaultNeighborhoods,
   ]);
+  // console.log(`currNeighborhoods ${currNeighborhoods}`);
   svgs.forEach((svg) => {
     svg.filterData(currNeighborhoods);
     svg.update();
   });
 }
 
-
-
-function createSvg() {
+function createSvg(containerId) {
   const svg = d3
-    .select("#side-charts")
+    .select(`#${containerId}`)
     .append("svg")
     .attr("width", barWidth)
     .attr("height", barHeight)
@@ -552,25 +555,86 @@ function createSvg() {
   return svg;
 }
 
+function addTabsChart(id, tabName, active = false) {
+  // <li class="nav-item" role="presentation">
+  //   <button
+  //     class="nav-link active"
+  //     id="home-tab"
+  //     data-bs-toggle="tab"
+  //     data-bs-target="#home"
+  //     type="button"
+  //     role="tab"
+  //     aria-controls="home"
+  //     aria-selected="true"
+  //   >
+  //     Home
+  //   </button>
+  // </li>;
+
+  // <div
+  //   class="tab-pane fade show active"
+  //   id="home"
+  //   role="tabpanel"
+  //   aria-labelledby="home-tab"
+  // >
+  //   home
+  // </div>;
+  const listElement = document.createElement("li");
+  listElement.classList.add("nav-item");
+  listElement.setAttribute("role", "presentation");
+  const buttonElement = document.createElement("button");
+  buttonElement.classList.add("nav-link");
+  buttonElement.setAttribute("id", `${id}-tab`);
+  buttonElement.setAttribute("data-bs-toggle", "tab");
+  buttonElement.setAttribute("data-bs-target", `#${id}`);
+  buttonElement.setAttribute("type", "button");
+  buttonElement.setAttribute("role", "tab");
+  buttonElement.setAttribute("aria-controls", id);
+  const textElement = document.createTextNode(tabName);
+  buttonElement.appendChild(textElement);
+  listElement.appendChild(buttonElement);
+
+  tabsElement.appendChild(listElement);
+
+  const divElement = document.createElement("div");
+  divElement.classList.add("tab-pane");
+  divElement.classList.add("fade");
+  divElement.setAttribute("id", id);
+  divElement.setAttribute("role", "tabpanel");
+  divElement.setAttribute("aria-labelledby", `${id}-tab`);
+
+  tabsContentElement.appendChild(divElement);
+
+  if (active) {
+    buttonElement.classList.add("active");
+    buttonElement.setAttribute("aria-selected", "true");
+
+    divElement.classList.add("show");
+    divElement.classList.add("active");
+  }
+}
+
 function getDemographicsData() {
   //age
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_age.csv"
   ).then((allData) => {
-    const svg = createSvg();
-    sampleData = allData;
-    initConstants();
-    // initializeHTMLElements();
-    // initializeEventListeners();
-
+    const id = "age_group";
+    const labelGroupName = "Age Group (in Years)";
     const labelGroups = [
       "0-17 years %",
       "18-34 years %",
       "35-59 years %",
       "60 and over %",
     ];
+    const lowerLabels = ["0-17", "18-34", "35-59", "60 and over"];
 
-    let lowerLabels = ["0-17", "18-34", "35-59", "60 and Over"];
+    addTabsChart(id, labelGroupName, true);
+    const svg = createSvg(id);
+    sampleData = allData;
+    initConstants();
+    // initializeHTMLElements();
+    // initializeEventListeners();
 
     const svgObj = new SVG(
       svg,
@@ -580,11 +644,13 @@ function getDemographicsData() {
       lowerLabels
     );
     svgs.push(svgObj);
+    console.log(svg["_groups"]);
     //race
     d3.csv(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
     ).then((allData) => {
-      const svg = createSvg();
+      const id = "race_group";
+      const labelGroupName = "Race";
       const labelGroups = [
         "White Alone %",
         "Black/African-American %",
@@ -592,31 +658,38 @@ function getDemographicsData() {
         "Asian alone %",
         "Other Races %",
       ];
-      let lowerLabels = [
+      const lowerLabels = [
         "White Alone",
         "Black/African-American",
         "Hispanic",
         "Asian alone",
         "Other Races",
       ];
+
+      addTabsChart(id, labelGroupName);
+      const svg = createSvg(id);
       const svgObj = new SVG(svg, allData, labelGroups, "Race", lowerLabels);
       svgs.push(svgObj);
       d3.csv(
         "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_poverty_rate.csv"
       ).then((allData) => {
-        const svg = createSvg();
+        const id = "poverty_group";
+        const labelGroupName = "Poverty Rate by Age";
         const labelGroups = [
           "0 to 17 Poverty Rate",
           "18 to 34 Poverty Rate",
           "35 to 64 years Poverty Rate",
           "65 years and over Poverty Rate",
         ];
-        let lowerLabels = [
+        const lowerLabels = [
           "0 to 17",
           "18 to 34",
           "35 to 64",
           "65 years and over ",
         ];
+
+        addTabsChart(id, labelGroupName);
+        const svg = createSvg(id);
         const svgObj = new SVG(
           svg,
           allData,
@@ -629,7 +702,8 @@ function getDemographicsData() {
         d3.csv(
           "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_family_income.csv"
         ).then((allData) => {
-          const svg = createSvg();
+          const id = "income_group";
+          const labelGroupName = "Income";
           const labelGroups = [
             "$24,999 and under %",
             "$25,000 to $49,999 %",
@@ -642,6 +716,9 @@ function getDemographicsData() {
             "$50,000 to $99,999",
             "$100,000+",
           ];
+
+          addTabsChart(id, labelGroupName);
+          const svg = createSvg(id);
           const svgObj = new SVG(
             svg,
             allData,
@@ -676,13 +753,11 @@ function getDemographicsData() {
               lowerLabels
             );
             svgs.push(svgObj);
-            
           });
         });
       });
     });
   });
 }
-
 
 getDemographicsData();
