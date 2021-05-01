@@ -34,17 +34,17 @@ let neighborhoodToNeighborhoodNameMap = {
 const colorScheme = [
   "#a6cee3",
   "#1f78b4",
-  "#b2df8a",
+  "#193601", //
   "#33a02c",
   "#fb9a99",
   "#e31a1c",
   "#fdbf6f",
   "#ff7f00",
-  "#cab2d6",
+  "#051085", 
   "#6a3d9a",
-  "#ffff99",
+  "#8c8c30",
   "#b15928",
-  "#000000",
+  "#A9A9A9",
 ];
 const neighborhoodFiltersDivElement = document.querySelector(
   "#neighborhood-type-filters"
@@ -730,7 +730,8 @@ function getDemographicsData() {
           d3.csv(
             "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_educational_attainment.csv"
           ).then((allData) => {
-            const svg = createSvg();
+            const id = "education_attainment"
+            const labelGroupName = "Education Attainment"
             const labelGroups = [
               "Less than High School %",
               "High School Graduate or GED %",
@@ -745,6 +746,8 @@ function getDemographicsData() {
               "Bachelor's Degree",
               "Master's Degree/More",
             ];
+            addTabsChart(id, labelGroupName);
+            const svg = createSvg(id);
             const svgObj = new SVG(
               svg,
               allData,

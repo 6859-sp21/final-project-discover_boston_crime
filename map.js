@@ -6,6 +6,7 @@ const filtersSelected = new Map();
 let selectedDistricts = new Set();
 const hourBins = 4;
 const hourIdToBins = new Map();
+const MIN_THRESHOLD = 5;
 
 const width = 700;
 const height = 580;
@@ -98,6 +99,7 @@ function initializeMapSvg() {
               .attr("fill", "black")
               .attr("stroke", "white")
               .style("stroke-width", "3px")
+              .attr("class", "district")
           );
       },
       function (update) {
@@ -119,7 +121,7 @@ function initializeMapSvg() {
       d3.select(this)
         .style("stroke", "white")
         .style("stroke-width", "3px")
-        .style("fill", selectedDistrictFillColor);
+        .style("fill", (d) => barColor(d.properties.ID));
 
       let districtToNeighborhoodMap = {
         A1: ["North End", "West End", "Downtown", "Beacon Hill"],
@@ -158,10 +160,9 @@ function initializeMapSvg() {
           .style("stroke", "white")
           .style("stroke-width", "3px")
           .style("fill", "black");
-
-        districtTooltip.transition().duration("0").style("opacity", 0);
-        districtTooltip.html("");
       }
+      districtTooltip.transition().duration("0").style("opacity", 0);
+      districtTooltip.html("");
     })
     .on("click", function (event, d) {
       if (selectedDistricts.has(d.properties.ID)) {
@@ -178,7 +179,7 @@ function initializeMapSvg() {
         d3.select(this)
           .style("stroke", "white")
           .style("stroke-width", "3px")
-          .style("fill", selectedDistrictFillColor);
+          .style("fill", (d) => barColor(d.properties.ID));
 
         selectedDistricts.add(d.properties.ID);
         //currNeighborhoods.push(d.properties.ID);
@@ -253,11 +254,22 @@ function initializeMapScales() {
 }
 
 function initializeMapDataTransforms() {
+  const offenseCodeCountMap = new Map();
   data.forEach((d) => {
-    if (!offenseTypes.has(d["Aggregated Offence Code Group"])) {
-      offenseTypes.add(d["Aggregated Offence Code Group"]);
+    if (offenseCodeCountMap[d["Aggregated Offence Code Group"]] !== undefined){
+      offenseCodeCountMap[d["Aggregated Offence Code Group"]] += 1;
+    }
+    else{
+      offenseCodeCountMap[d["Aggregated Offence Code Group"]] = 1;
     }
   });
+
+  Object.keys(offenseCodeCountMap).forEach((d) => {
+    if (offenseCodeCountMap[d] >= MIN_THRESHOLD){
+      offenseTypes.add(d);
+    } 
+  })
+
 
   filtersSelected["Aggregated Offence Code Group"] = new Set();
 
@@ -422,7 +434,7 @@ function getMapData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
-    data = allData.slice(0, 1000);
+    data = allData.slice(0, 4165); // 6/15/2015 - 7/15/2015
     currData = data;
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"

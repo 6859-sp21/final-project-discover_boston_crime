@@ -3,6 +3,10 @@
     pointer-events: none;
 }
 
+.crimePoints {
+    pointer-events: none;
+}
+
 body {
     padding: 2em;
 }
@@ -14,6 +18,7 @@ body {
 }
 
 .row {
+    width: 100%;
     display: flex;
     flex-direction: row;
 }
@@ -27,4 +32,12 @@ body {
 
 .tooltipp {
     margin: 0,0,0,0;
+}
+
+.nav-link, .district {
+    cursor: pointer;
+}
+
+h1 {
+    padding-left: 0;
 }
