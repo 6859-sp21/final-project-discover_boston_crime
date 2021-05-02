@@ -34,12 +34,12 @@ let neighborhoodToNeighborhoodNameMap = {
 const colorScheme = [
   "#a6cee3",
   "#1f78b4",
-  "#193601", //
+  "#193601", 
   "#33a02c",
-  "#fb9a99",
+  "#27ab9c",//
   "#e31a1c",
-  "#fdbf6f",
-  "#ff7f00",
+  "#593c1e",
+  "#1e0045",
   "#051085", 
   "#6a3d9a",
   "#8c8c30",
@@ -226,12 +226,12 @@ class SVG {
     this.svg
       .append("text")
       .call(d3.axisLeft(this.y))
-      .attr("transform", `translate(0, ${barHeight / 2.25}) rotate(-90)`)
+      .attr("transform", `translate(0, ${barHeight / 3.5}) rotate(-90)`)
       .attr("text-anchor", "end")
       .attr("fill", "black")
       .attr("font-size", "14px")
       .attr("font-weight", "bold")
-      .text("Percent");
+      .text("Percent of District Population");
   }
 
   update() {
