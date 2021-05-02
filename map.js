@@ -28,7 +28,7 @@ const pointTooltipD3Element = d3.select("#point-tooltip");
 const offenseFiltersDivElement = document.querySelector(
   "#offense-type-filters"
 );
-const timeFiltersDivElement = document.querySelector("#time-filters");
+// const timeFiltersDivElement = document.querySelector("#time-filters");
 const districtTooltip = d3.select("#district-tooltip");
 
 //from script4.js
@@ -137,11 +137,16 @@ function initializeMapSvg() {
         E13: ["Jamaica Plain"],
         E18: ["Hyde Park"],
       };
+
+      let clickInstruction = selectedDistricts.has(d.properties.ID)
+        ? `<p class="italics"> Click to remove demographics information </p>`
+        : `<p class="italics"> Click to add demographics information </p>`;
       const tooltipString = `<div> 
               <p> Police District: ${d.properties.ID} </p>
               <p> Neighborhoods: ${districtToNeighborhoodMap[d.properties.ID]
                 .sort()
                 .join(", ")} </p>
+              ${clickInstruction}
               </div>`;
       //tooltip.transition().duration(50).style("opacity", 0.95);
 
@@ -256,39 +261,37 @@ function initializeMapScales() {
 function initializeMapDataTransforms() {
   const offenseCodeCountMap = new Map();
   data.forEach((d) => {
-    if (offenseCodeCountMap[d["Aggregated Offence Code Group"]] !== undefined){
+    if (offenseCodeCountMap[d["Aggregated Offence Code Group"]] !== undefined) {
       offenseCodeCountMap[d["Aggregated Offence Code Group"]] += 1;
-    }
-    else{
+    } else {
       offenseCodeCountMap[d["Aggregated Offence Code Group"]] = 1;
     }
   });
 
   Object.keys(offenseCodeCountMap).forEach((d) => {
-    if (offenseCodeCountMap[d] >= MIN_THRESHOLD){
+    if (offenseCodeCountMap[d] >= MIN_THRESHOLD) {
       offenseTypes.add(d);
-    } 
-  })
-
+    }
+  });
 
   filtersSelected["Aggregated Offence Code Group"] = new Set();
 
-  for (i = 0; i < hourBins; i++) {
-    hourIdToBins[i] = [(i * 24) / hourBins, ((i + 1) * 24) / hourBins - 1];
-  }
+  // for (i = 0; i < hourBins; i++) {
+  //   hourIdToBins[i] = [(i * 24) / hourBins, ((i + 1) * 24) / hourBins - 1];
+  // }
 
-  filtersSelected["HOUR"] = new Set();
+  // filtersSelected["HOUR"] = new Set();
 
-  const hourIds = Object.keys(hourIdToBins);
+  // const hourIds = Object.keys(hourIdToBins);
 
-  data.forEach((d) => {
-    const hourOfOffense = +d["HOUR"];
-    const offenseHourId = hourIds.find((hourId) => {
-      [hourStart, hourEnd] = hourIdToBins[hourId];
-      return hourStart <= hourOfOffense && hourOfOffense <= hourEnd;
-    });
-    d["HOUR_ID"] = offenseHourId;
-  });
+  // data.forEach((d) => {
+  //   const hourOfOffense = +d["HOUR"];
+  //   const offenseHourId = hourIds.find((hourId) => {
+  //     [hourStart, hourEnd] = hourIdToBins[hourId];
+  //     return hourStart <= hourOfOffense && hourOfOffense <= hourEnd;
+  //   });
+  //   d["HOUR_ID"] = offenseHourId;
+  // });
 }
 
 function initializeMapHTMLElements() {
@@ -325,33 +328,33 @@ function initializeMapHTMLElements() {
     });
   });
 
-  Object.keys(hourIdToBins).forEach((id) => {
-    const buttonElement = document.createElement("button");
-    buttonElement.classList.add("btn");
-    buttonElement.classList.add("btn-outline-dark");
-    buttonElement.classList.add("time-filter");
-    buttonElement.setAttribute("data-bs-toggle", "button");
-    buttonElement.setAttribute("name", id);
-    const textElement = document.createTextNode(
-      `${hourIdToBins[id][0]} - ${hourIdToBins[id][1]}`
-    );
-    buttonElement.appendChild(textElement);
-    timeFiltersDivElement.appendChild(buttonElement);
+  // Object.keys(hourIdToBins).forEach((id) => {
+  //   const buttonElement = document.createElement("button");
+  //   buttonElement.classList.add("btn");
+  //   buttonElement.classList.add("btn-outline-dark");
+  //   buttonElement.classList.add("time-filter");
+  //   buttonElement.setAttribute("data-bs-toggle", "button");
+  //   buttonElement.setAttribute("name", id);
+  //   const textElement = document.createTextNode(
+  //     `${hourIdToBins[id][0]} - ${hourIdToBins[id][1]}`
+  //   );
+  //   buttonElement.appendChild(textElement);
+  //   timeFiltersDivElement.appendChild(buttonElement);
 
-    buttonElement.addEventListener("mouseover", () => {
-      // console.log(`hovering over hour ${id}`);
-      d3.selectAll(`.hour_${id}`)
-        .attr("fill", selectedPointColor)
-        .attr("d", () => d3.symbol().size(25)());
-    });
+  //   buttonElement.addEventListener("mouseover", () => {
+  //     // console.log(`hovering over hour ${id}`);
+  //     d3.selectAll(`.hour_${id}`)
+  //       .attr("fill", selectedPointColor)
+  //       .attr("d", () => d3.symbol().size(25)());
+  //   });
 
-    buttonElement.addEventListener("mouseout", () => {
-      // console.log(`hovering over hour ${id}`);
-      d3.selectAll(`.hour_${id}`)
-        .attr("fill", "white")
-        .attr("d", () => d3.symbol().size(5)());
-    });
-  });
+  //   buttonElement.addEventListener("mouseout", () => {
+  //     // console.log(`hovering over hour ${id}`);
+  //     d3.selectAll(`.hour_${id}`)
+  //       .attr("fill", "white")
+  //       .attr("d", () => d3.symbol().size(5)());
+  //   });
+  // });
 }
 
 function initializeMapEventListeners() {
@@ -406,20 +409,20 @@ function filterMapData() {
     return skip !== true;
   });
 
-  currData = currData.filter((d) => {
-    let skip = true;
-    if (filtersSelected["HOUR"].size === 0) {
-      return true;
-    }
-    for (let hourId of filtersSelected["HOUR"]) {
-      [hourStart, hourEnd] = hourIdToBins[hourId];
-      if (hourStart <= +d["HOUR"] && +d["HOUR"] <= hourEnd) {
-        skip = false;
-        break;
-      }
-    }
-    return skip !== true;
-  });
+  // currData = currData.filter((d) => {
+  //   let skip = true;
+  //   if (filtersSelected["HOUR"].size === 0) {
+  //     return true;
+  //   }
+  //   for (let hourId of filtersSelected["HOUR"]) {
+  //     [hourStart, hourEnd] = hourIdToBins[hourId];
+  //     if (hourStart <= +d["HOUR"] && +d["HOUR"] <= hourEnd) {
+  //       skip = false;
+  //       break;
+  //     }
+  //   }
+  //   return skip !== true;
+  // });
 }
 
 function getXCoordinate(d) {
