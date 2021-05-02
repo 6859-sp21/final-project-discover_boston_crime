@@ -12,7 +12,7 @@ const width = 700;
 const height = 580;
 const albersProjection = d3
   .geoAlbers()
-  .scale(190000)
+  .scale(170000)
   .rotate([71.057, 0])
   .center([0, 42.313])
   .translate([width / 2, height / 2]);
