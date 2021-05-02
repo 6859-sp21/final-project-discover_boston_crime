@@ -1,7 +1,7 @@
 //Sources: https://observablehq.com/@d3/grouped-bar-chart
 
-const width = 700;
-const height = 600;
+const width = 600;
+const height = 500;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 
 const neighborhoodFiltersDivElement = document.querySelector(

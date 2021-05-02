@@ -7,8 +7,8 @@ let neighborhoodsSelected = new Set();
 const tabsElement = document.querySelector("#myTab");
 const tabsContentElement = document.querySelector("#myTabContent");
 
-const barWidth = 700;
-const barHeight = 600;
+const barWidth = 475;
+const barHeight = 500;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 const svgs = [];
 let sampleData = null;
@@ -34,13 +34,13 @@ let neighborhoodToNeighborhoodNameMap = {
 const colorScheme = [
   "#a6cee3",
   "#1f78b4",
-  "#193601", 
+  "#193601",
   "#33a02c",
-  "#27ab9c",//
+  "#27ab9c", //
   "#e31a1c",
   "#593c1e",
   "#1e0045",
-  "#051085", 
+  "#051085",
   "#6a3d9a",
   "#8c8c30",
   "#b15928",
@@ -196,10 +196,18 @@ class SVG {
         return this.axisLabels[i];
       });
 
-    this.svg
+    // console.log("calling axis");
+
+    const newAxis = this.svg
       .append("g")
       .attr("transform", `translate(0,${barHeight - margin.bottom})`)
       .call(xAxis);
+
+    // const selection = newAxis.selectAll(".tick text");
+
+    // console.dir(selection);
+
+    // selection.call(wrap, 1);
   }
 
   legend() {
@@ -479,6 +487,41 @@ class SVG {
   }
 }
 
+// function wrap(text, width) {
+//   console.log(text, width);
+//   text.each(function () {
+//     let text = d3.select(this),
+//       words = text.text().split(/\s+/).reverse(),
+//       word,
+//       line = [],
+//       lineNumber = 0,
+//       lineHeight = 1.1, // ems
+//       y = text.attr("y"),
+//       dy = parseFloat(text.attr("dy")),
+//       tspan = text
+//         .text(null)
+//         .append("tspan")
+//         .attr("x", 0)
+//         .attr("y", y)
+//         .attr("dy", dy + "em");
+//     while ((word = words.pop())) {
+//       line.push(word);
+//       tspan.text(line.join(" "));
+//       if (tspan.node().getComputedTextLength() > width) {
+//         line.pop();
+//         tspan.text(line.join(" "));
+//         line = [word];
+//         tspan = text
+//           .append("tspan")
+//           .attr("x", 0)
+//           .attr("y", y)
+//           .attr("dy", ++lineNumber * lineHeight + dy + "em")
+//           .text(word);
+//       }
+//     }
+//   });
+// }
+
 function initConstants() {
   sampleData.forEach((d) => {
     allNeighborhoods.push(d["Neighborhood"]);
@@ -620,7 +663,7 @@ function getDemographicsData() {
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_age.csv"
   ).then((allData) => {
     const id = "age_group";
-    const labelGroupName = "Age Group (in Years)";
+    const labelGroupName = "Age Group";
     const labelGroups = [
       "0-17 years %",
       "18-34 years %",
@@ -674,7 +717,7 @@ function getDemographicsData() {
         "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_poverty_rate.csv"
       ).then((allData) => {
         const id = "poverty_group";
-        const labelGroupName = "Poverty Rate by Age";
+        const labelGroupName = "Poverty Rate";
         const labelGroups = [
           "0 to 17 Poverty Rate",
           "18 to 34 Poverty Rate",
@@ -730,8 +773,8 @@ function getDemographicsData() {
           d3.csv(
             "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_educational_attainment.csv"
           ).then((allData) => {
-            const id = "education_attainment"
-            const labelGroupName = "Education Attainment"
+            const id = "education_attainment";
+            const labelGroupName = "Education Attainment";
             const labelGroups = [
               "Less than High School %",
               "High School Graduate or GED %",
