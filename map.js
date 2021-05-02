@@ -6,7 +6,7 @@ const filtersSelected = new Map();
 let selectedDistricts = new Set();
 const hourBins = 4;
 const hourIdToBins = new Map();
-const MIN_THRESHOLD = 5;
+const MIN_THRESHOLD = 20;
 
 const width = 700;
 const height = 580;
