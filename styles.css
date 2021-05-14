@@ -77,3 +77,18 @@ article {
     margin: 0 auto;
     width: 33%;
 }
+
+#neighborhoods-per-district {
+    display: flex;
+    position: relative;
+}
+
+#neighborhoods-per-district svg {
+    position: sticky;
+    top: 30px;
+}
+
+#neighborhoods-per-district .description {
+    position: relative;
+}
+

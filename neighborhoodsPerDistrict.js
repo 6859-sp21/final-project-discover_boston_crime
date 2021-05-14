@@ -3,6 +3,11 @@ let svgNeighborhoodsPerDistrict = null;
 let gNeighborhoodsPerDistrict = null;
 const widthNeighborhoodsPerDistrict = 700;
 const heightNeighborhoodsPerDistrict = 580;
+let pathNeighborhoodsPerDistrict = null;
+let allDistrictsNeighborhoodsPerDistrict = [];
+let allNeighborhoodsNeighborhoodsPerDistrict = [];
+let dataNeighborhodosPerDistrict = [];
+
 const albersProjectionNeighborhoodsPerDistrict = d3
   .geoAlbers()
   .scale(170000)
@@ -22,27 +27,27 @@ function initializeMapSvg() {
 
   gNeighborhoodsPerDistrict = svgNeighborhoodsPerDistrict.append("g");
 
-  const path = d3
+  pathNeighborhoodsPerDistrict = d3
     .geoPath()
     .projection(albersProjectionNeighborhoodsPerDistrict);
 
-  const allDistricts = topojson.feature(
+  allDistrictsNeighborhoodsPerDistrict = topojson.feature(
     policeDistricts,
     policeDistricts.objects["Police_Districts"]
   ).features;
 
-  const allNeighborhoods = topojson.feature(
+  allNeighborhoodsNeighborhoodsPerDistrict = topojson.feature(
     neighborhoodsInDistricts,
     neighborhoodsInDistricts.objects["Boston_Neighborhoods"]
   ).features;
+}
 
-  let data = [...allNeighborhoods, ...allDistricts];
-
+function updateMapNeighborhoodsPerDistrict() {
   let drawDistricts = gNeighborhoodsPerDistrict.selectAll("path").data(data);
 
   drawDistricts
     .join(
-      function (enter, d) {
+      function (enter) {
         return enter.append("path").call((enter) =>
           enter
             .transition()
@@ -79,73 +84,60 @@ function initializeMapSvg() {
         );
       },
       function (update) {
-        return update.call((update) =>
-          update
-            .transition()
-            .duration(1000)
-            .attr("fill", "black")
-            .attr("stroke", "white")
-            .style("stroke-width", "3px")
-        );
+        return update;
       },
       function (exit) {
         return exit.remove();
       }
     )
-    .attr("d", path);
+    .attr("d", pathNeighborhoodsPerDistrict);
+}
 
-  //   g.selectAll("path")
-  //     .data(allNeighborhoods)
-  //     .enter()
-  //     .append("path")
-  //     .attr("fill", "#ccc")
-  //     .attr("stroke", "#333")
-  //     .attr("d", path);
-  // .on("mouseover", function (event, d) {
-  //   d3.select(this)
-  //     .style("stroke", "white")
-  //     .style("stroke-width", "3px")
-  //     .style("fill", (d) => barColor(d.properties.ID));
+function initializeScroller() {
+  // initialize the scrollama
+  let scroller = scrollama();
 
-  //   let districtToNeighborhoodMap = {
-  //     A1: ["North End", "West End", "Downtown", "Beacon Hill"],
-  //     A7: ["East Boston"],
-  //     A15: ["Charlestown"],
-  //     B2: ["Mission Hill", "Roxbury", "Longwood"],
-  //     B3: ["Mattapan"],
-  //     C6: ["South Boston", "South Boston Waterfront"],
-  //     C11: ["Dorchester"],
-  //     D4: ["Fenway", "Back Bay", "South End"],
-  //     D14: ["Allston", "Brighton"],
-  //     E5: ["West Roxbury", "Roslindale"],
-  //     E13: ["Jamaica Plain"],
-  //     E18: ["Hyde Park"],
-  //   };
+  // scrollama event handlers
+  function handleStepEnter(response) {
+    // response = { element, direction, index }
+    console.log(`scroller entering`);
+    console.log(response);
+    // add to color to current step
+    response.element.classList.add("is-active");
+    data =
+      response.index === 0
+        ? [...allNeighborhoodsNeighborhoodsPerDistrict]
+        : [
+            ...allNeighborhoodsNeighborhoodsPerDistrict,
+            ...allDistrictsNeighborhoodsPerDistrict,
+          ];
 
-  //   const tooltipString = `<div>
-  //           <p> Police District: ${d.properties.ID} </p>
-  //           <p> Neighborhoods: ${districtToNeighborhoodMap[d.properties.ID]
-  //             .sort()
-  //             .join(", ")} </p>
-  //           </div>`;
+    updateMapNeighborhoodsPerDistrict();
+  }
 
-  //   districtTooltip
-  //     .html(`<div><p> ${tooltipString} </p><div>`)
-  //     .transition()
-  //     .duration(300)
-  //     .style("opacity", 0.9)
-  //     .style("left", event.pageX + "px")
-  //     .style("top", event.pageY + "px")
-  //     .style("background", "bisque");
-  // })
-  // .on("mouseout", function (event, d) {
-  //   d3.select(this)
-  //     .style("stroke", "white")
-  //     .style("stroke-width", "3px")
-  //     .style("fill", "black");
-  //   districtTooltip.transition().duration("0").style("opacity", 0);
-  //   districtTooltip.html("");
-  // });
+  function handleStepExit(response) {
+    // response = { element, direction, index }
+    console.log(`scroller exiting`);
+    console.log(response);
+    // remove color from current step
+    response.element.classList.remove("is-active");
+  }
+
+  console.log(`initializing scrollama for neighborhoods per district`);
+  // 1. setup the scroller with the bare-bones options
+  // 		this will also initialize trigger observations
+  // 2. bind scrollama event handlers (this can be chained like below)
+  scroller
+    .setup({
+      step: "#neighborhoods-per-district .description .step",
+      debug: true, //set to true to see the offset
+      offset: 0.33, //how far into the element the handler triggers
+    })
+    .onStepEnter(handleStepEnter)
+    .onStepExit(handleStepExit);
+
+  // 3. setup resize event
+  window.addEventListener("resize", scroller.resize);
 }
 
 function getNeighborhoodsPerDistrictData() {
@@ -159,6 +151,7 @@ function getNeighborhoodsPerDistrictData() {
     ).then((neighborhoodsTopojson) => {
       neighborhoodsInDistricts = neighborhoodsTopojson;
       console.log(neighborhoodsInDistricts);
+      initializeScroller();
       initializeMapSvg();
     });
   });

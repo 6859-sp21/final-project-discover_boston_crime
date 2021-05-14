@@ -3,7 +3,7 @@ const article = scrolly.querySelector("article");
 const step = article.querySelectorAll(".step");
 
 // initialize the scrollama
-var scroller = scrollama();
+let scroller = scrollama();
 
 // scrollama event handlers
 function handleStepEnter(response) {
