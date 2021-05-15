@@ -4,6 +4,8 @@
 	<title>Explore Boston's Neighborhood Inequity</title>
     <script src="https://d3js.org/d3.v6.js"></script>
     <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://unpkg.com/intersection-observer"></script>
+    <script src="https://unpkg.com/scrollama"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -38,8 +40,39 @@
     <div>
         <a href="https://data.boston.gov/dataset/neighborhood-demographics">Boston Demographics Dataset</a>
     </div>
+    <div id="neighborhoods-per-district">
+        <div class="description">
+            <div class="step" style="padding: 400px 0px;">
+                <p>Neighborhoods</p>
+            </div>
+            <div class="step" style="padding: 400px 0px;">
+                <p>Police Districts</p>
+            </div>
+        </div>
+    </div>
+    <div id="map-choropleth">
+
+    </div>
+    <section id="scrolly">
+        <article>
+          <div class="step" data-step="1" style="padding: 215px 0px;">
+            <p>STEP 1</p>
+          </div>
+          <div class="step" data-step="2" style="padding: 205px 0px;">
+            <p>STEP 2</p>
+          </div>
+          <div class="step" data-step="3" style="padding: 131px 0px;">
+            <p>STEP 3</p>
+          </div>
+          <div class="step" data-step="4" style="padding: 250px 0px;">
+            <p>STEP 4</p>
+          </div>
+        </article>
+    </section>
+      
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
     <script src="map.js"></script>
+    <script src="scroller.js"></script>
     
 
     
