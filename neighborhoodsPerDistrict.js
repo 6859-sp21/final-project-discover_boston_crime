@@ -43,7 +43,9 @@ function initializeMapSvg() {
 }
 
 function updateMapNeighborhoodsPerDistrict() {
-  let drawDistricts = gNeighborhoodsPerDistrict.selectAll("path").data(data);
+  let drawDistricts = gNeighborhoodsPerDistrict
+    .selectAll("path")
+    .data(dataNeighborhodosPerDistrict);
 
   drawDistricts
     .join(
@@ -104,7 +106,7 @@ function initializeScroller() {
     console.log(response);
     // add to color to current step
     response.element.classList.add("is-active");
-    data =
+    dataNeighborhodosPerDistrict =
       response.index === 0
         ? [...allNeighborhoodsNeighborhoodsPerDistrict]
         : [
@@ -153,6 +155,13 @@ function getNeighborhoodsPerDistrictData() {
       console.log(neighborhoodsInDistricts);
       initializeScroller();
       initializeMapSvg();
+
+      console.log("adding mapChoropleth.js in neighborhoodsPerDistrict.js");
+      let head = document.getElementsByTagName("head")[0];
+      let script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "mapChoropleth.js";
+      head.appendChild(script);
     });
   });
 }

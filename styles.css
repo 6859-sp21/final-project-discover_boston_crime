@@ -78,6 +78,8 @@ article {
     width: 33%;
 }
 
+/* neighborhoods per district */
+
 #neighborhoods-per-district {
     display: flex;
     position: relative;
@@ -92,3 +94,9 @@ article {
     position: relative;
 }
 
+
+/* choropleth */
+
+#map-choropleth svg {
+    overflow: visible;
+}
