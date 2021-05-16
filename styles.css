@@ -94,9 +94,22 @@ article {
     position: relative;
 }
 
+#neighborhoods-per-district #police-districts {
+    display: flex;
+}
+
+#police-districts-neighborhoods svg {
+    overflow: visible !important;
+}
 
 /* choropleth */
 
 #map-choropleth svg {
     overflow: visible;
 }
+
+.hidden {
+    display: none;
+}
+
+

@@ -6,7 +6,28 @@ const heightNeighborhoodsPerDistrict = 580;
 let pathNeighborhoodsPerDistrict = null;
 let allDistrictsNeighborhoodsPerDistrict = [];
 let allNeighborhoodsNeighborhoodsPerDistrict = [];
-let dataNeighborhodosPerDistrict = [];
+let dataNeighborhoodsPerDistrict = [];
+const districtToNeighborhoodMapNPD = {
+  A1: ["North End", "West End", "Downtown", "Beacon Hill"],
+  A7: ["East Boston"],
+  A15: ["Charlestown"],
+  B2: ["Mission Hill", "Roxbury", "Longwood"],
+  B3: ["Mattapan"],
+  C6: ["South Boston", "South Boston Waterfront"],
+  C11: ["Dorchester"],
+  D4: ["Fenway", "Back Bay", "South End"],
+  D14: ["Allston", "Brighton"],
+  E5: ["West Roxbury", "Roslindale"],
+  E13: ["Jamaica Plain"],
+  E18: ["Hyde Park"],
+};
+let colorNPD = null;
+
+const neighborhoodToDistrictMapNPD = new Map();
+const districtsElementNPD = document.querySelector("#police-districts-list");
+const neighborhoodsContainerNPD = document.querySelector(
+  "#police-districts-neighborhoods"
+);
 
 const albersProjectionNeighborhoodsPerDistrict = d3
   .geoAlbers()
@@ -17,6 +38,110 @@ const albersProjectionNeighborhoodsPerDistrict = d3
     widthNeighborhoodsPerDistrict / 2,
     heightNeighborhoodsPerDistrict / 2,
   ]);
+
+function initializeConstantsNeighborhoodsPerDistrict() {
+  Object.keys(districtToNeighborhoodMapNPD).forEach((district) => {
+    const neighborhoods = districtToNeighborhoodMapNPD[district];
+    neighborhoods.forEach((neighborhood) => {
+      neighborhoodToDistrictMapNPD[neighborhood] = district;
+    });
+  });
+
+  const allNeighborhoods = Object.keys(districtToNeighborhoodMapNPD).flatMap(
+    (district) => districtToNeighborhoodMapNPD[district]
+  );
+
+  colorNPD = d3.scaleOrdinal(d3.schemeTableau10).domain(allNeighborhoods);
+}
+
+function initializeHTMLElementsNPD() {
+  Object.keys(districtToNeighborhoodMapNPD).forEach((district) => {
+    const districtElement = document.createElement("p");
+    const districtName = document.createTextNode(district);
+    districtElement.appendChild(districtName);
+    districtElement.addEventListener("mouseover", (d) => {
+      console.log(district);
+      console.log(`${district}-neighborhood`);
+      d3.selectAll(`.${district}-neighborhood`).attr("fill", (d) => {
+        return colorNPD(d.properties["Name"]);
+      });
+      const neighborhoodsDiv = document.querySelector(
+        `.${district}-neighborhood-list`
+      );
+      neighborhoodsDiv.classList.remove("hidden");
+    });
+    districtElement.addEventListener("mouseout", (d) => {
+      console.log(district);
+      console.log(`${district}-neighborhood`);
+      d3.selectAll(`.${district}-neighborhood`).attr("fill", "black");
+      const neighborhoodsDiv = document.querySelector(
+        `.${district}-neighborhood-list`
+      );
+      neighborhoodsDiv.classList.add("hidden");
+    });
+    districtsElementNPD.appendChild(districtElement);
+
+    const neighborhoodsSvg = document.createElement("div");
+    neighborhoodsSvg.classList.add("hidden");
+    neighborhoodsSvg.classList.add(`${district}-neighborhood-list`);
+    // const neighborhoods = districtToNeighborhoodMapNPD[district];
+    // neighborhoods.forEach((neighborhood) => {
+    //   const neighborhoodElement = document.createElement("p");
+    //   const neighborhoodText = document.createTextNode(neighborhood);
+    //   neighborhoodElement.appendChild(neighborhoodText);
+    //   neighborhoodsDiv.appendChild(neighborhoodElement);
+    // });
+
+    const svg = d3
+      .select(neighborhoodsSvg)
+      .append("svg")
+      .attr("width", 200)
+      .attr("height", 100);
+
+    const neighborhoods = districtToNeighborhoodMapNPD[district];
+
+    const legend = svg
+      .append("g")
+      .attr("class", "legend")
+      .attr("transform", `translate(100,0)`)
+      .attr("text-anchor", "end");
+
+    const legendData = legend.selectAll("g").data(neighborhoods);
+    // .join("g")
+
+    console.log(colorNPD.domain().slice());
+    console.dir(legendData);
+
+    const legendUpdate = legendData
+      .join(
+        (enter) => {
+          const e = enter.append("g");
+          e.append("rect")
+            .attr("x", 15)
+            .attr("width", 25)
+            .attr("height", 25)
+            .attr("fill", (d) => {
+              console.log(d);
+              return colorNPD(d);
+            });
+          e.append("text")
+            .attr("x", 10)
+            .attr("y", 9.5)
+            .attr("dy", "0.55em")
+            .text((d) => d)
+            .attr("text-anchor", "end");
+          return e;
+        },
+        (update) => update,
+        (exit) => {
+          exit.remove();
+        }
+      )
+      .attr("transform", (d, i) => `translate(0,${i * 30})`);
+
+    neighborhoodsContainerNPD.appendChild(neighborhoodsSvg);
+  });
+}
 
 function initializeMapSvg() {
   svgNeighborhoodsPerDistrict = d3
@@ -45,7 +170,7 @@ function initializeMapSvg() {
 function updateMapNeighborhoodsPerDistrict() {
   let drawDistricts = gNeighborhoodsPerDistrict
     .selectAll("path")
-    .data(dataNeighborhodosPerDistrict);
+    .data(dataNeighborhoodsPerDistrict);
 
   drawDistricts
     .join(
@@ -82,7 +207,19 @@ function updateMapNeighborhoodsPerDistrict() {
                 return "3px";
               }
             })
-            .attr("class", "district")
+            .attr("class", (d) => {
+              if ("Neighborhood_ID" in d.properties) {
+                console.log(d);
+                console.log("neighborhood", d.properties["Name"]);
+                return `${
+                  neighborhoodToDistrictMapNPD[d.properties["Name"]]
+                }-neighborhood`;
+              } else {
+                console.log(d);
+                console.log("district", d.properties["DISTRICT"]);
+                return d.properties["DISTRICT"];
+              }
+            })
         );
       },
       function (update) {
@@ -106,7 +243,7 @@ function initializeScroller() {
     console.log(response);
     // add to color to current step
     response.element.classList.add("is-active");
-    dataNeighborhodosPerDistrict =
+    dataNeighborhoodsPerDistrict =
       response.index === 0
         ? [...allNeighborhoodsNeighborhoodsPerDistrict]
         : [
@@ -153,6 +290,8 @@ function getNeighborhoodsPerDistrictData() {
     ).then((neighborhoodsTopojson) => {
       neighborhoodsInDistricts = neighborhoodsTopojson;
       console.log(neighborhoodsInDistricts);
+      initializeConstantsNeighborhoodsPerDistrict();
+      initializeHTMLElementsNPD();
       initializeScroller();
       initializeMapSvg();
 
