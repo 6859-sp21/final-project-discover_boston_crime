@@ -1,4 +1,4 @@
-#bar-tooltip, #point-tooltip, #district-tooltip  {
+#bar-tooltip, #point-tooltip, #district-tooltip, #pie-tooltip {
     position: absolute;
     pointer-events: none;
 }
