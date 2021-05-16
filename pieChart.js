@@ -22,9 +22,6 @@ function createPieChart(){
     // bostonData = raceData[0];
     // console.log(bostonData);
 
-    
-
-
     let pieFunc = d3.pie().value((d) =>  d.value);
     let arc = d3.arc()
     .innerRadius(0)

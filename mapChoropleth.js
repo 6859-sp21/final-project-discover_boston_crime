@@ -9,39 +9,60 @@ let svgChoropleth = null;
 let gChoropleth = null;
 console.log(d3.schemePurples);
 
-const colorChoropleth = d3.scaleQuantize(
-  [0, 1],
-  [
-    "#f7fbff",
-    "#e1edf8",
-    "#cadef0",
-    "#abcfe6",
-    "#82badb",
-    "#59a1cf",
-    "#3787c0",
-    "#1c6aaf",
-    "#0b4d94",
-    "#08306b",
-  ]
-);
+let colorChoropleth = null;
+const choroplethColors = [
+  "#f7fbff",
+  "#e1edf8",
+  "#cadef0",
+  "#abcfe6",
+  "#82badb",
+  "#59a1cf",
+  "#3787c0",
+  "#1c6aaf",
+  "#0b4d94",
+  "#08306b",
+];
+
+function initializeChoroplethColor() {
+  const maxVal = Math.ceil(d3.max(dataChoropleth.map(d => {
+    return d[AGE_GROUP_CHOROLOPLETH]
+  }))*10)/10;
+  
+
+  colorChoropleth =  d3.scaleQuantize(
+    [0, maxVal],
+    d3.schemeBlues[maxVal*10]
+  );
+
+  // colorChoropleth =  d3.scaleSequential()
+  //   .domain([0, maxVal])
+  //   .interpolator(d3.interpolateBlues);
+}
+
 function initializeMapSvgChoropleth() {
   svgChoropleth = d3
     .select("#map-choropleth")
     .append("svg")
     .attr("width", widthChoropleth)
     .attr("height", heightChoropleth);
+  
+  console.log(svgChoropleth);
 
   svgChoropleth
     .append("g")
     .attr("transform", "translate(610,20)")
-    .append(() =>
-      colorLegend({
+    .append(() => {
+      let colorLegendObject = colorLegend({
         color: colorChoropleth,
         title: AGE_GROUP_CHOROLOPLETH,
         width: 260,
         tickFormat: ".2f",
       })
-    );
+      console.log("FUCK")
+      console.log(colorLegendObject.name);
+      console.log(colorLegendObject)
+      return colorLegendObject
+    });
 
   gChoropleth = svgChoropleth.append("g");
 
@@ -96,6 +117,7 @@ function getDataChoropleth() {
       (d) => d["Neighborhood"]
     );
     console.log(neighborhoodToAgeGroupChoropleth);
+    initializeChoroplethColor()
     initializeMapSvgChoropleth();
   });
 }
@@ -271,5 +293,17 @@ function colorLegend({
         .text(title)
     );
 
+  function ramp(color, n = 256) {
+    const canvas = document.createElement("canvas")
+    const context = canvas.getContext("2d");
+    for (let i = 0; i < n; ++i) {
+      context.fillStyle = color(i / (n - 1));
+      context.fillRect(i, 0, 1, 1);
+    }
+    return canvas;
+  }
+
   return svg.node();
 }
+
+
