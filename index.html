@@ -10,11 +10,70 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Explore Boston's Neighborhood Inequity</h1>
-    <p>Filter crime incidents from 6/15/2015 - 7/15/2015 on a map and view demographics data for each district</p>
     <div id="point-tooltip"></div>
     <div id="district-tooltip"></div>
     <div id="bar-tooltip"></div>
+    <div id="pie-tooltip"></div>
+    <div id="title-page" class="section-1">
+        <h1>Explore Boston's Neighborhood Inequity</h1>
+        <p>Filter crime incidents from 6/15/2015 - 7/15/2015 on a map and view demographics data for each district</p>
+    </div>
+    <div id="neighborhoods-per-district">
+        <div class="description">
+            <div class="step" style="padding: 400px 0px;">
+                <p>Neighborhoods</p>
+            </div>
+            <div class="step" style="padding: 400px 0px;">
+                <p>Police Districts Blurb</p>
+            </div>
+            <div class="step" id="police-districts" style="padding: 400px 0px;">
+                <div id="police-districts-list">
+                    <p>Police Districts</p>
+                </div>
+                <div id="police-districts-neighborhoods">
+                    <p>Neighborhoods</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="crime-intro">
+        <div>
+            crime intro
+        </div>
+        <div id="crime-count-map">
+            
+        </div>
+    </div>
+    <div id="crime-type-description" class="section-2">
+        <p>Description of crime types</p>
+    </div>
+    <div id="crime-type-maps" class="section-1">
+        <div id="larceny-map">
+            <p>larceny</p>
+        </div>
+        <div id="disorderly-conduct-map">
+            <p>disorderly-conduct</p>
+        </div>
+    </div>
+    <div id="neighborhood-demographics-intro" class="section-2">
+        intro to neighborhood-demographics
+    </div>
+    <div id="demographics-overall" class="section-1">
+        <div>
+            description of pie
+        </div>
+        <div id="demographics-pie">
+
+        </div>
+    </div>
+    <div id="demographics-comparison" class="section-1">
+        <div id="white-map">
+            <p>white</p>
+        </div>
+        <div id="black-map">
+            <p>black</p>
+        </div>
+    </div>
     <div class="row">
         <div class="column" id="map">
             <div id="filters">
@@ -40,25 +99,7 @@
     <div>
         <a href="https://data.boston.gov/dataset/neighborhood-demographics">Boston Demographics Dataset</a>
     </div>
-    <div id="neighborhoods-per-district">
-        <div class="description">
-            <div class="step" style="padding: 400px 0px;">
-                <p>Neighborhoods</p>
-            </div>
-            <div class="step" id="police-districts" style="padding: 400px 0px;">
-                <div id="police-districts-list">
-                    <p>Police Districts</p>
-                </div>
-                <div id="police-districts-neighborhoods">
-                    <p>Neighborhoods</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="map-choropleth">
-
-    </div>
-    <section id="scrolly">
+    <!-- <section id="scrolly">
         <article>
           <div class="step" data-step="1" style="padding: 215px 0px;">
             <p>STEP 1</p>
@@ -73,11 +114,11 @@
             <p>STEP 4</p>
           </div>
         </article>
-    </section>
+    </section> -->
       
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
     <script src="map.js"></script>
-    <script src="scroller.js"></script>
+    <!-- <script src="scroller.js"></script> -->
     
 
     

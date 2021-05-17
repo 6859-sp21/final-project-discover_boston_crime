@@ -7,10 +7,6 @@
     pointer-events: none;
 }
 
-body {
-    padding: 0em 3em;
-}
-
 .bar-viz {
     padding: 2em;
     overflow: visible !important;
@@ -111,5 +107,34 @@ article {
 .hidden {
     display: none;
 }
+
+#title-page {
+    background-color: lightblue;
+    background-image: url("https://s3.amazonaws.com/iexplore_web/images/assets/000/000/480/original/Downtown-Robbie_Shade.jpg?1435246463");
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+}
+
+.section-1 {
+    height: 100vh;
+    width: 100%;
+}
+
+.section-2 {
+    height: 30vh;
+    width: 100%;
+}
+
+#crime-type-maps, #demographics-overall, #demographics-comparison, #crime-intro {
+    display: flex;
+}
+
+#crime-type-maps div, #demographics-overall div, #demographics-comparison div, #crime-intro div {
+    width: 50%;
+}
+
+
 
 

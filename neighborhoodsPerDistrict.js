@@ -1,8 +1,8 @@
 let neighborhoodsInDistricts = null;
 let svgNeighborhoodsPerDistrict = null;
 let gNeighborhoodsPerDistrict = null;
-const widthNeighborhoodsPerDistrict = 700;
-const heightNeighborhoodsPerDistrict = 580;
+const widthNeighborhoodsPerDistrict = 1000;
+const heightNeighborhoodsPerDistrict = window.innerHeight;
 let pathNeighborhoodsPerDistrict = null;
 let allDistrictsNeighborhoodsPerDistrict = [];
 let allNeighborhoodsNeighborhoodsPerDistrict = [];
@@ -31,7 +31,7 @@ const neighborhoodsContainerNPD = document.querySelector(
 
 const albersProjectionNeighborhoodsPerDistrict = d3
   .geoAlbers()
-  .scale(170000)
+  .scale(230000)
   .rotate([71.057, 0])
   .center([0, 42.313])
   .translate([
