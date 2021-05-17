@@ -8,7 +8,7 @@ let allDistrictsNeighborhoodsPerDistrict = [];
 let allNeighborhoodsNeighborhoodsPerDistrict = [];
 let dataNeighborhoodsPerDistrict = [];
 const districtToNeighborhoodMapNPD = {
-  A1: ["North End", "West End", "Downtown", "Beacon Hill"],
+  A1: ["North End", "West End", "Downtown", "Beacon Hill", "Chinatown", "Bay Village", "Leather District"],
   A7: ["East Boston"],
   A15: ["Charlestown"],
   B2: ["Mission Hill", "Roxbury", "Longwood"],
