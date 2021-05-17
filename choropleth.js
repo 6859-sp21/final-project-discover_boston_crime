@@ -112,8 +112,8 @@ class ChoroplethSVG {
 }
 
 
-function initializeChoroplethSVG(choroplethWidth = 580, choroplethHeight = 700) {
-    choroplethSVG = d3.select("#map-choropleth")
+function initializeChoroplethSVG(container, choroplethWidth = 580, choroplethHeight = 700) {
+    choroplethSVG = d3.select(container)
     .append("svg")
     .attr("width", choroplethWidth)
     .attr("height", choroplethHeight);
@@ -143,25 +143,25 @@ function getChoroplethData(){
     //race
     d3.csv("https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv")
     .then((raceData) => {
-        let whiteChoroplethSVG = initializeChoroplethSVG();
+        let whiteChoroplethSVG = initializeChoroplethSVG(//add container);
         let whiteFormattedData = initializeChoroplethData(raceData, "White Alone %")
         new ChoroplethSVG(whiteChoroplethSVG, whiteFormattedData, d3.schemeBlues, "Percent White Population in District", false)
 
-        let blackChoroplethSVG = initializeChoroplethSVG();
+        let blackChoroplethSVG = initializeChoroplethSVG(//add container);
         let blackFormattedData = initializeChoroplethData(raceData, "Black/African-American %")
         new ChoroplethSVG(blackChoroplethSVG, blackFormattedData, d3.schemePurples, "Percent Black Population in District", false)
         
         d3.csv("https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/boston_crimes_per_neighborhood.csv")
         .then((crimeData) => {
-            let totalCrimeChoroplethSVG = initializeChoroplethSVG();
+            let totalCrimeChoroplethSVG = initializeChoroplethSVG(//add container);
             let totalCrimeData = initializeChoroplethData(crimeData, "Total Crimes")
             new ChoroplethSVG(totalCrimeChoroplethSVG, totalCrimeData, d3.schemeBlues, "Total Crime", true)
 
-            let larcenyChoroplethSVG = initializeChoroplethSVG();
+            let larcenyChoroplethSVG = initializeChoroplethSVG(//add container);
             let larcenyCrimeData = initializeChoroplethData(crimeData, "Larceny %")
             new ChoroplethSVG(larcenyChoroplethSVG, larcenyCrimeData, d3.schemeBlues, "Larceny Percent of Total Crime", false)
 
-            let disorderlyConductChoroplethSVG = initializeChoroplethSVG();
+            let disorderlyConductChoroplethSVG = initializeChoroplethSVG(//add container);
             let disorderlyConductCrimeData = initializeChoroplethData(crimeData, "Disorderly Conduct %")
             new ChoroplethSVG(disorderlyConductChoroplethSVG, disorderlyConductCrimeData, d3.schemeReds, "Disorderly Conduct Percent of Total Crime", false)
 
