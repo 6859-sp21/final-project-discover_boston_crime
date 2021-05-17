@@ -31,6 +31,21 @@ const offenseFiltersDivElement = document.querySelector(
 // const timeFiltersDivElement = document.querySelector("#time-filters");
 const districtTooltip = d3.select("#district-tooltip");
 
+let crimeCountMap = {
+  "A1" : 0,
+  "A7" : 0,
+  "A15" :  0,
+  "B2" :  0,
+  "B3" :  0,
+  "C6" :  0,
+  "C11" :  0,
+  "D4" :  0,
+  "D14" :  0,
+  "E5" :  0,
+  "E13" :  0,
+  "E18" :  0
+}
+
 //from script4.js
 // const defaultNeighborhoods = new Set(["Boston"]);
 // const allNeighborhoods = [];
@@ -97,8 +112,8 @@ function initializeMapSvg() {
               .transition()
               .duration(1000)
               .attr("fill", "black")
-              .attr("stroke", "white")
-              .style("stroke-width", "3px")
+              .attr("stroke", "grey")
+              .style("stroke-width", "2px")
               .attr("class", "district")
           );
       },
@@ -109,7 +124,7 @@ function initializeMapSvg() {
             .duration(1000)
             .attr("fill", "black")
             .attr("stroke", "white")
-            .style("stroke-width", "3px")
+            .style("stroke-width", "2px")
         );
       },
       function (exit) {
@@ -146,6 +161,7 @@ function initializeMapSvg() {
               <p> Neighborhoods: ${districtToNeighborhoodMap[d.properties.ID]
                 .sort()
                 .join(", ")} </p>
+              <p> Crimes in District: ${crimeCountMap[d.properties.ID]}</p>
               ${clickInstruction}
               </div>`;
       //tooltip.transition().duration(50).style("opacity", 0.95);
@@ -162,8 +178,8 @@ function initializeMapSvg() {
     .on("mouseout", function (event, d) {
       if (!selectedDistricts.has(d.properties.ID)) {
         d3.select(this)
-          .style("stroke", "white")
-          .style("stroke-width", "3px")
+          .style("stroke", "grey")
+          .style("stroke-width", "2px")
           .style("fill", "black");
       }
       districtTooltip.transition().duration("0").style("opacity", 0);
@@ -172,8 +188,8 @@ function initializeMapSvg() {
     .on("click", function (event, d) {
       if (selectedDistricts.has(d.properties.ID)) {
         d3.select(this)
-          .style("stroke", "white")
-          .style("stroke-width", "3px")
+          .style("stroke", "grey")
+          .style("stroke-width", "2px")
           .style("fill", "black");
 
         selectedDistricts.delete(d.properties.ID);
@@ -200,18 +216,31 @@ function renderMapPoints() {
     .selectAll("path.crimePoints")
     .data(currData, (d) => d["INCIDENT_NUMBER"]);
 
-  // console.dir(points);
+  //console.dir(points._enter);
 
   points
     .join(
       function (enter) {
-        return enter.append("path");
+        console.log("FUCK")
+        console.log(enter);
+        return enter.append("path")
+        .attr("class", d => {
+          const pointDistrict = d["DISTRICT"];
+          crimeCountMap[pointDistrict] ++;
+          return "";
+        });
       },
       function (update) {
         return update;
       },
       function (exit) {
-        return exit.remove();
+        return exit.remove()
+        .attr("class", d => {
+          const pointDistrict = d["DISTRICT"];
+          crimeCountMap[pointDistrict] --;
+          return "";
+        });
+        ;
       }
     )
     .attr(
@@ -369,6 +398,7 @@ function initializeMapEventListeners() {
     }
     filterMapData();
     renderMapPoints();
+    d.target.dispatchEvent(new Event("mouseover"));
   });
 
   d3.selectAll(".time-filter").on("click", function (d) {

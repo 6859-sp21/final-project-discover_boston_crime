@@ -207,7 +207,7 @@ class SVG {
 
     console.dir(selection);
 
-    selection.call(wrap, 0.2);
+    selection.call(wrap, 1);
   }
 
   legend() {
@@ -312,18 +312,21 @@ class SVG {
           return enter
             .append("rect")
             .attr("x", (d) => this.x1(d.key))
-            .attr("y", (d) => {
-              // console.log(d);
-              return this.y(d.value);
-            })
+            
             .attr("width", this.x1.bandwidth())
             .attr("fill", (d) => {
               return barColor(d.key);
             })
             .call((enter) =>
               enter
+                .attr("y", this.y(0))
+                .attr("height", 0)
                 .transition()
                 .duration(1000)
+                .attr("y", (d) => {
+                  // console.log(d);
+                  return this.y(d.value);
+                })
                 .attr("height", (d) => this.y(0) - this.y(d.value))
             );
         },
@@ -386,7 +389,7 @@ class SVG {
 
         resultString += `<p class="tooltipp"> Age Group: ${groupLabel} </p>
             <p class="tooltipp"> Percent of Population: ${
-              (value * 100).toFixed(2) + "%"
+              value.toFixed(4)
             } </p>
             <p class="tooltipp"> Age Population: ${agePopulation} </p>
             <p class="tooltipp"> Total Population: ${totalPopulation} </p>`;
@@ -396,7 +399,7 @@ class SVG {
         const totalPopulation = dataObject["Total Population"];
         const racePopulation = dataObject[groupLabel];
         resultString += `<p> Race: ${groupLabel} </p>
-          <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
+          <p> Percent of Population: ${value.toFixed(4)} </p>
           <p> Race Population: ${racePopulation} </p>
           <p> Total Population: ${totalPopulation} </p>`;
 
@@ -411,7 +414,7 @@ class SVG {
           dataObject[groupLabelPrefix + " Total Poverty"];
 
         resultString += `<p> Age Group: ${groupLabel} </p>
-          <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
+          <p> Percent of Population: ${value.toFixed(4)} </p>
           <p> Age Poverty Population: ${povertyPopulation} </p>
           <p> Total Age Population: ${totalPopulation} </p>`;
         break;
@@ -421,7 +424,7 @@ class SVG {
         const incomePopulation = dataObject[groupLabel];
 
         resultString += `<p> Income Bracket: ${groupLabel} </p>
-        <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
+        <p> Percent of Population: ${value.toFixed(4)} </p>
         <p> Families in Income Bracket: ${incomePopulation} </p>
         <p> Total Families: ${totalPopulation} </p>`;
         break;
@@ -434,7 +437,7 @@ class SVG {
           dataObject["Total population 25 years and over"];
 
         resultString += `<p> Highest Education Attained: ${groupLabel} </p>
-        <p> Percent of Population: ${(value * 100).toFixed(2) + "%"} </p>
+        <p> Percent of Population: ${value.toFixed(4)} </p>
         <p> Number of Adults: ${educationGroupPopulation} </p>
         <p> Total Population over 25: ${totalPopulation} </p>`;
         break;
@@ -491,6 +494,12 @@ class SVG {
       .attr("transform", (d, i) => `translate(0,${10 + i * 20})`);
   }
 }
+
+// function wrap(text, width) {
+//   text.each(function() {
+//   var text = d3.select(this),
+//       words = text.text().split(/\s+/).reverse()
+//   }
 
 function wrap(text, width) {
   console.log(text, width);
@@ -805,12 +814,12 @@ function getDemographicsData() {
             );
             svgs.push(svgObj);
 
-            console.log("adding neighborhoodsPerDistrict.js in map.js");
-            let head = document.getElementsByTagName("head")[0];
-            let script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = "neighborhoodsPerDistrict.js";
-            head.appendChild(script);
+            // console.log("adding neighborhoodsPerDistrict.js in map.js");
+            // let head = document.getElementsByTagName("head")[0];
+            // let script = document.createElement("script");
+            // script.type = "text/javascript";
+            // script.src = "neighborhoodsPerDistrict.js";
+            // head.appendChild(script);
           });
         });
       });
