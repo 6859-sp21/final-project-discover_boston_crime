@@ -1,3 +1,12 @@
+//for solo testing
+// const albersProjection = d3
+//   .geoAlbers()
+//   .scale(170000)
+//   .rotate([71.057, 0])
+//   .center([0, 42.313])
+//   .translate([580 / 2, 700 / 2]);
+
+// let policeDistricts = null;
 
 
 //data format
@@ -49,12 +58,14 @@ class ChoroplethSVG {
 
         else {
             const maxVal = d3.max(Array.from(this.data.values()).slice(1).map((d) => +d["Value"]));
+            const maxTick = Math.ceil(maxVal/100)*100
+
             //console.log(this.data)
             //console.log(maxVal)
 
               this.color = d3.scaleQuantize(
-                [0, maxVal],
-                this.colorScheme[9]);
+                [0, maxTick],
+                this.colorScheme[maxTick/100]);
         }
         
 
