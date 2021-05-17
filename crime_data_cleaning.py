@@ -11,7 +11,9 @@ def showDistribution(df):
     UCRFrequencyDict = {"Part One": 0, "Part Two": 0, "Part Three": 0, "None": 0}
     offenseCodeGrouptoDescriptionMap = {}
 
-    for i in range(df.shape[0]):
+    
+    #for i in range(df.shape[0]):
+    for i in range(4156):
         UCRPart = df.iloc[i,df.columns.get_loc("UCR_PART")]
         offenseDescription = df.iloc[i,df.columns.get_loc("Aggregated Offence Code Group")]
         offenseGroup = df.iloc[i,df.columns.get_loc("OFFENSE_CODE_GROUP")]

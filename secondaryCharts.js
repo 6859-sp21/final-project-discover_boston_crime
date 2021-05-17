@@ -814,12 +814,12 @@ function getDemographicsData() {
             );
             svgs.push(svgObj);
 
-            // console.log("adding neighborhoodsPerDistrict.js in map.js");
-            // let head = document.getElementsByTagName("head")[0];
-            // let script = document.createElement("script");
-            // script.type = "text/javascript";
-            // script.src = "neighborhoodsPerDistrict.js";
-            // head.appendChild(script);
+            console.log("adding neighborhoodsPerDistrict.js in map.js");
+            let head = document.getElementsByTagName("head")[0];
+            let script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "neighborhoodsPerDistrict.js";
+            head.appendChild(script);
           });
         });
       });
