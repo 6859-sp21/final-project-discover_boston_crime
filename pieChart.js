@@ -1,6 +1,6 @@
 const pieWidth = 700;
 const pieHeight = 700;
-const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+//const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 const radius = pieWidth/2 - margin.top;
 let pieSVG = null;
 let raceData = null;

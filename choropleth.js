@@ -1,20 +1,4 @@
 
-testData = {
-    "A1" : {Neighborhood: 30374, value : 30374/43322},
-    "A7" : {Neighborhood: 16011, value : 16011/47263}
-}
-
-const choroplethWidth = 580;
-const choroplethHeight = 700;
-let policeDistricts = null;
-
-
-const albersProjection = d3
-  .geoAlbers()
-  .scale(170000)
-  .rotate([71.057, 0])
-  .center([0, 42.313])
-  .translate([choroplethWidth / 2, choroplethHeight / 2]);
 
 //data format
 //Neighborhood : {Neighborhood: , Value: }
@@ -65,8 +49,8 @@ class ChoroplethSVG {
 
         else {
             const maxVal = d3.max(Array.from(this.data.values()).slice(1).map((d) => +d["Value"]));
-            console.log(this.data)
-            console.log(maxVal)
+            //console.log(this.data)
+            //console.log(maxVal)
 
               this.color = d3.scaleQuantize(
                 [0, maxVal],
@@ -96,8 +80,8 @@ class ChoroplethSVG {
                     .style("stroke-width", "2px")
                     .attr("class", "district")
                     .attr("fill", function (d) {
-                        console.log(this.data.get(d.properties.DISTRICT).Value)
-                        console.log(this.color(this.data.get(d.properties.DISTRICT).Value))
+                        //console.log(this.data.get(d.properties.DISTRICT).Value)
+                        //console.log(this.color(this.data.get(d.properties.DISTRICT).Value))
                         const color = this.color(
                           this.data.get(d.properties.DISTRICT).Value
                         );
@@ -117,7 +101,7 @@ class ChoroplethSVG {
 }
 
 
-function initializeChoroplethSVG() {
+function initializeChoroplethSVG(choroplethWidth = 580, choroplethHeight = 700) {
     choroplethSVG = d3.select("#map-choropleth")
     .append("svg")
     .attr("width", choroplethWidth)
@@ -141,7 +125,7 @@ function initializeChoroplethData(data, label) {
 function getChoroplethData(){
     d3.json("https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
     ).then((topojsonBoston) => {
-        console.log(topojsonBoston)
+        //console.log(topojsonBoston)
         policeDistricts = topojsonBoston;
 
     
@@ -169,6 +153,13 @@ function getChoroplethData(){
             let disorderlyConductChoroplethSVG = initializeChoroplethSVG();
             let disorderlyConductCrimeData = initializeChoroplethData(crimeData, "Disorderly Conduct %")
             new ChoroplethSVG(disorderlyConductChoroplethSVG, disorderlyConductCrimeData, d3.schemeReds, "Disorderly Conduct Percent of Total Crime", false)
+
+            console.log("adding pieChart.js in choropleth.js");
+            let head = document.getElementsByTagName("head")[0];
+            let script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "pieChart.js";
+            head.appendChild(script);
         })
     })
     })
