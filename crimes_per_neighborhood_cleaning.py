@@ -40,7 +40,8 @@ def get_count(crime_CSV):
             neighborhood_to_count_map["Boston"][1] += 1
             neighborhood_to_count_map[district][1] += 1
         
-        if(offense_code == "Disorderly Conduct"):
+        #if(offense_code == "Disorderly Conduct"):
+        if(offense_code == "Assault"):
             neighborhood_to_count_map["Boston"][2] += 1
             neighborhood_to_count_map[district][2] += 1
 
@@ -75,7 +76,10 @@ def format_csv(neighborhood_to_count_map):
     df.to_csv(destination_file_path)
 
     
-
+def calculate_percents(neighborhood_to_count_map):
+    
+    for neighborhood in neighborhood_to_count_map.keys():
+        print(neighborhood + " percent assault: " + str(round(neighborhood_to_count_map[neighborhood][2]/neighborhood_to_count_map[neighborhood][0],3)))
 
 
 
@@ -83,4 +87,5 @@ def format_csv(neighborhood_to_count_map):
 if __name__ == "__main__":
     crime_CSV = pd.read_csv(source_file_path, engine='python')
     neighborhood_to_count_map = get_count(crime_CSV)
-    format_csv(neighborhood_to_count_map)
+    calculate_percents(neighborhood_to_count_map)
+    #format_csv(neighborhood_to_count_map)
