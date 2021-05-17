@@ -56,9 +56,11 @@ h1 {
 }
 
 .step {
-    margin: 2rem auto 4rem auto;
-    background-color: #3b3b3b;
-    color: #fff;
+    padding: 1em 0em 3em;
+}
+
+.step > * {
+    width: 100%
 }
 
 .step p {
@@ -90,8 +92,12 @@ article {
     position: relative;
 }
 
-#neighborhoods-per-district #police-districts {
+#neighborhoods-per-district #police-districts-list {
     display: flex;
+}
+
+#police-districts-list {
+    justify-content: space-evenly;
 }
 
 #police-districts-neighborhoods svg {
@@ -127,13 +133,46 @@ article {
     width: 100%;
 }
 
-#crime-type-maps, #demographics-overall, #demographics-comparison, #crime-intro {
+.section-3 {
     display: flex;
 }
 
-#crime-type-maps div, #demographics-overall div, #demographics-comparison div, #crime-intro div {
-    width: 50%;
+.section-3 {
+    display: flex;
 }
+
+.section-3 .description {
+    width: 30%;
+}
+
+.section-3 .description, .section-2 {
+    background-color: gainsboro;
+}
+
+.section-3 .visualization {
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.district-button {
+    cursor: pointer;
+    border-radius: 25%;
+}
+
+.district-button.active {
+    opacity: 0.8;
+    background-color: whitesmoke;
+}
+
+/* #crime-type-maps, #demographics-overall, #demographics-comparison, #crime-intro {
+    display: flex;
+} */
+
+/* #crime-type-maps div, #demographics-overall div, #demographics-comparison div, #crime-intro div {
+    width: 50%;
+} */
 
 
 

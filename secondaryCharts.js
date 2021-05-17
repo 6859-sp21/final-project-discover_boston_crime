@@ -7,8 +7,8 @@ let neighborhoodsSelected = new Set();
 const tabsElement = document.querySelector("#myTab");
 const tabsContentElement = document.querySelector("#myTabContent");
 
-const barWidth = 475;
-const barHeight = 500;
+const barWidth = 700;
+const barHeight = 700;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 const svgs = [];
 let sampleData = null;
@@ -184,12 +184,14 @@ class SVG {
   }
 
   axis() {
-    this.svg
+    const yAxis = this.svg
       .append("g")
       .attr("transform", `translate(${margin.left},0)`)
       .call(d3.axisLeft(this.y));
 
-    let xAxis = d3
+    yAxis.selectAll(".tick text").attr("font-size", "13px");
+
+    const xAxisLabels = d3
       .axisBottom(this.x0)
       .tickValues(this.labelGroups)
       .tickFormat((d, i) => {
@@ -198,16 +200,16 @@ class SVG {
 
     console.log("calling axis");
 
-    const newAxis = this.svg
+    const xAxis = this.svg
       .append("g")
       .attr("transform", `translate(0,${barHeight - margin.bottom})`)
-      .call(xAxis);
+      .call(xAxisLabels);
 
-    const selection = newAxis.selectAll(".tick text");
+    xAxis.selectAll(".tick text").attr("font-size", "13px");
 
-    console.dir(selection);
+    // console.dir(selection);
 
-    selection.call(wrap, 1);
+    // selection.call(wrap, 1);
   }
 
   legend() {
@@ -216,11 +218,12 @@ class SVG {
       .attr("class", "legend")
       .attr("transform", `translate(${barWidth + margin.right * 7},0)`)
       .attr("text-anchor", "end");
-    
+
     const legend = this.svg.select("g.legend");
-    legend.append('text')
+    legend
+      .append("text")
       //.attr("transform", `translate(${barWidth + margin.right * 7}, 0)`)
-      .text("Police District")
+      .text("Police District");
 
     this.updateLegend();
   }
@@ -230,19 +233,19 @@ class SVG {
       .append("text")
       .call(d3.axisBottom(this.x0))
       .attr("fill", "black")
-      .attr("font-size", "14px")
+      .attr("font-size", "16px")
       .attr("font-weight", "bold")
       .attr("x", barWidth / 2)
-      .attr("y", barHeight + margin.bottom)
+      .attr("y", barHeight + margin.bottom * 1.5)
       .text(`${this.bottomAxisLabel}`);
 
     this.svg
       .append("text")
       .call(d3.axisLeft(this.y))
-      .attr("transform", `translate(0, ${barHeight / 3.5}) rotate(-90)`)
+      .attr("transform", `translate(-5, ${barHeight / 3.5}) rotate(-90)`)
       .attr("text-anchor", "end")
       .attr("fill", "black")
-      .attr("font-size", "14px")
+      .attr("font-size", "16px")
       .attr("font-weight", "bold")
       .text("Percent of District Population");
   }
@@ -312,7 +315,7 @@ class SVG {
           return enter
             .append("rect")
             .attr("x", (d) => this.x1(d.key))
-            
+
             .attr("width", this.x1.bandwidth())
             .attr("fill", (d) => {
               return barColor(d.key);
@@ -388,9 +391,7 @@ class SVG {
         const agePopulation = dataObject[groupLabel];
 
         resultString += `<p class="tooltipp"> Age Group: ${groupLabel} </p>
-            <p class="tooltipp"> Percent of Population: ${
-              value.toFixed(4)
-            } </p>
+            <p class="tooltipp"> Percent of Population: ${value.toFixed(4)} </p>
             <p class="tooltipp"> Age Population: ${agePopulation} </p>
             <p class="tooltipp"> Total Population: ${totalPopulation} </p>`;
         break;

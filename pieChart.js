@@ -43,26 +43,26 @@ function createPieChart() {
     .join("path")
     .attr("fill", (d) => pieColor(d.data.race))
     .attr("d", arc)
-    .on("mouseover", function (event, d) {
-      d3.select(this).style("stroke", "white").style("stroke-width", "4px");
-      console.log(d);
-      const tooltipString = `<div>
-                <p> Race: ${d.data.race} <p>
-                <p> Population: ${d.data.value} <p>
-                </div>`;
+    // .on("mouseover", function (event, d) {
+    //   d3.select(this).style("stroke", "white").style("stroke-width", "4px");
+    //   console.log(d);
+    //   const tooltipString = `<div>
+    //             <p> Race: ${d.data.race} <p>
+    //             <p> Population: ${d.data.value} <p>
+    //             </div>`;
 
-      pieTooltipD3Element
-        .html(`<div><p> ${tooltipString}</p></div>`)
-        .style("left", event.pageX + "px")
-        .style("top", event.pageY + "px")
-        .style("opacity", 1)
-        .style("background", "bisque");
-    })
-    .on("mouseout", function (event, d) {
-      d3.select(this).style("stroke", "black").style("stroke-width", "2px");
+    //   pieTooltipD3Element
+    //     .html(`<div><p> ${tooltipString}</p></div>`)
+    //     .style("left", event.pageX + "px")
+    //     .style("top", event.pageY + "px")
+    //     .style("opacity", 1)
+    //     .style("background", "bisque");
+    // })
+    // .on("mouseout", function (event, d) {
+    //   d3.select(this).style("stroke", "black").style("stroke-width", "2px");
 
-      pieTooltipD3Element.style("opacity", 0).html("");
-    })
+    //   pieTooltipD3Element.style("opacity", 0).html("");
+    // })
     .attr("transform", "translate(" + pieWidth / 2 + "," + pieHeight / 2 + ")");
 }
 
