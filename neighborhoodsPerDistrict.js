@@ -299,7 +299,7 @@ function getNeighborhoodsPerDistrictData() {
       let head = document.getElementsByTagName("head")[0];
       let script = document.createElement("script");
       script.type = "text/javascript";
-      script.src = "mapChoropleth.js";
+      script.src = "choropleth.js";
       head.appendChild(script);
     });
   });

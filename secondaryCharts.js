@@ -216,6 +216,11 @@ class SVG {
       .attr("class", "legend")
       .attr("transform", `translate(${barWidth + margin.right * 7},0)`)
       .attr("text-anchor", "end");
+    
+    const legend = this.svg.select("g.legend");
+    legend.append('text')
+      //.attr("transform", `translate(${barWidth + margin.right * 7}, 0)`)
+      .text("Police District")
 
     this.updateLegend();
   }
@@ -483,7 +488,7 @@ class SVG {
           //console.log(exit);
         }
       )
-      .attr("transform", (d, i) => `translate(0,${i * 20})`);
+      .attr("transform", (d, i) => `translate(0,${10 + i * 20})`);
   }
 }
 
