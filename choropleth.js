@@ -1,10 +1,10 @@
 //for solo testing
-// const albersProjection = d3
-//   .geoAlbers()
-//   .scale(170000)
-//   .rotate([71.057, 0])
-//   .center([0, 42.313])
-//   .translate([580 / 2, 700 / 2]);
+const albersProjectionChoropleth = d3
+  .geoAlbers()
+  .scale(210000)
+  .rotate([71.057, 0])
+  .center([0, 42.313])
+  .translate([580 / 2, 700 / 2]);
 
 // let policeDistricts = null;
 
@@ -28,19 +28,21 @@ class ChoroplethSVG {
   legend() {
     this.svg
       .append("g")
-      .attr("transform", "translate(610,20)")
-      .append(() =>
-        colorLegend({
-          color: this.color,
-          title: this.title,
-          width: 260,
-          tickFormat: ".2f",
-        })
+      .attr("transform", "translate(10, 20)")
+      .append(
+        function () {
+          return colorLegend({
+            color: this.color,
+            title: this.title,
+            width: 260,
+            tickFormat: this.isCrimeCount ? undefined : ".2f",
+          });
+        }.bind(this)
       );
   }
 
   createG() {
-    this.g = this.svg.append("g");
+    this.g = this.svg.append("g").attr("transform", "translate(100, 0)");
   }
 
   assignColor() {
@@ -71,7 +73,7 @@ class ChoroplethSVG {
   }
 
   drawGeoJson() {
-    const path = d3.geoPath().projection(albersProjection);
+    const path = d3.geoPath().projection(albersProjectionChoropleth);
     const allDistricts = topojson.feature(
       policeDistricts,
       policeDistricts.objects["Police_Districts"]
@@ -116,11 +118,12 @@ class ChoroplethSVG {
 }
 
 function initializeChoroplethSVG(
+  container,
   choroplethWidth = 580,
   choroplethHeight = 700
 ) {
   choroplethSVG = d3
-    .select("#map-choropleth")
+    .select(container)
     .append("svg")
     .attr("width", choroplethWidth)
     .attr("height", choroplethHeight);
@@ -150,7 +153,11 @@ function getChoroplethData() {
     d3.csv(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
     ).then((raceData) => {
-      let whiteChoroplethSVG = initializeChoroplethSVG();
+      const whiteMapContainer = document.querySelector("#white-map");
+      let whiteChoroplethSVG = initializeChoroplethSVG(
+        whiteMapContainer,
+        window.innerWidth / 2
+      );
       let whiteFormattedData = initializeChoroplethData(
         raceData,
         "White Alone %"
@@ -163,7 +170,11 @@ function getChoroplethData() {
         false
       );
 
-      let blackChoroplethSVG = initializeChoroplethSVG();
+      const blackMapContainer = document.querySelector("#black-map");
+      let blackChoroplethSVG = initializeChoroplethSVG(
+        blackMapContainer,
+        window.innerWidth / 2
+      );
       let blackFormattedData = initializeChoroplethData(
         raceData,
         "Black/African-American %"
@@ -179,7 +190,12 @@ function getChoroplethData() {
       d3.csv(
         "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/boston_crimes_per_neighborhood.csv"
       ).then((crimeData) => {
-        let totalCrimeChoroplethSVG = initializeChoroplethSVG();
+        const totalCrimeMapContainer =
+          document.querySelector("#crime-count-map");
+        let totalCrimeChoroplethSVG = initializeChoroplethSVG(
+          totalCrimeMapContainer,
+          window.innerWidth / 2
+        );
         let totalCrimeData = initializeChoroplethData(
           crimeData,
           "Total Crimes"
@@ -192,7 +208,11 @@ function getChoroplethData() {
           true
         );
 
-        let larcenyChoroplethSVG = initializeChoroplethSVG();
+        const larcenyMapContainer = document.querySelector("#larceny-map");
+        let larcenyChoroplethSVG = initializeChoroplethSVG(
+          larcenyMapContainer,
+          window.innerWidth / 2
+        );
         let larcenyCrimeData = initializeChoroplethData(crimeData, "Larceny %");
         new ChoroplethSVG(
           larcenyChoroplethSVG,
@@ -202,7 +222,13 @@ function getChoroplethData() {
           false
         );
 
-        let disorderlyConductChoroplethSVG = initializeChoroplethSVG();
+        const disorderlyConductMapContainer = document.querySelector(
+          "#disorderly-conduct-map"
+        );
+        let disorderlyConductChoroplethSVG = initializeChoroplethSVG(
+          disorderlyConductMapContainer,
+          window.innerWidth / 2
+        );
         let disorderlyConductCrimeData = initializeChoroplethData(
           crimeData,
           "Disorderly Conduct %"

@@ -127,11 +127,11 @@ article {
     width: 100%;
 }
 
-#crime-type-maps {
+#crime-type-maps, #demographics-overall, #demographics-comparison, #crime-intro {
     display: flex;
 }
 
-#crime-type-maps div {
+#crime-type-maps div, #demographics-overall div, #demographics-comparison div, #crime-intro div {
     width: 50%;
 }
 
