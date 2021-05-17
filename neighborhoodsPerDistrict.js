@@ -1,7 +1,7 @@
 let neighborhoodsInDistricts = null;
 let svgNeighborhoodsPerDistrict = null;
 let gNeighborhoodsPerDistrict = null;
-const widthNeighborhoodsPerDistrict = 1000;
+const widthNeighborhoodsPerDistrict = window.innerWidth * 0.7;
 const heightNeighborhoodsPerDistrict = window.innerHeight;
 let pathNeighborhoodsPerDistrict = null;
 let allDistrictsNeighborhoodsPerDistrict = [];
@@ -55,13 +55,24 @@ function initializeConstantsNeighborhoodsPerDistrict() {
 }
 
 function initializeHTMLElementsNPD() {
-  Object.keys(districtToNeighborhoodMapNPD).forEach((district) => {
+  const numberOfLists = 3;
+  const numDistricts = Object.keys(districtToNeighborhoodMapNPD).length;
+  const divParentContainers = Array.from({
+    length: numDistricts / numberOfLists - 1,
+  }).map((_) => document.createElement("div"));
+  divParentContainers.forEach((container) => {
+    districtsElementNPD.appendChild(container);
+  });
+
+  Object.keys(districtToNeighborhoodMapNPD).forEach((district, i) => {
     const districtElement = document.createElement("p");
+    districtElement.classList.add("district-button");
     const districtName = document.createTextNode(district);
     districtElement.appendChild(districtName);
     districtElement.addEventListener("mouseover", (d) => {
       console.log(district);
       console.log(`${district}-neighborhood`);
+      d.target.classList.add("active");
       d3.selectAll(`.${district}-neighborhood`).attr("fill", (d) => {
         return colorNPD(d.properties["Name"]);
       });
@@ -73,17 +84,21 @@ function initializeHTMLElementsNPD() {
     districtElement.addEventListener("mouseout", (d) => {
       console.log(district);
       console.log(`${district}-neighborhood`);
+      d.target.classList.remove("active");
       d3.selectAll(`.${district}-neighborhood`).attr("fill", "black");
       const neighborhoodsDiv = document.querySelector(
         `.${district}-neighborhood-list`
       );
       neighborhoodsDiv.classList.add("hidden");
     });
-    districtsElementNPD.appendChild(districtElement);
+    divParentContainers[
+      Math.floor(i / (numDistricts / numberOfLists))
+    ].appendChild(districtElement);
+    // districtsElementNPD.appendChild(districtElement);
 
-    const neighborhoodsSvg = document.createElement("div");
-    neighborhoodsSvg.classList.add("hidden");
-    neighborhoodsSvg.classList.add(`${district}-neighborhood-list`);
+    // const neighborhoodsSvg = document.createElement("div");
+    // neighborhoodsSvg.classList.add("hidden");
+    // neighborhoodsSvg.classList.add(`${district}-neighborhood-list`);
     // const neighborhoods = districtToNeighborhoodMapNPD[district];
     // neighborhoods.forEach((neighborhood) => {
     //   const neighborhoodElement = document.createElement("p");
@@ -92,19 +107,28 @@ function initializeHTMLElementsNPD() {
     //   neighborhoodsDiv.appendChild(neighborhoodElement);
     // });
 
-    const svg = d3
-      .select(neighborhoodsSvg)
-      .append("svg")
-      .attr("width", 200)
-      .attr("height", 100);
+    const legend = svgNeighborhoodsPerDistrict
+      .append("g")
+      .attr("class", `hidden ${district}-neighborhood-list`)
+      .attr(
+        "transform",
+        `translate(${(5 * widthNeighborhoodsPerDistrict) / 6},75)`
+      )
+      .attr("text-anchor", "end");
+
+    // const svg = d3
+    //   .select(neighborhoodsSvg)
+    //   .append("svg")
+    //   .attr("width", 200)
+    //   .attr("height", 100);
 
     const neighborhoods = districtToNeighborhoodMapNPD[district];
 
-    const legend = svg
-      .append("g")
-      .attr("class", "legend")
-      .attr("transform", `translate(100,0)`)
-      .attr("text-anchor", "end");
+    // const legend = svg
+    //   .append("g")
+    //   .attr("class", "legend")
+    //   .attr("transform", `translate(100,0)`)
+    //   .attr("text-anchor", "end");
 
     const legendData = legend.selectAll("g").data(neighborhoods);
     // .join("g")
@@ -139,13 +163,13 @@ function initializeHTMLElementsNPD() {
       )
       .attr("transform", (d, i) => `translate(0,${i * 30})`);
 
-    neighborhoodsContainerNPD.appendChild(neighborhoodsSvg);
+    // neighborhoodsContainerNPD.appendChild(neighborhoodsSvg);
   });
 }
 
 function initializeMapSvg() {
   svgNeighborhoodsPerDistrict = d3
-    .select("#neighborhoods-per-district")
+    .select("#neighborhoods-map")
     .append("svg")
     .attr("width", widthNeighborhoodsPerDistrict)
     .attr("height", heightNeighborhoodsPerDistrict);
@@ -270,7 +294,7 @@ function initializeScroller() {
     .setup({
       step: "#neighborhoods-per-district .description .step",
       debug: true, //set to true to see the offset
-      offset: 0.33, //how far into the element the handler triggers
+      offset: 0.5, //how far into the element the handler triggers
     })
     .onStepEnter(handleStepEnter)
     .onStepExit(handleStepExit);
@@ -291,9 +315,9 @@ function getNeighborhoodsPerDistrictData() {
       neighborhoodsInDistricts = neighborhoodsTopojson;
       console.log(neighborhoodsInDistricts);
       initializeConstantsNeighborhoodsPerDistrict();
+      initializeMapSvg();
       initializeHTMLElementsNPD();
       initializeScroller();
-      initializeMapSvg();
 
       console.log("adding mapChoropleth.js in neighborhoodsPerDistrict.js");
       let head = document.getElementsByTagName("head")[0];

@@ -156,7 +156,7 @@ function getChoroplethData() {
       const whiteMapContainer = document.querySelector("#white-map");
       let whiteChoroplethSVG = initializeChoroplethSVG(
         whiteMapContainer,
-        window.innerWidth / 2
+        window.innerWidth / 3
       );
       let whiteFormattedData = initializeChoroplethData(
         raceData,
@@ -173,7 +173,7 @@ function getChoroplethData() {
       const blackMapContainer = document.querySelector("#black-map");
       let blackChoroplethSVG = initializeChoroplethSVG(
         blackMapContainer,
-        window.innerWidth / 2
+        window.innerWidth / 3
       );
       let blackFormattedData = initializeChoroplethData(
         raceData,
@@ -211,7 +211,7 @@ function getChoroplethData() {
         const larcenyMapContainer = document.querySelector("#larceny-map");
         let larcenyChoroplethSVG = initializeChoroplethSVG(
           larcenyMapContainer,
-          window.innerWidth / 2
+          window.innerWidth / 3
         );
         let larcenyCrimeData = initializeChoroplethData(crimeData, "Larceny %");
         new ChoroplethSVG(
@@ -227,7 +227,7 @@ function getChoroplethData() {
         );
         let disorderlyConductChoroplethSVG = initializeChoroplethSVG(
           disorderlyConductMapContainer,
-          window.innerWidth / 2
+          window.innerWidth / 3
         );
         let disorderlyConductCrimeData = initializeChoroplethData(
           crimeData,

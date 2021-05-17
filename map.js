@@ -8,11 +8,11 @@ const hourBins = 4;
 const hourIdToBins = new Map();
 const MIN_THRESHOLD = 20;
 
-const width = 700;
-const height = 580;
+const width = 1000;
+const height = 700;
 const albersProjection = d3
   .geoAlbers()
-  .scale(170000)
+  .scale(210000)
   .rotate([71.057, 0])
   .center([0, 42.313])
   .translate([width / 2, height / 2]);
@@ -32,19 +32,19 @@ const offenseFiltersDivElement = document.querySelector(
 const districtTooltip = d3.select("#district-tooltip");
 
 let crimeCountMap = {
-  "A1" : 0,
-  "A7" : 0,
-  "A15" :  0,
-  "B2" :  0,
-  "B3" :  0,
-  "C6" :  0,
-  "C11" :  0,
-  "D4" :  0,
-  "D14" :  0,
-  "E5" :  0,
-  "E13" :  0,
-  "E18" :  0
-}
+  A1: 0,
+  A7: 0,
+  A15: 0,
+  B2: 0,
+  B3: 0,
+  C6: 0,
+  C11: 0,
+  D4: 0,
+  D14: 0,
+  E5: 0,
+  E13: 0,
+  E18: 0,
+};
 
 //from script4.js
 // const defaultNeighborhoods = new Set(["Boston"]);
@@ -221,12 +221,11 @@ function renderMapPoints() {
   points
     .join(
       function (enter) {
-        console.log("FUCK")
+        console.log("FUCK");
         console.log(enter);
-        return enter.append("path")
-        .attr("class", d => {
+        return enter.append("path").attr("class", (d) => {
           const pointDistrict = d["DISTRICT"];
-          crimeCountMap[pointDistrict] ++;
+          crimeCountMap[pointDistrict]++;
           return "";
         });
       },
@@ -234,13 +233,11 @@ function renderMapPoints() {
         return update;
       },
       function (exit) {
-        return exit.remove()
-        .attr("class", d => {
+        return exit.remove().attr("class", (d) => {
           const pointDistrict = d["DISTRICT"];
-          crimeCountMap[pointDistrict] --;
+          crimeCountMap[pointDistrict]--;
           return "";
         });
-        ;
       }
     )
     .attr(
