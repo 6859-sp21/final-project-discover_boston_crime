@@ -137,16 +137,12 @@ article {
     display: flex;
 }
 
-.section-3 {
-    display: flex;
-}
-
 .section-3 .description {
     width: 30%;
 }
 
-.section-3 .description, .section-2 {
-    background-color: gainsboro;
+.section-3 .description {
+    background-color: goldenrod;
 }
 
 .section-3 .visualization {
