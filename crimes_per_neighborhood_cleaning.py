@@ -7,7 +7,7 @@ destination_file_path = r"C:\Users\victo\Desktop\6.859\final-project-discover_bo
 
 #indexes chosen to signify 6/15/2015 - 7/15/2015 as denoted by map.js's selection
 start_index = 0
-end_index = 4165 
+end_index = 3619 
 
 def get_count(crime_CSV):
     #[total, larceny, disorderly conduct]
@@ -87,5 +87,6 @@ def calculate_percents(neighborhood_to_count_map):
 if __name__ == "__main__":
     crime_CSV = pd.read_csv(source_file_path, engine='python')
     neighborhood_to_count_map = get_count(crime_CSV)
-    calculate_percents(neighborhood_to_count_map)
-    #format_csv(neighborhood_to_count_map)
+    #calculate_percents(neighborhood_to_count_map)
+    print(neighborhood_to_count_map)
+    format_csv(neighborhood_to_count_map)
