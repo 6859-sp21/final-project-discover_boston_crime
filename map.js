@@ -464,7 +464,7 @@ function getMapData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
   ).then((allData) => {
-    data = allData.slice(0, 4165); // 6/15/2015 - 7/15/2015
+    data = allData.slice(0, 3619); // 6/15/2015 - 7/15/2015
     currData = data;
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"

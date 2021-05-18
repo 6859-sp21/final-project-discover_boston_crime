@@ -21,15 +21,18 @@
     <div id="neighborhoods-per-district" class="section-3">
         <div class="description">
             <div class="step">
-                <p>Neighborhoods</p>
+                <p>Boston’s 684,379 residents are divided between 23 neighborhoods, as shown on the map to the right.</p>
             </div>
             <div class="step">
-                <p>Police Districts Blurb</p>
+                <p>These neighborhoods are divided off to create Boston’s 12 police districts.</p>
             </div>
             <div class="step" id="police-districts">
-                <p>Police Districts</p>
+                <p>Hover over each police district to find the neighborhoods inside of it.</p>
+                <p>Note that some neighborhoods cover more than 1 police district.</p>
                 <div id="police-districts-list">
                 </div>
+                <p>In our data, we derive the demographics of each police district based on the demographics data of the neighborhoods contained within that district. For neighborhoods that don’t fit perfectly into a single police district., we assign them to the police district that covers the majority of their area.
+                </p>
             </div>
         </div>
         <div id="neighborhoods-map" class="visualization">
@@ -38,7 +41,10 @@
     </div>
     <div id="crime-intro" class="section-3 section-1">
         <div class="description">
-            crime intro
+            <p>The Boston Police Department gives crime incident reports detailing the location and type of each incident BPD officers respond to.</p>
+            <p>In our data, we chose to show only severe crimes, such as larceny (theft), disorderly conduct, and assault.</p>
+            <p>Shown here is the distribution of severe crimes per police district that occurred from June 15, 2015 to July 15, 2015, binned by each 100.</p>
+            <a href=https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system> View our data here</a>
         </div>
         <div id="crime-count-map" class="visualization">
 
@@ -46,15 +52,22 @@
     </div>
     <div id="crime-type-description" class="section-3 section-2">
         <div class="description">
-            <p>Description of crime types</p>
+            <p>Certain crimes occur much more often than others. </p>
+            <p>Shown here is the distribution of the 5 most popular crimes.</p>
         </div>
         <div class="visualization">
 
         </div>
+        
     </div>
     <div id="crime-type-maps" class="section-3">
         <div class="description">
-
+            <div class="step">
+                <p>However, this average composition of crime types is not representative of each individual district.</p>
+            </div>
+            <p>Certain districts are more susceptible to more severe types of crimes than others.</p>
+            <p>The maps on to the right show the percent that larceny and disorderly conduct make up of each district’s total crimes.</p>
+            <p>We can see that larceny, unlike disorderly conduct, is more common in northern districts.</p>
         </div>
         <div class="visualization">
             <div id="larceny-map">
@@ -67,9 +80,10 @@
     </div>
     <div id="neighborhood-demographics-intro" class="section-3 section-2">
         <div class="description">
-            <p>
-                intro to neighborhood-demographics
-            </p>
+            <div class="step">
+                <p>To understand more about neighborhoods, we can explore their demographics.</p>
+            </div>
+            
         </div>
         <div class="visualization">
 
@@ -77,7 +91,11 @@
     </div>
     <div id="demographics-overall" class="section-3">
         <div class="description">
-            <p>description of pie</p>
+            <p>
+                The pie chart on the right shows the race distribution of Boston’s residents.
+            </p>
+            <p>This data was collected from the 2015 American Community Survey conducted by the US Census.</p>
+            <a href=https://data.boston.gov/dataset/neighborhood-demographics> View our data here</a>
         </div>
         <div id="demographics-pie" class="visualization">
 
@@ -85,7 +103,10 @@
     </div>
     <div id="overall-to-comparison-description" class="section-3 section-2">
         <div class="description">
-            <p>Distributions are uneven</p>
+            <div class="step">
+                <p>Similar to how Boston’s crime type composition is not representative of each individual district’s crime types, 
+                    Boston’s race makeup is not representative of each individual district’s race makeup.</p>
+            </div>
         </div>
         <div class="visualization">
 
@@ -93,7 +114,11 @@
     </div>
     <div id="demographics-comparison" class="section-3">
         <div class="description">
-            segregated
+            <p>The maps on the right show each district’s percentage of white and black residents, binned by each 10%.</p>
+            <p>Although Boston has a large minority population, 
+                it continues to suffer heavily from segregation due to housing policies from the pre-civil rights era.</p>
+            <p>In fact, the Boston-Cambridge-Newton metropolitan area ranks 15th in terms of segregation 
+                among the 51 large metro areas with significant black populations.</p>
         </div>
         <div class="visualization">
             <div id="white-map">
@@ -102,6 +127,19 @@
             <div id="black-map">
                 <p>black</p>
             </div>
+        </div>
+    </div>
+    <div id="resource-inequity" class="section-3">
+        <div class="description">
+            <p>To understand some of the long-lasting effects of Boston’s past discriminatory policies, we can explore other demographics data. 
+                For example, there is a severe imbalance of resources between neighborhoods,</p>
+            <p>Shown on the right are the 3 richest and poorest neighborhoods of Boston denoted by median family income, 
+                followed by the race that makes up the largest portion of its residents.</p>
+
+        </div>
+        <div class="visualization">
+            <p></p>
+            <p></p>
         </div>
     </div>
     <div id="instructions" class="section-2">
