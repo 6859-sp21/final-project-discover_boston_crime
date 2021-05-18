@@ -98,6 +98,7 @@ article {
 
 #neighborhoods-per-district .description {
     position: relative;
+    box-shadow: 10px goldenrod;
 }
 
 #neighborhoods-per-district #police-districts-list {
@@ -124,8 +125,8 @@ article {
 
 #title-page {
     background-color: lightblue;
-    background-image: url("https://www.bostonmagazine.com/wp-content/uploads/sites/2/2020/12/fea_segregation-1.jpg");
-    background-position: right bottom;
+    background-image: url("https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/title-image.jpg");
+    background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
     color: gray;
