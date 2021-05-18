@@ -28,7 +28,7 @@ class ChoroplethSVG {
   legend() {
     this.svg
       .append("g")
-      .attr("transform", "translate(10, 20)")
+      .attr("transform", `translate(${this.isCrimeCount ? 200: 10}, 20)`)
       .append(
         function () {
           return colorLegend({
@@ -42,7 +42,9 @@ class ChoroplethSVG {
   }
 
   createG() {
-    this.g = this.svg.append("g").attr("transform", "translate(100, 0)");
+    this.g = this.svg.append("g").attr("transform", `translate(${this.isCrimeCount ? 300 : 100}, 0)`);
+    
+
   }
 
   assignColor() {
