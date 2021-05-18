@@ -56,7 +56,7 @@ h1 {
 }
 
 .step {
-    padding: 1em 0em 3em;
+    padding: 10em 0em;
 }
 
 .step > * {
@@ -85,7 +85,7 @@ article {
 
 #neighborhoods-per-district svg {
     position: sticky;
-    top: 30px;
+    top: 0px;
 }
 
 #neighborhoods-per-district .description {
@@ -152,6 +152,10 @@ article {
     justify-content: center;
 }
 
+#neighborhoods-map {
+    align-items: flex-start;
+}
+
 .district-button {
     cursor: pointer;
     border-radius: 25%;
@@ -162,6 +166,9 @@ article {
     background-color: whitesmoke;
 }
 
+.overflow-show {
+    overflow: visible !important;
+}
 /* #crime-type-maps, #demographics-overall, #demographics-comparison, #crime-intro {
     display: flex;
 } */

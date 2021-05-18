@@ -15,21 +15,19 @@ let bostonData = [
 ];
 
 let crimePercentData = [
-  { name: "Larceny", value: 1180},
-  { name: "Assault", value: 668},
-  { name: "Drug Violation", value: 468},
-  { name: "Vandalism", value: 395},
-  { name: "Disorderly Conduct", value: 330},
-  { name: "Burglary", value: 293},
-  { name: "Robbery", value: 117},
-  { name: "Firearms and Explosives", value: 105}
-]
+  { name: "Larceny", value: 1180 },
+  { name: "Assault", value: 668 },
+  { name: "Drug Violation", value: 468 },
+  { name: "Vandalism", value: 395 },
+  { name: "Disorderly Conduct", value: 330 },
+  { name: "Burglary", value: 293 },
+  { name: "Robbery", value: 117 },
+  { name: "Firearms and Explosives", value: 105 },
+];
 
 const pieTooltipD3Element = d3.select("#pie-tooltip");
 
 function createPieChart(data, svg) {
-
-
   // bostonData = raceData[0];
   // console.log(bostonData);
 
@@ -77,7 +75,7 @@ function getLegend(svg, data) {
   svg
     .append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${pieWidth - margin.right},0)`)
+    .attr("transform", `translate(${pieWidth + 7 * margin.right},0)`)
     .attr("text-anchor", "end");
 
   const legend = svg.selectAll("g.legend");
@@ -114,16 +112,16 @@ function getLegend(svg, data) {
     .attr("transform", (d, i) => `translate(0,${i * 20})`);
 }
 
-function createPieSVG(container){
+function createPieSVG(container) {
   pieSVG = d3
-  .select(container)
-  .append("svg")
-  .attr("width", pieWidth)
-  .attr("height", pieHeight);
-  
+    .select(container)
+    .append("svg")
+    .attr("width", pieWidth)
+    .attr("height", pieHeight)
+    .attr("class", "overflow-show");
+
   return pieSVG;
 }
-
 
 // legend.append("rect")
 //     .attr("x", -19)
@@ -151,8 +149,8 @@ function getData() {
     getLegend(raceSVG, bostonData);
 
     crimeSVG = createPieSVG("#crime-pie");
-    crimePie = createPieChart(crimePercentData, crimeSVG)
-    getLegend(crimeSVG, crimePercentData)
+    crimePie = createPieChart(crimePercentData, crimeSVG);
+    getLegend(crimeSVG, crimePercentData);
   });
 }
 
