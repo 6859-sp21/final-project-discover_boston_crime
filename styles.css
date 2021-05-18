@@ -55,19 +55,27 @@ h1 {
     color: #3b3b3b;
 }
 
-.step {
-    padding: 10em 0em;
-}
-
 .step > * {
     width: 100%
 }
 
-.step p {
+/* .step p {
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.5rem;
+} */
+
+.extra-padding {
+    padding: 10em 0em;
+}
+
+.description {
     text-align: center;
     padding: 1rem;
     font-size: 1.5rem;
 }
+
+
 
 article {
     position: relative;
@@ -143,6 +151,9 @@ article {
 
 .section-3 .description {
     background-color: goldenrod;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .section-3 .visualization {
