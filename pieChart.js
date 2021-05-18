@@ -1,5 +1,5 @@
-const pieWidth = 700;
-const pieHeight = 700;
+const pieWidth = 600;
+const pieHeight = 600;
 //const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 const radius = pieWidth / 2 - margin.top;
 let pieSVG = null;
@@ -75,7 +75,7 @@ function getLegend(svg, data) {
   svg
     .append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${pieWidth + 7 * margin.right},0)`)
+    .attr("transform", `translate(${pieWidth + 15 * margin.right},0)`)
     .attr("text-anchor", "end");
 
   const legend = svg.selectAll("g.legend");

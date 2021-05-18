@@ -417,7 +417,8 @@ function colorLegend({
         .attr("y", marginTop + marginBottom - height - 6)
         .attr("fill", "currentColor")
         .attr("text-anchor", "start")
-        .attr("font-weight", "bold")
+        //.attr("font-weight", "bold")
+        .attr("font-size", "14px")
         .attr("class", "title")
         .text(title)
     );

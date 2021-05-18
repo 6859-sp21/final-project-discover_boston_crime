@@ -205,7 +205,12 @@ class SVG {
       .attr("transform", `translate(0,${barHeight - margin.bottom})`)
       .call(xAxisLabels);
 
-    xAxis.selectAll(".tick text").attr("font-size", "13px");
+    if(this.bottomAxisLabel == "Education Attainment"){
+      xAxis.selectAll(".tick text").attr("font-size", "10px");
+    } else {
+      xAxis.selectAll(".tick text").attr("font-size", "13px");
+    }
+    
 
     // console.dir(selection);
 
