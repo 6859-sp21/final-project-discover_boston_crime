@@ -236,7 +236,7 @@ function getChoroplethData() {
         new ChoroplethSVG(
           disorderlyConductChoroplethSVG,
           disorderlyConductCrimeData,
-          d3.schemeReds,
+          d3.schemeOrRd,
           "Disorderly Conduct Percent of Total Crime",
           false
         );

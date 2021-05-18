@@ -6,7 +6,7 @@ const filtersSelected = new Map();
 let selectedDistricts = new Set();
 const hourBins = 4;
 const hourIdToBins = new Map();
-const MIN_THRESHOLD = 20;
+const MIN_THRESHOLD = 100;
 
 const width = 1000;
 const height = 700;
@@ -295,7 +295,7 @@ function initializeMapDataTransforms() {
   });
 
   Object.keys(offenseCodeCountMap).forEach((d) => {
-    if (offenseCodeCountMap[d] >= MIN_THRESHOLD) {
+    if (offenseCodeCountMap[d] > MIN_THRESHOLD) {
       offenseTypes.add(d);
     }
   });
