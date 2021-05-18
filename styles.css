@@ -161,6 +161,27 @@ article {
     display: flex;
     align-items: center;
     justify-content: center;
+    visibility: hidden;
+}
+
+.section-3 .visualization p {
+    padding: 2em 0em;
+}
+
+@keyframes show-vis {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+}
+
+.visualization.visualization-active {
+     /* Shows the element… */
+    visibility: visible;
+    /* …and animates it */
+    animation: show-vis 2.5s ease-out;
 }
 
 #neighborhoods-map {
@@ -180,13 +201,10 @@ article {
 .overflow-show {
     overflow: visible !important;
 }
-/* #crime-type-maps, #demographics-overall, #demographics-comparison, #crime-intro {
-    display: flex;
-} */
 
-/* #crime-type-maps div, #demographics-overall div, #demographics-comparison div, #crime-intro div {
-    width: 50%;
-} */
+
+
+
 
 
 

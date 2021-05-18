@@ -151,6 +151,13 @@ function getData() {
     crimeSVG = createPieSVG("#crime-pie");
     crimePie = createPieChart(crimePercentData, crimeSVG);
     getLegend(crimeSVG, crimePercentData);
+
+    console.log("adding scroller.js in pieChart.js");
+    let head = document.getElementsByTagName("head")[0];
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "scroller.js";
+    head.appendChild(script);
   });
 }
 
