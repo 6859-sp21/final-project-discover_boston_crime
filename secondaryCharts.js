@@ -367,10 +367,9 @@ class SVG {
             .html(`<div> ${tooltipString} <div>`)
             .transition()
             .duration(300)
-            .style("opacity", 0.9)
+            .style("opacity", 0.95)
             .style("left", event.pageX + "px")
             .style("top", event.pageY + "px")
-            .style("background", "bisque");
         }.bind(this)
       )
       .on("mouseout", function (event, d) {
@@ -383,8 +382,7 @@ class SVG {
 
   getTooltipString(hoveredNeighborhood, groupLabel, dataObject, value) {
     let resultString = `
-    <p class="tooltipp"> Police District: ${hoveredNeighborhood}</p>
-    <p class="tooltipp"> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[
+    <p class="tooltip-p"> Neighborhoods: ${neighborhoodToNeighborhoodNameMap[
       hoveredNeighborhood
     ]
       .sort()
@@ -395,19 +393,17 @@ class SVG {
         const totalPopulation = dataObject["Total Population"];
         const agePopulation = dataObject[groupLabel];
 
-        resultString += `<p class="tooltipp"> Age Group: ${groupLabel} </p>
-            <p class="tooltipp"> Percent of Population: ${value.toFixed(4)} </p>
-            <p class="tooltipp"> Age Population: ${agePopulation} </p>
-            <p class="tooltipp"> Total Population: ${totalPopulation} </p>`;
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+            <p class="tooltip-p"> Age Population: ${agePopulation} </p>
+            <p class="tooltip-p"> Total Population: ${totalPopulation} </p>`;
         break;
       }
       case "Race": {
         const totalPopulation = dataObject["Total Population"];
         const racePopulation = dataObject[groupLabel];
-        resultString += `<p> Race: ${groupLabel} </p>
-          <p> Percent of Population: ${value.toFixed(4)} </p>
-          <p> Race Population: ${racePopulation} </p>
-          <p> Total Population: ${totalPopulation} </p>`;
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+          <p class="tooltip-p"> Race Population: ${racePopulation} </p>
+          <p class="tooltip-p"> Total Population: ${totalPopulation} </p>`;
 
         break;
       }
@@ -419,20 +415,18 @@ class SVG {
         const povertyPopulation =
           dataObject[groupLabelPrefix + " Total Poverty"];
 
-        resultString += `<p> Age Group: ${groupLabel} </p>
-          <p> Percent of Population: ${value.toFixed(4)} </p>
-          <p> Age Poverty Population: ${povertyPopulation} </p>
-          <p> Total Age Population: ${totalPopulation} </p>`;
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+          <p class="tooltip-p"> Age Poverty Population: ${povertyPopulation} </p>
+          <p class="tooltip-p"> Total Age Population: ${totalPopulation} </p>`;
         break;
       }
       case "Family Income Bracket": {
         const totalPopulation = dataObject["Total Families"];
         const incomePopulation = dataObject[groupLabel];
 
-        resultString += `<p> Income Bracket: ${groupLabel} </p>
-        <p> Percent of Population: ${value.toFixed(4)} </p>
-        <p> Families in Income Bracket: ${incomePopulation} </p>
-        <p> Total Families: ${totalPopulation} </p>`;
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+        <p class="tooltip-p"> Families in Income Bracket: ${incomePopulation} </p>
+        <p class="tooltip-p"> Total Families: ${totalPopulation} </p>`;
         break;
       }
       case "Education Attainment": {
@@ -442,17 +436,16 @@ class SVG {
         const totalPopulation =
           dataObject["Total population 25 years and over"];
 
-        resultString += `<p> Highest Education Attained: ${groupLabel} </p>
-        <p> Percent of Population: ${value.toFixed(4)} </p>
-        <p> Number of Adults: ${educationGroupPopulation} </p>
-        <p> Total Population over 25: ${totalPopulation} </p>`;
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+        <p class="tooltip-p"> Number of Adults: ${educationGroupPopulation} </p>
+        <p class="tooltip-p"> Total Population over 25: ${totalPopulation} </p>`;
         break;
       }
       default:
         console.log("ERROR: SHOULD NEVER REACH HERE");
         resultString = "ERROR";
     }
-
+    console.log(resultString)
     return resultString;
   }
 

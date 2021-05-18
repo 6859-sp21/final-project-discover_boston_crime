@@ -167,13 +167,12 @@ function initializeMapSvg() {
       //tooltip.transition().duration(50).style("opacity", 0.95);
 
       districtTooltip
-        .html(`<div><p> ${tooltipString} </p><div>`)
+        .html(tooltipString)
         .transition()
         .duration(300)
-        .style("opacity", 0.9)
+        .style("opacity", 0.95)
         .style("left", event.pageX + "px")
         .style("top", event.pageY + "px")
-        .style("background", "bisque");
     })
     .on("mouseout", function (event, d) {
       if (!selectedDistricts.has(d.properties.ID)) {
