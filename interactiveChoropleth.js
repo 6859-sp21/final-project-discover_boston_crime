@@ -8,26 +8,87 @@ const albersProjectionChoropleth = d3
 
 // let policeDistricts = null;
 
+// let margin = {left: 10, right: 10, top: 10, bottom: 10}
+const buttonClassToSVG = new Map();
+
 //data format
 //Neighborhood : {Neighborhood: , Value: }
 class ChoroplethSVG {
-  constructor(svg, data, colorScheme, title, isCrimeCount) {
+  constructor(svg, data, colorScheme, label, title, isCrimeCount, containerID) {
     this.svg = svg;
     this.data = data;
     this.colorScheme = colorScheme;
     this.title = title;
+    this.label = label;
+    this.formattedData = this.formatData();
     this.choropleth = null;
     this.isCrimeCount = isCrimeCount; //boolean for if doing crime count or not
-
+    this.containerID = containerID;
     this.assignColor();
     this.createG();
     this.legend();
     this.drawGeoJson();
   }
 
+  //change title, call other methods to change 
+  changeFilter(newLabel, newTitle) {
+      this.title = newTitle;
+      this.label = newLabel;
+      this.formattedData = this.formatData();
+      this.assignColor();
+      this.updateGeoJson();
+      this.legend();
+  }
+
+  updateGeoJson() {
+    const allDistricts = topojson.feature(
+        policeDistricts,
+        policeDistricts.objects["Police_Districts"]
+      ).features;
+      
+    console.log(this);
+    const paths = d3.selectAll(`#${this.containerID} path`)
+    console.log(this.g)
+    console.log(paths);
+    paths.attr("fill", function (d) {
+        //console.log(this.data.get(d.properties.DISTRICT).Value)
+        //console.log(this.color(this.data.get(d.properties.DISTRICT).Value))
+        console.log(d);
+        const color = this.color(
+          this.formattedData.get(d.properties.DISTRICT).Value
+        );
+        return color;
+      }.bind(this)
+    )
+  }
+
+
+  formatData() {
+    let neighborhoodToValueMap = new Map();
+  
+    for (var i = 0; i < this.data.length; i++) {
+      let neighborhood = this.data[i]["Neighborhood"];
+      let value = this.data[i][this.label];
+      neighborhoodToValueMap.set(neighborhood, { Value: value });
+    }
+
+    return neighborhoodToValueMap;
+  }
+
+
   legend() {
+    console.log("legend called");
+    console.log(`selecting #${this.containerID} .legend`)
+    const legend = document.querySelector(`#${this.containerID} .legend`);
+    console.log(legend);
+    if (legend  != null) {
+      legend.remove();
+      console.log("removing legend");
+    }
+
     this.svg
       .append("g")
+      .attr("class", "legend")
       .attr("transform", `translate(${this.isCrimeCount ? 200: 10}, 20)`)
       .append(
         function () {
@@ -43,22 +104,20 @@ class ChoroplethSVG {
 
   createG() {
     this.g = this.svg.append("g").attr("transform", `translate(${this.isCrimeCount ? 300 : 100}, 0)`);
-    
-
   }
 
   assignColor() {
     if (!this.isCrimeCount) {
       const maxVal = 
         Math.ceil(
-          d3.max(Array.from(this.data.values()).map((d) => d["Value"])) * 10
+          d3.max(Array.from(this.formattedData.values()).map((d) => d["Value"])) * 10
         ) / 10;
 
-      this.color = d3.scaleQuantize([0, maxVal], this.colorScheme[Math.max(maxVal * 10, 6)]);
-      console.log(maxVal);
+      this.color = d3.scaleQuantize([0, maxVal], this.colorScheme[8]);
+      //console.log(this.formattedData);
     } else {
       const maxVal = d3.max(
-        Array.from(this.data.values())
+        Array.from(this.formattedData.values())
           .slice(1)
           .map((d) => +d["Value"])
       );
@@ -69,10 +128,14 @@ class ChoroplethSVG {
 
       this.color = d3.scaleQuantize(
         [0, maxTick],
-        this.colorScheme[maxTick / 100]
+        this.colorScheme[maxTick/100]
       );
     }
   }
+
+  // updateGeoJson() {
+    
+  // }
 
   drawGeoJson() {
     const path = d3.geoPath().projection(albersProjectionChoropleth);
@@ -93,14 +156,16 @@ class ChoroplethSVG {
                 .duration(1000)
                 .attr("stroke", "black")
                 .style("stroke-width", "2px")
-                .attr("class", "district")
+                .attr("data-district", d => {
+                  return d.properties.DISTRICT;
+                })
                 .attr(
                   "fill",
                   function (d) {
                     //console.log(this.data.get(d.properties.DISTRICT).Value)
                     //console.log(this.color(this.data.get(d.properties.DISTRICT).Value))
                     const color = this.color(
-                      this.data.get(d.properties.DISTRICT).Value
+                      this.formattedData.get(d.properties.DISTRICT).Value
                     );
                     return color;
                   }.bind(this)
@@ -133,16 +198,21 @@ function initializeChoroplethSVG(
   return choroplethSVG;
 }
 
-function initializeChoroplethData(data, label) {
-  let neighborhoodToValueMap = new Map();
 
-  for (var i = 0; i < data.length; i++) {
-    let neighborhood = data[i]["Neighborhood"];
-    let value = data[i][label];
-    neighborhoodToValueMap.set(neighborhood, { Value: value });
-  }
-  return neighborhoodToValueMap;
+
+function initializeHTMLElementsChoropleth(svg, buttonsContainer, columnNames) {
+  columnNames.forEach(column => {
+    const button = document.createElement("button");
+    const buttonText = document.createTextNode(column);
+    button.appendChild(buttonText)
+    button.addEventListener("click", d => {
+      svg.changeFilter(column, column);
+    })
+    buttonsContainer.appendChild(button)
+  })
 }
+
+
 
 function getChoroplethData() {
   d3.json(
@@ -155,93 +225,110 @@ function getChoroplethData() {
     d3.csv(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
     ).then((raceData) => {
-      const whiteMapContainer = document.querySelector("#white-map");
-      let whiteChoroplethSVG = initializeChoroplethSVG(
-        whiteMapContainer,
+      const raceColumnNames = ["White Alone %", "Black/African-American %", "Hispanic %", "Asian alone %", "Other Races %"]
+
+
+      const containerIDrace1 = "race-map-1";
+      const raceSVG1Container = document.querySelector(`#${containerIDrace1}`);
+      let raceChoroplethSVG1 = initializeChoroplethSVG(
+        raceSVG1Container,
         window.innerWidth / 3
       );
-      let whiteFormattedData = initializeChoroplethData(
+      raceSVG1 = new ChoroplethSVG(
+        raceChoroplethSVG1,
         raceData,
-        "White Alone %"
-      );
-      new ChoroplethSVG(
-        whiteChoroplethSVG,
-        whiteFormattedData,
         d3.schemeBlues,
+        "White Alone %",
         "Percent White Population in District",
-        false
+        false,
+        containerIDrace1
+      );
+      //add button event listeners to svg
+      const race1Buttons = document.querySelector("#buttons-race-1");
+      initializeHTMLElementsChoropleth(raceSVG1, race1Buttons, raceColumnNames);
+
+      const containerIDrace2 = "race-map-2";
+      const raceSVG2Container = document.querySelector(`#${containerIDrace2}`);
+      let raceChoroplethSVG2 = initializeChoroplethSVG(
+        raceSVG2Container,
+        window.innerWidth / 3
+      );
+      const raceSVG2 = new ChoroplethSVG(
+        raceChoroplethSVG2,
+        raceData,
+        d3.schemePurples,
+        "Black/African-American %",
+        "Percent Black Population in District",
+        false,
+        containerIDrace2
       );
 
-      const blackMapContainer = document.querySelector("#black-map");
-      let blackChoroplethSVG = initializeChoroplethSVG(
-        blackMapContainer,
-        window.innerWidth / 3
-      );
-      let blackFormattedData = initializeChoroplethData(
-        raceData,
-        "Black/African-American %"
-      );
-      new ChoroplethSVG(
-        blackChoroplethSVG,
-        blackFormattedData,
-        d3.schemePurples,
-        "Percent Black Population in District",
-        false
-      );
+      const race2Buttons = document.querySelector("#buttons-race-2");
+      initializeHTMLElementsChoropleth(raceSVG2, race2Buttons, raceColumnNames);
 
       d3.csv(
         "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/boston_crimes_per_neighborhood.csv"
       ).then((crimeData) => {
+        
+//Neighborhood	Total Population	White Alone	White Alone %	Black/African-American	Black/African-American %	Hispanic	Hispanic %	Asian alone	Asian alone %	Other Races	Other Races %
+//	Neighborhood	Total Crimes	Larceny	Larceny %	Disorderly Conduct	Disorderly Conduct %
+
+        const crimeColumnNames = ["Larceny %", "Disorderly Conduct %"];
         const totalCrimeMapContainer =
           document.querySelector("#crime-count-map");
         let totalCrimeChoroplethSVG = initializeChoroplethSVG(
           totalCrimeMapContainer,
           window.innerWidth / 2
         );
-        let totalCrimeData = initializeChoroplethData(
-          crimeData,
-          "Total Crimes"
-        );
         new ChoroplethSVG(
           totalCrimeChoroplethSVG,
-          totalCrimeData,
-          d3.schemeBlues,
-          "Total Crime",
-          true
-        );
-
-        const larcenyMapContainer = document.querySelector("#larceny-map");
-        let larcenyChoroplethSVG = initializeChoroplethSVG(
-          larcenyMapContainer,
-          window.innerWidth / 3
-        );
-        let larcenyCrimeData = initializeChoroplethData(crimeData, "Larceny %");
-        new ChoroplethSVG(
-          larcenyChoroplethSVG,
-          larcenyCrimeData,
-          d3.schemeBlues,
-          "Larceny Percent of Total Crime",
-          false
-        );
-
-        const disorderlyConductMapContainer = document.querySelector(
-          "#disorderly-conduct-map"
-        );
-        let disorderlyConductChoroplethSVG = initializeChoroplethSVG(
-          disorderlyConductMapContainer,
-          window.innerWidth / 3
-        );
-        let disorderlyConductCrimeData = initializeChoroplethData(
           crimeData,
-          "Disorderly Conduct %"
+          d3.schemeBlues,
+          "Total Crimes",
+          "Total Crime",
+          true,
+          "crime-count-map"
         );
-        new ChoroplethSVG(
-          disorderlyConductChoroplethSVG,
-          disorderlyConductCrimeData,
+
+        const containerIDcrime1 = "crime-type-map-1";
+        const crimeMapContainer1 = document.querySelector(`#${containerIDcrime1}`);
+        let crimeMapChoroplethSVG1 = initializeChoroplethSVG(
+            crimeMapContainer1,
+          window.innerWidth / 3
+        );
+        const crimeMapSVG1  = new ChoroplethSVG(
+            crimeMapChoroplethSVG1,
+          crimeData,
+          d3.schemeBlues,
+          "Larceny %",
+          "Larceny Percent of Total Crime",
+          false,
+          containerIDcrime1
+        );
+        const crime1Buttons = document.querySelector("#buttons-crime-type-1");
+        initializeHTMLElementsChoropleth(crimeMapSVG1, crime1Buttons, crimeColumnNames);
+
+        const containerIDcrime2 = "crime-type-map-2";
+        const crimeMapContainer2 = document.querySelector(
+          `#${containerIDcrime2}`
+        );
+        let crimeMapChoroplethSVG2 = initializeChoroplethSVG(
+            crimeMapContainer2,
+          window.innerWidth / 3
+        );
+
+        const crimeMapSVG2  = new ChoroplethSVG(
+            crimeMapChoroplethSVG2,
+          crimeData,
           d3.schemeOrRd,
+          "Disorderly Conduct %",
           "Disorderly Conduct Percent of Total Crime",
-          false
+          false,
+          containerIDcrime2
         );
+
+        const crime2Buttons = document.querySelector("#buttons-crime-type-2");
+        initializeHTMLElementsChoropleth(crimeMapSVG2, crime2Buttons, crimeColumnNames);
 
         console.log("adding pieChart.js in choropleth.js");
         let head = document.getElementsByTagName("head")[0];
