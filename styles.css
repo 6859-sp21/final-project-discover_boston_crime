@@ -124,11 +124,19 @@ article {
 
 #title-page {
     background-color: lightblue;
-    background-image: url("https://s3.amazonaws.com/iexplore_web/images/assets/000/000/480/original/Downtown-Robbie_Shade.jpg?1435246463");
-    background-position: center top;
+    background-image: url("https://www.bostonmagazine.com/wp-content/uploads/sites/2/2020/12/fea_segregation-1.jpg");
+    background-position: right bottom;
     background-repeat: no-repeat;
     background-size: cover;
-    color: white;
+    color: gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#title-page h1 {
+    max-width: 33%;
 }
 
 .section-1 {
