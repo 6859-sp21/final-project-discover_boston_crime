@@ -19,7 +19,10 @@ let crimePercentData = [
   { name: "Assault", value: 668},
   { name: "Drug Violation", value: 468},
   { name: "Vandalism", value: 395},
-  { name: "Disorderly Conduct", value: 330}
+  { name: "Disorderly Conduct", value: 330},
+  { name: "Burglary", value: 293},
+  { name: "Robbery", value: 117},
+  { name: "Firearms and Explosives", value: 105}
 ]
 
 const pieTooltipD3Element = d3.select("#pie-tooltip");
