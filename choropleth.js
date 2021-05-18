@@ -205,7 +205,7 @@ function getChoroplethData() {
         new ChoroplethSVG(
           totalCrimeChoroplethSVG,
           totalCrimeData,
-          d3.schemeBlues,
+          d3.schemeGreys,
           "Total Crime",
           true
         );

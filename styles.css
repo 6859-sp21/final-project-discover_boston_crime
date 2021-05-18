@@ -158,15 +158,17 @@ article {
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
-    color: gray;
+    color: #242526;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    
 }
 
 #title-page h1 {
-    max-width: 33%;
+    max-width: 40%;
+    font-size: 72px;
 }
 
 .section-1 {
