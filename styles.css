@@ -1,6 +1,9 @@
-#bar-tooltip, #point-tooltip, #district-tooltip, #pie-tooltip {
+#bar-tooltip, #district-tooltip {
     position: absolute;
     pointer-events: none;
+    border-radius: 5%;
+    background-color: bisque;
+    border: 1px solid black;
 }
 
 .crimePoints {
@@ -28,8 +31,9 @@
     width: 50%;
 }
 
-.tooltipp {
-    margin: 0,0,0,0;
+#bar-tooltip p,  #district-tooltip p {
+    padding: 5px 7.5px;
+    margin: 0;
 }
 
 .nav-link, .district {
@@ -75,7 +79,32 @@ h1 {
     font-size: 1.5rem;
 }
 
+.disparity-table {
+    width: 75%;
+}
 
+tr {
+    padding: 15px;
+    text-align: left;
+    font-size: 24px;
+}
+
+.list p {
+    margin: 0;
+    padding: .1em 0em !important;
+    font-size: 24px;
+}
+
+.row.list {
+    justify-content: space-evenly;
+}
+
+
+.list li {
+    margin: 0;
+    padding: 0 !important;
+    font-size: 24px;
+}
 
 article {
     position: relative;
