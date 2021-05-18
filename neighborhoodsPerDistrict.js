@@ -8,7 +8,15 @@ let allDistrictsNeighborhoodsPerDistrict = [];
 let allNeighborhoodsNeighborhoodsPerDistrict = [];
 let dataNeighborhoodsPerDistrict = [];
 const districtToNeighborhoodMapNPD = {
-  A1: ["North End", "West End", "Downtown", "Beacon Hill", "Chinatown", "Bay Village", "Leather District"],
+  A1: [
+    "North End",
+    "West End",
+    "Downtown",
+    "Beacon Hill",
+    "Chinatown",
+    "Bay Village",
+    "Leather District",
+  ],
   A7: ["East Boston"],
   A15: ["Charlestown"],
   B2: ["Mission Hill", "Roxbury", "Longwood"],
@@ -293,7 +301,7 @@ function initializeScroller() {
   scroller
     .setup({
       step: "#neighborhoods-per-district .description .step",
-      debug: true, //set to true to see the offset
+      debug: false, //set to true to see the offset
       offset: 0.5, //how far into the element the handler triggers
     })
     .onStepEnter(handleStepEnter)
