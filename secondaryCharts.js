@@ -209,7 +209,7 @@ class SVG {
 
     // console.dir(selection);
 
-    // selection.call(wrap, 1);
+    //selection.call(wrap, 20);
   }
 
   legend() {
