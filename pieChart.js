@@ -7,32 +7,36 @@ let raceData = null;
 let pieG = null;
 let pieColor = null;
 let bostonData = [
-  { race: "White", value: 304524 },
-  { race: "Black/African American", value: 155096 },
-  { race: "Hispanic", value: 135757 },
-  { race: "Asian", value: 65613 },
-  { race: "Other", value: 23389 },
+  { name: "White", value: 304524 },
+  { name: "Black/African American", value: 155096 },
+  { name: "Hispanic", value: 135757 },
+  { name: "Asian", value: 65613 },
+  { name: "Other", value: 23389 },
 ];
+
+let crimePercentData = [
+  { name: "Larceny", value: 1180},
+  { name: "Assault", value: 668},
+  { name: "Drug Violation", value: 468},
+  { name: "Vandalism", value: 395},
+  { name: "Disorderly Conduct", value: 330}
+]
 
 const pieTooltipD3Element = d3.select("#pie-tooltip");
 
-function createPieChart() {
-  pieSVG = d3
-    .select("#demographics-pie")
-    .append("svg")
-    .attr("width", pieWidth)
-    .attr("height", pieHeight);
+function createPieChart(data, svg) {
+
 
   // bostonData = raceData[0];
   // console.log(bostonData);
 
   let pieFunc = d3.pie().value((d) => d.value);
   let arc = d3.arc().innerRadius(0).outerRadius(radius);
-  let pieArcs = pieFunc(bostonData);
+  let pieArcs = pieFunc(data);
 
   console.log(pieArcs);
 
-  pieColor = d3.scaleOrdinal(d3.schemeTableau10).domain(bostonData);
+  pieColor = d3.scaleOrdinal(d3.schemeTableau10).domain(data);
 
   pieSVG
     .append("g")
@@ -41,7 +45,7 @@ function createPieChart() {
     .selectAll("path")
     .data(pieArcs)
     .join("path")
-    .attr("fill", (d) => pieColor(d.data.race))
+    .attr("fill", (d) => pieColor(d.data.name))
     .attr("d", arc)
     // .on("mouseover", function (event, d) {
     //   d3.select(this).style("stroke", "white").style("stroke-width", "4px");
@@ -66,16 +70,16 @@ function createPieChart() {
     .attr("transform", "translate(" + pieWidth / 2 + "," + pieHeight / 2 + ")");
 }
 
-function getLegend() {
-  pieSVG
+function getLegend(svg, data) {
+  svg
     .append("g")
     .attr("class", "legend")
     .attr("transform", `translate(${pieWidth - margin.right},0)`)
     .attr("text-anchor", "end");
 
-  const legend = pieSVG.selectAll("g.legend");
+  const legend = svg.selectAll("g.legend");
 
-  const legendData = legend.selectAll("g").data(bostonData);
+  const legendData = legend.selectAll("g").data(data);
 
   const legendUpdate = legendData
     .join(
@@ -87,13 +91,13 @@ function getLegend() {
           .attr("height", 19)
           .attr("fill", (d) => {
             //console.log(d);
-            return pieColor(d.race);
+            return pieColor(d.name);
           });
         e.append("text")
           .attr("x", -24)
           .attr("y", 9.5)
           .attr("dy", "0.35em")
-          .text((d) => d.race)
+          .text((d) => d.name)
           .attr("text-anchor", "end");
         return e;
       },
@@ -106,6 +110,17 @@ function getLegend() {
     )
     .attr("transform", (d, i) => `translate(0,${i * 20})`);
 }
+
+function createPieSVG(container){
+  pieSVG = d3
+  .select(container)
+  .append("svg")
+  .attr("width", pieWidth)
+  .attr("height", pieHeight);
+  
+  return pieSVG;
+}
+
 
 // legend.append("rect")
 //     .attr("x", -19)
@@ -128,8 +143,13 @@ function getData() {
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
   ).then((allData) => {
     raceData = allData;
-    createPieChart();
-    getLegend();
+    raceSVG = createPieSVG("#demographics-pie");
+    racePie = createPieChart(bostonData, raceSVG);
+    getLegend(raceSVG, bostonData);
+
+    crimeSVG = createPieSVG("#crime-pie");
+    crimePie = createPieChart(crimePercentData, crimeSVG)
+    getLegend(crimeSVG, crimePercentData)
   });
 }
 

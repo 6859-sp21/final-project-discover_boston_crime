@@ -76,17 +76,24 @@ def format_csv(neighborhood_to_count_map):
     df.to_csv(destination_file_path)
 
     
-def calculate_percents(neighborhood_to_count_map):
+def calculate_percents(crime_CSV):
+    crime_count_dict = dict()
+
+    for i in range(start_index,end_index):
+        offense_code = crime_CSV.iloc[i,crime_CSV.columns.get_loc("Aggregated Offence Code Group")]
+        try:
+            crime_count_dict[offense_code] += 1
+        except:
+            crime_count_dict[offense_code] = 1
     
-    for neighborhood in neighborhood_to_count_map.keys():
-        print(neighborhood + " percent assault: " + str(round(neighborhood_to_count_map[neighborhood][2]/neighborhood_to_count_map[neighborhood][0],3)))
+    print(crime_count_dict)
 
-
+    
 
 
 if __name__ == "__main__":
     crime_CSV = pd.read_csv(source_file_path, engine='python')
-    neighborhood_to_count_map = get_count(crime_CSV)
-    #calculate_percents(neighborhood_to_count_map)
-    print(neighborhood_to_count_map)
-    format_csv(neighborhood_to_count_map)
+    #neighborhood_to_count_map = get_count(crime_CSV)
+    calculate_percents(crime_CSV)
+    #print(neighborhood_to_count_map)
+    #format_csv(neighborhood_to_count_map)
