@@ -60,6 +60,17 @@ body {
     font-size: 2vw;
 }
 
+#paper {
+    height: 50%;
+    overflow: scroll;
+    background-color: black;
+    color: white;
+}
+
+
+#abstract {
+    text-align: center;
+}
 
 
 .column#paper {
