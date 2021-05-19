@@ -90,7 +90,8 @@ function initializeMapSvg() {
     .attr("width", width)
     .attr("height", height);
 
-  g = svg.append("g");
+  g = svg.append("g")
+  .attr("transform", `translate(10, -50)`);
 
   const path = d3.geoPath().projection(albersProjection);
 
@@ -163,7 +164,6 @@ function initializeMapSvg() {
                 .sort()
                 .join(", ")} </p>
               <p> Crimes in District: ${crimeCountMap[d.properties.ID]}</p>
-              ${clickInstruction}
               </div>`;
       //tooltip.transition().duration(50).style("opacity", 0.95);
 

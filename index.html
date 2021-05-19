@@ -167,43 +167,45 @@
 
         </div>
         <div class="visualization">
-            <div class="row list">
-                <div class="column">
-                    <p>Richest Neighborhoods*</p>
-                    <ol>
-                        <li>
-                            <p>Beacon Hill - $205,960</p>
-                            <p>83.7% White</p>
-                        </li>
-                        <li>
-                            <p>Back Bay - $197,348</p>
-                            <p>73.4% White</p>
-                        </li>
-                        <li>
-                            <p>South Boston Waterfront - $191,822</p>
-                            <p>82.7% White</p>
-                        </li>
-                    </ol>
+            <div>
+                <div class="row list">
+                    <div class="column">
+                        <p>Richest Neighborhoods*</p>
+                        <ol>
+                            <li>
+                                <p>Beacon Hill - $205,960</p>
+                                <p>83.7% White</p>
+                            </li>
+                            <li>
+                                <p>Back Bay - $197,348</p>
+                                <p>73.4% White</p>
+                            </li>
+                            <li>
+                                <p>South Boston Waterfront - $191,822</p>
+                                <p>82.7% White</p>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="column">
+                        <p>Poorest Neighborhoods*</p>
+                        <ol>
+                            <li>
+                                <p>Roxbury - $40,207</p>
+                                <p>50.3% Black</p>
+                            </li>
+                            <li>
+                                <p>East Boston -  $56,426</p>
+                                <p>56.5% Hispanic</p>
+                            </li>
+                            <li>
+                                <p>Dorchester - $59,966</p>
+                                <p>44.0% Black</p>
+                            </li>
+                        </ol>
+                    </div>
                 </div>
-                <div class="column">
-                    <p>Poorest Neighborhoods*</p>
-                    <ol>
-                        <li>
-                            <p>Roxbury - $40,207</p>
-                            <p>50.3% Black</p>
-                        </li>
-                        <li>
-                            <p>East Boston -  $56,426</p>
-                            <p>56.5% Hispanic</p>
-                        </li>
-                        <li>
-                            <p>Dorchester - $59,966</p>
-                            <p>44.0% Black</p>
-                        </li>
-                    </ol>
-                </div>
+                <p class="footnote">*by median family income</p>
             </div>
-            <p>*by median family income</p>
         </div>
     </div>
     <div id="instructions" class="section-2">
@@ -215,6 +217,9 @@
                 <div id="offense-type-filters" class="btn-group-toggle" data-toggle="buttons">
 
                 </div>
+                <p>>Hover on a crime type to highlight its incidents on the map.</p>
+                <p>>Click on crime type(s) to filter for their incidents.</p>
+                <p>>Click on district(s) on the map to add/remove their demographic data to the bar chart.</p>
                 <!-- <h2>Hour Filter</h2>
                 <div id="time-filters" class="btn-group-toggle" data-toggle="buttons">
 
@@ -229,10 +234,17 @@
         </div>
     </div>
     <div>
-        <a href="https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system">Boston Crime Dataset</a>
+        <a href="https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system" target="_blank" rel="noopener noreferrer">
+            Boston Crime Dataset</a>
     </div>
     <div>
-        <a href="https://data.boston.gov/dataset/neighborhood-demographics">Boston Demographics Dataset</a>
+        <a href="https://data.boston.gov/dataset/neighborhood-demographics" target="_blank" rel="noopener noreferrer">
+            Boston Demographics Dataset</a>
+    </div>
+    <div>
+        <p>To analyze the demographics of each police district, we aggregate the demographics data of each neighborhood contained within it. 
+            For neighborhoods that don’t fit into a single police district, we assign them to the district that covers the majority of their area.
+        </p>
     </div>
     <!-- <section id="scrolly">
         <article>

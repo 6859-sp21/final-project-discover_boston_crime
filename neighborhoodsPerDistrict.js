@@ -162,7 +162,7 @@ function initializeHTMLElementsNPD() {
             .attr("dy", "0.55em")
             .text((d) => d)
             .attr("text-anchor", "end")
-            .attr("font-size", "1vw");
+            .attr("font-size", "1.1vw");
           return e;
         },
         (update) => update,
