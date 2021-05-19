@@ -208,7 +208,7 @@ function initializeHTMLElementsChoropleth(
 ) {
   columnNames.forEach((column) => {
     const button = document.createElement("div");
-    const buttonText = document.createTextNode(column);
+    const buttonText = document.createTextNode(column.slice(0,-2));
     button.appendChild(buttonText);
     button.addEventListener("click", (d) => {
       svg.changeFilter(column, column);
@@ -323,7 +323,7 @@ function getChoroplethData() {
           crimeData,
           d3.schemeBlues,
           "Total Crimes",
-          "Total Crime",
+          "Total Crime (binned)",
           true,
           "crime-count-map"
         );

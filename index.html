@@ -21,30 +21,35 @@
     <div id="neighborhoods-per-district" class="section-3">
         <div class="description">
             <div class="step extra-padding">
-                <p>Boston’s 684,379 residents are divided between 23 neighborhoods, as shown on the map to the right.</p>
+                <p>Boston’s 684,379 residents are divided between 23 neighborhoods, as shown on this map.</p>
             </div>
             <div class="step extra-padding">
-                <p>These neighborhoods are divided off to create Boston’s 12 police districts.</p>
+                <p>These neighborhoods are contained inside Boston’s 12 police districts, as shown by the orange outlines.</p>
             </div>
             <div class="step extra-padding" id="police-districts">
-                <p>Hover over each police district to find the neighborhoods inside of it.</p>
-                <p>Note that some neighborhoods cover more than 1 police district.</p>
+                <p>Hover over each police district to view the neighborhoods inside of it.</p>
+                <p>Note how some neighborhoods cover more than 1 police district.</p>
                 <div id="police-districts-list">
                 </div>
-                <p>In our data, we derive the demographics of each police district based on the demographics data of the neighborhoods contained within that district. </p>
-                <p>For neighborhoods that don’t fit perfectly into a single police district, we assign them to the police district that covers the majority of their area.
-                </p>
             </div>
         </div>
         <div id="neighborhoods-map" class="visualization">
 
         </div>
     </div>
+    <div id="districts-data-explanation" class="section-3">
+        <div class="description">
+            <p>The Boston Police Department gives crime incident reports detailing the location and description of each incident BPD officers respond to.</p>
+        </div>
+        <div class="visualization">
+
+        </div>
+    </div>
     <div id="crime-intro" class="section-3 section-1">
         <div class="description">
-            <p>The Boston Police Department gives crime incident reports detailing the location and type of each incident BPD officers respond to.</p>
-            <p>In our data, we chose to show only severe crimes, such as larceny (theft), disorderly conduct, and assault.</p>
-            <p>Shown here is the distribution of severe crimes per police district that occurred from June 15, 2015 to July 15, 2015, binned by each 100.</p>
+            <p>Shown here is the distribution of crimes per police district that occurred from June 15, 2015 to July 15, 2015.</p>
+            <p>Note, we include only severe crimes, such as larceny (theft), disorderly conduct, assault, and more.</p>
+            
             <a href=https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system target="_blank" rel="noopener noreferrer">
                 View our data here</a>
         </div>
@@ -54,8 +59,8 @@
     </div>
     <div id="crime-type-description" class="section-3 section-1">
         <div class="description">
-            <p>Certain crimes occur much more often than others. </p>
-            <p>Shown here is the distribution of the crime types we chose to show in our visualization.</p>
+            <p>Certain crimes occur more often than others. </p>
+            <p>Shown here is Boston’s overall distribution of the crime types we chose to include.</p>
         </div>
         <div id="crime-pie" class="visualization">
  
@@ -64,8 +69,7 @@
     </div>
     <div id="crime-composition-transition" class="section-3 section-2">
         <div class="description">
-            <p>However, this average composition of crime types is not representative of each individual district.</p>
-            <p>Certain districts are more susceptible to more severe types of crimes than others.</p>   
+            <p>However, some districts are more susceptible to certain types of crimes than others.</p>
         </div>
         <div class="visualization">
 
@@ -73,7 +77,8 @@
     </div>
     <div id="crime-type-maps" class="section-3 section-1">
         <div class="description">
-            <!-- <p>We can see that larceny, unlike disorderly conduct, is more common in northern districts.</p> -->
+            <p>Shown on these two maps are the portion a crime type makes up of each district’s total crimes.</p>
+            <p>Click on the crime types to explore and compare their distributions.</p>
             <div class="buttons-container">
                 <div class="buttons" id="buttons-crime-type-1">
                     <p>Map 1</p>
@@ -85,8 +90,10 @@
         </div>
         <div class="visualization">
             <div id="crime-type-map-1">
+                <p>Map 1</p>
             </div>
             <div id="crime-type-map-2">
+                <p>Map 2</p>
             </div>
         </div>
     </div>
@@ -135,8 +142,10 @@
         </div>
         <div class="visualization">
             <div id="race-map-1">
+                <p>Map 1</p>
             </div>
             <div id="race-map-2">
+                <p>Map 2</p>
             </div>
         </div>
     </div>
