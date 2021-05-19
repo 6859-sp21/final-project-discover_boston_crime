@@ -186,7 +186,7 @@ article {
 }
 
 .section-2 {
-    height: 10vh;
+    height: 20vh;
     width: 100%;
 }
 
@@ -240,6 +240,10 @@ article {
 .district-button {
     cursor: pointer;
     /* border-radius: 10%; */
+}
+
+.buttons {
+    font-size: 20px;
 }
 
 .district-button.active, .buttons div.active {
