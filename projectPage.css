@@ -17,17 +17,44 @@ body {
 #title h1, #title h4{
     text-align: center;
     max-width: 40%;
+    margin-bottom: 0;
 }
 
-#links {
+.row {
+    width: 100%;
     display: flex;
-    align-items: left;
-    flex-direction: column;
-    text-align: right;
+    flex-direction: row;
+    margin-left: 0;
+    margin-right: 0;
+    justify-content: space-evenly;
 }
 
-#links a{
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 33%;
+}
+
+#paper , #paper a{
     color: white;
 }
+
+#visualization {
+    justify-content: center;
+}
+
+#visualization a {
+    color: black;
+    font-size: 1.5vw;
+}
+
+#visualization-photo img{
+    width: 100%;
+}
+
+
+
+
 
 
