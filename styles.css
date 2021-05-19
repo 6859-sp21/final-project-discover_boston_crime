@@ -190,7 +190,7 @@ article {
 }
 
 .section-2 {
-    height: 20vh;
+    height: 30vh;
     width: 100%;
 }
 
@@ -218,7 +218,18 @@ article {
 }
 
 .section-3 .visualization p {
-    padding: 2em 0em;
+    padding: 0em 0em;
+    color: black;
+}
+
+#crime-type-maps .visualization p {
+    text-align: center;
+    font-size: 24px;
+}
+
+#demographics-comparison .visualization p{
+    text-align: center;
+    font-size: 24px;
 }
 
 @keyframes show-vis {
@@ -273,7 +284,11 @@ article {
 }
 
 .buttons div {
-    margin: 1em;
+    margin: .5em;
+}
+
+.buttons p {
+    font-size: 24px;
 }
 
 #offense-type-filters div {
@@ -296,6 +311,13 @@ article {
     width: 100%;
 }
 
+#resource-inequity .visualization {
+    display: block;
+}
+
+#resource-inequity .visualization > p {
+    text-align: right;
+}
 
 
 

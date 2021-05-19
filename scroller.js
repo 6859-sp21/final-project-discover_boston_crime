@@ -72,7 +72,7 @@ function init() {
     .setup({
       step: ".visualization",
       debug: true, //set to true to see the offset
-      offset: 0.5, //how far into the element the handler triggers
+      offset: 0.66, //how far into the element the handler triggers
     })
     .onStepEnter(handleStepEnter)
     .onStepExit(handleStepExit);

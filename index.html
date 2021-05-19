@@ -21,30 +21,35 @@
     <div id="neighborhoods-per-district" class="section-3">
         <div class="description">
             <div class="step extra-padding">
-                <p>Boston’s 684,379 residents are divided between 23 neighborhoods, as shown on the map to the right.</p>
+                <p>Boston’s 684,379 residents are divided between 23 neighborhoods, as shown on this map.</p>
             </div>
             <div class="step extra-padding">
-                <p>These neighborhoods are divided off to create Boston’s 12 police districts.</p>
+                <p>These neighborhoods are contained inside Boston’s 12 police districts, as shown by the orange outlines.</p>
             </div>
             <div class="step extra-padding" id="police-districts">
-                <p>Hover over each police district to find the neighborhoods inside of it.</p>
-                <p>Note that some neighborhoods cover more than 1 police district.</p>
+                <p>Hover over each police district to view the neighborhoods inside of it.</p>
+                <p>Note how some neighborhoods cover more than 1 police district.</p>
                 <div id="police-districts-list">
                 </div>
-                <p>In our data, we derive the demographics of each police district based on the demographics data of the neighborhoods contained within that district. </p>
-                <p>For neighborhoods that don’t fit perfectly into a single police district, we assign them to the police district that covers the majority of their area.
-                </p>
             </div>
         </div>
         <div id="neighborhoods-map" class="visualization">
 
         </div>
     </div>
+    <div id="districts-data-explanation" class="section-3">
+        <div class="description">
+            <p>The Boston Police Department gives crime incident reports detailing the location and description of each incident BPD officers respond to.</p>
+        </div>
+        <div class="visualization">
+
+        </div>
+    </div>
     <div id="crime-intro" class="section-3 section-1">
         <div class="description">
-            <p>The Boston Police Department gives crime incident reports detailing the location and type of each incident BPD officers respond to.</p>
-            <p>In our data, we chose to show only severe crimes, such as larceny (theft), disorderly conduct, and assault.</p>
-            <p>Shown here is the distribution of severe crimes per police district that occurred from June 15, 2015 to July 15, 2015, binned by each 100.</p>
+            <p>Shown on the map is the distribution of crimes per police district that occurred from June 15, 2015 to July 15, 2015.</p>
+            <p>Note, we include only severe crimes, such as larceny (theft), disorderly conduct, assault, and more.</p>
+            
             <a href=https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system target="_blank" rel="noopener noreferrer">
                 View our data here</a>
         </div>
@@ -54,8 +59,8 @@
     </div>
     <div id="crime-type-description" class="section-3 section-1">
         <div class="description">
-            <p>Certain crimes occur much more often than others. </p>
-            <p>Shown here is the distribution of the crime types we chose to show in our visualization.</p>
+            <p>Certain crimes occur more often than others. </p>
+            <p>Shown on the pie chart is Boston’s overall crime distribution for the types we chose to include.</p>
         </div>
         <div id="crime-pie" class="visualization">
  
@@ -64,8 +69,7 @@
     </div>
     <div id="crime-composition-transition" class="section-3 section-2">
         <div class="description">
-            <p>However, this average composition of crime types is not representative of each individual district.</p>
-            <p>Certain districts are more susceptible to more severe types of crimes than others.</p>   
+            <p>However, some districts are more susceptible to certain types of crimes than others.</p>
         </div>
         <div class="visualization">
 
@@ -73,7 +77,8 @@
     </div>
     <div id="crime-type-maps" class="section-3 section-1">
         <div class="description">
-            <!-- <p>We can see that larceny, unlike disorderly conduct, is more common in northern districts.</p> -->
+            <p>Shown on these two maps are the portion a given crime type makes up of each district’s total crimes.</p>
+            <p>Click on the crime types to explore and compare their distributions.</p>
             <div class="buttons-container">
                 <div class="buttons" id="buttons-crime-type-1">
                     <p>Map 1</p>
@@ -85,14 +90,16 @@
         </div>
         <div class="visualization">
             <div id="crime-type-map-1">
+                <p>Map 1</p>
             </div>
             <div id="crime-type-map-2">
+                <p>Map 2</p>
             </div>
         </div>
     </div>
     <div id="neighborhood-demographics-intro" class="section-3 section-2">
         <div class="description">
-            <p>To understand more about neighborhoods, we can explore their demographics.</p>
+            <p>To understand more about the neighborhoods inside of these police districts, we can explore their demographics.</p>
             
         </div>
         <div class="visualization">
@@ -102,7 +109,7 @@
     <div id="demographics-overall" class="section-3 section-1">
         <div class="description">
             <p>
-                The pie chart on the right shows the race distribution of Boston’s residents.
+                Shown on the pie chart is the distribution of races in Boston.
             </p>
             <p>This data was collected from the 2015 American Community Survey conducted by the US Census.</p>
             <a href=https://data.boston.gov/dataset/neighborhood-demographics target="_blank" rel="noopener noreferrer">
@@ -114,8 +121,7 @@
     </div>
     <div id="overall-to-comparison-description" class="section-3 section-2">
         <div class="description">
-            <p>Similar to how Boston’s crime type composition is not representative of each individual district’s crime types, 
-                Boston’s race makeup is not representative of each individual district’s race makeup.</p>
+            <p>Although Boston has an overall diverse population, some of its neighborhoods are highly segregated.</p>
         </div>
         <div class="visualization">
 
@@ -123,7 +129,8 @@
     </div>
     <div id="demographics-comparison" class="section-3 section-1">
         <div class="description">
-            <p>The maps on the right show each district’s percentage of white and black residents, binned by each 10%.</p>
+            <p>Shown on these two maps are the portion a given race makes up of each district’s population.</p>
+            <p>Click on the races to explore and compare their distributions.</p>
             <div class="buttons-container">
                 <div class="buttons" id="buttons-race-1">
                     <p>Map 1</p>
@@ -135,17 +142,17 @@
         </div>
         <div class="visualization">
             <div id="race-map-1">
+                <p>Map 1</p>
             </div>
             <div id="race-map-2">
+                <p>Map 2</p>
             </div>
         </div>
     </div>
     <div id="resource-inequity-lead-in" class="section-3">
         <div class="description">
-            <p>Although Boston has a large minority population, 
-                it continues to suffer heavily from segregation due to housing policies from the pre-civil rights era.</p>
-            <p>In fact, the Boston-Cambridge-Newton metropolitan area ranks 15th in terms of segregation 
-                among the 51 large metro areas with significant black populations.</p>
+            <p>Boston continues to suffer from segregation caused by discriminatory housing policies from the pre-civil rights era.</p>
+            <p>In fact, the Boston-Cambridge-Newton area ranks 15th in terms of segregation among the 51 large metro areas with significant black populations.</p>
             <a href=https://www.tbf.org/news-and-insights/reports/2019/june/greater-boston-housing-report-card-2019 target="_blank" rel="noopener noreferrer">
                 Read more here</a>
         </div>
@@ -155,16 +162,14 @@
     </div>
     <div id="resource-inequity" class="section-3">
         <div class="description">
-            <p>To understand some of the long-lasting effects of Boston’s past discriminatory policies, we can explore other demographics data. 
-                For example, there is a severe imbalance of resources between neighborhoods.</p>
-            <p>Shown on the right are the 3 richest and poorest neighborhoods of Boston denoted by median family income, 
-                followed by the race that makes up the largest portion of its residents.</p>
+            <p>To understand the long-lasting effects of Boston’s past policies, we can explore other neighborhood demographics data.</p>
+            <p>Shown on the table are the 3 richest and poorest neighborhoods and the race that makes up the largest portion of its residents.</p>
 
         </div>
         <div class="visualization">
             <div class="row list">
                 <div class="column">
-                    <p>Top 3</p>
+                    <p>Richest Neighborhoods*</p>
                     <ol>
                         <li>
                             <p>Beacon Hill - $205,960</p>
@@ -181,7 +186,7 @@
                     </ol>
                 </div>
                 <div class="column">
-                    <p>Bottom 3</p>
+                    <p>Poorest Neighborhoods*</p>
                     <ol>
                         <li>
                             <p>Roxbury - $40,207</p>
@@ -198,37 +203,7 @@
                     </ol>
                 </div>
             </div>
-            <!-- <table class="disparity-table">
-                <tr>
-                    <th>Top 3</th>
-                    <th>Bottom 3</th>
-                </tr>
-                <tr>
-                    <th>1. Beacon Hill - $205,960</th>
-                    <th>1. Roxbury - $40,207</th>
-                </tr>
-                <tr>
-                    <th>    83.7% White</th>
-                    <th>    50.3% Black</th>
-                </tr>
-                <tr>
-                    <th>2. Back Bay - $197,348 </th>
-                    <th>2. East Boston -  $56,426</th>
-                </tr>
-                <tr>
-                    <th>    73.4% White</th>
-                    <th>    56.5% Hispanic</th>
-                </tr>
-                <tr>
-                    <th>3. South Boston Waterfront - $191,822 </th>
-                    <th>3. Dorchester - $59,966</th>
-                </tr>
-                <tr>
-                    <th>    82.7% White</th>
-                    <th>    44.0% Black</th>
-                </tr>
-
-            </table> -->
+            <p>*by median family income</p>
         </div>
     </div>
     <div id="instructions" class="section-2">

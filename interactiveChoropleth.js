@@ -1,10 +1,10 @@
 //for solo testing
-const albersProjectionChoropleth = d3
-  .geoAlbers()
-  .scale(210000)
-  .rotate([71.057, 0])
-  .center([0, 42.313])
-  .translate([580 / 2, 700 / 2]);
+// const albersProjectionChoropleth = d3
+//   .geoAlbers()
+//   .scale(210000)
+//   .rotate([71.057, 0])
+//   .center([0, 42.313])
+//   .translate([580 / 2, 700 / 2]);
 
 // let policeDistricts = null;
 
@@ -24,6 +24,13 @@ class ChoroplethSVG {
     this.choropleth = null;
     this.isCrimeCount = isCrimeCount; //boolean for if doing crime count or not
     this.containerID = containerID;
+    this.scale = this.isCrimeCount? 210000: 170000
+    this.albersProjection = d3
+    .geoAlbers()
+    .scale(this.scale)
+    .rotate([71.057, 0])
+    .center([0, 42.313])
+    .translate([580 / 2, 700 / 2]);
     this.assignColor();
     this.createG();
     this.legend();
@@ -105,7 +112,7 @@ class ChoroplethSVG {
   createG() {
     this.g = this.svg
       .append("g")
-      .attr("transform", `translate(${this.isCrimeCount ? 300 : 100}, 0)`);
+      .attr("transform", `translate(${this.isCrimeCount ? 250 : 50}, 0)`);
   }
 
   assignColor() {
@@ -140,7 +147,7 @@ class ChoroplethSVG {
   // }
 
   drawGeoJson() {
-    const path = d3.geoPath().projection(albersProjectionChoropleth);
+    const path = d3.geoPath().projection(this.albersProjection);
     const allDistricts = topojson.feature(
       policeDistricts,
       policeDistricts.objects["Police_Districts"]
@@ -204,14 +211,16 @@ function initializeHTMLElementsChoropleth(
   svg,
   buttonsContainer,
   columnNames,
-  defaultSelected
+  defaultSelected,
+  isCrime
 ) {
   columnNames.forEach((column) => {
     const button = document.createElement("div");
-    const buttonText = document.createTextNode(column);
+    const buttonText = document.createTextNode(column.slice(0,-2));
     button.appendChild(buttonText);
     button.addEventListener("click", (d) => {
-      svg.changeFilter(column, column);
+      const title = isCrime? column.slice(0,-2) + " Percent of Total Crime" : "Percent " + column.slice(0,-2) + " Population in District";
+      svg.changeFilter(column, title);
       const clickedButton = buttonsContainer.querySelector(".clicked");
       console.log(clickedButton);
       if (clickedButton) {
@@ -244,11 +253,11 @@ function getChoroplethData() {
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
     ).then((raceData) => {
       const raceColumnNames = [
-        "White Alone %",
-        "Black/African-American %",
+        "White %",
+        "Black %",
         "Hispanic %",
-        "Asian alone %",
-        "Other Races %",
+        "Asian %",
+        "Other %",
       ];
 
       const containerIDrace1 = "race-map-1";
@@ -261,7 +270,7 @@ function getChoroplethData() {
         raceChoroplethSVG1,
         raceData,
         d3.schemeBlues,
-        "White Alone %",
+        "White %",
         "Percent White Population in District",
         false,
         containerIDrace1
@@ -272,7 +281,8 @@ function getChoroplethData() {
         raceSVG1,
         race1Buttons,
         raceColumnNames,
-        "White Alone %"
+        "White %",
+        false
       );
 
       const containerIDrace2 = "race-map-2";
@@ -285,7 +295,7 @@ function getChoroplethData() {
         raceChoroplethSVG2,
         raceData,
         d3.schemePurples,
-        "Black/African-American %",
+        "Black %",
         "Percent Black Population in District",
         false,
         containerIDrace2
@@ -296,7 +306,8 @@ function getChoroplethData() {
         raceSVG2,
         race2Buttons,
         raceColumnNames,
-        "Black/African-American %"
+        "Black %",
+        false
       );
 
       d3.csv(
@@ -323,7 +334,7 @@ function getChoroplethData() {
           crimeData,
           d3.schemeBlues,
           "Total Crimes",
-          "Total Crime",
+          "Total Crime (binned)",
           true,
           "crime-count-map"
         );
@@ -350,7 +361,8 @@ function getChoroplethData() {
           crimeMapSVG1,
           crime1Buttons,
           crimeColumnNames,
-          "Larceny %"
+          "Larceny %",
+          true
         );
 
         const containerIDcrime2 = "crime-type-map-2";
@@ -377,7 +389,8 @@ function getChoroplethData() {
           crimeMapSVG2,
           crime2Buttons,
           crimeColumnNames,
-          "Disorderly Conduct %"
+          "Disorderly Conduct %",
+          true
         );
 
         console.log("adding pieChart.js in choropleth.js");
