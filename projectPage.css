@@ -36,6 +36,13 @@ body {
     width: 33%;
 }
 
+#video p{
+    font-size: 2vw;
+    color: white;
+    background-color: black;
+    font-weight: bold;
+}
+
 #paper , #paper a{
     color: white;
 }
