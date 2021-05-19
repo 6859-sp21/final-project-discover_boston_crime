@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 #bar-tooltip, #district-tooltip {
     position: absolute;
     pointer-events: none;
@@ -166,8 +170,9 @@ article {
     color: gray;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     text-align: center;
+    flex-direction: column;
 }
 
 #title-page h1 {

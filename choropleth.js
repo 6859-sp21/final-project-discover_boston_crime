@@ -28,7 +28,7 @@ class ChoroplethSVG {
   legend() {
     this.svg
       .append("g")
-      .attr("transform", `translate(${this.isCrimeCount ? 200: 10}, 20)`)
+      .attr("transform", "translate(10, 20)")
       .append(
         function () {
           return colorLegend({
@@ -42,19 +42,17 @@ class ChoroplethSVG {
   }
 
   createG() {
-    this.g = this.svg.append("g").attr("transform", `translate(${this.isCrimeCount ? 300 : 100}, 0)`);
-    
-
+    this.g = this.svg.append("g").attr("transform", "translate(100, 0)");
   }
 
   assignColor() {
     if (!this.isCrimeCount) {
-      const maxVal = 
+      const maxVal =
         Math.ceil(
           d3.max(Array.from(this.data.values()).map((d) => d["Value"])) * 10
         ) / 10;
 
-      this.color = d3.scaleQuantize([0, maxVal], this.colorScheme[Math.max(maxVal * 10, 6)]);
+      this.color = d3.scaleQuantize([0, maxVal], this.colorScheme[maxVal * 10]);
       console.log(maxVal);
     } else {
       const maxVal = d3.max(
@@ -238,7 +236,7 @@ function getChoroplethData() {
         new ChoroplethSVG(
           disorderlyConductChoroplethSVG,
           disorderlyConductCrimeData,
-          d3.schemeOrRd,
+          d3.schemeReds,
           "Disorderly Conduct Percent of Total Crime",
           false
         );
@@ -419,8 +417,7 @@ function colorLegend({
         .attr("y", marginTop + marginBottom - height - 6)
         .attr("fill", "currentColor")
         .attr("text-anchor", "start")
-        //.attr("font-weight", "bold")
-        .attr("font-size", "14px")
+        .attr("font-weight", "bold")
         .attr("class", "title")
         .text(title)
     );

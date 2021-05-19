@@ -172,7 +172,7 @@ function initializeMapSvg() {
         .duration(300)
         .style("opacity", 0.95)
         .style("left", event.pageX + "px")
-        .style("top", event.pageY + "px")
+        .style("top", event.pageY + "px");
     })
     .on("mouseout", function (event, d) {
       if (!selectedDistricts.has(d.properties.ID)) {
@@ -459,6 +459,14 @@ function getYCoordinate(d) {
   return albersProjection([+d["Long"], +d["Lat"]])[1];
 }
 
+// function initializeScrollToVisualization() {
+//   document.querySelector("#scroll-to-vis").addEventListener("click", () => {
+//     document
+//       .querySelector("#instructions")
+//       .scrollIntoView({ behavior: "smooth" });
+//   });
+// }
+
 function getMapData() {
   d3.csv(
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/crime_aggregated_code_groups.csv"
@@ -476,6 +484,7 @@ function getMapData() {
       initializeMapEventListeners();
       initializeMapScales();
       renderMapPoints();
+      // initializeScrollToVisualization();
 
       console.log("adding secondaryCharts.js in map.js");
       let head = document.getElementsByTagName("head")[0];
