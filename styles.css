@@ -28,6 +28,10 @@ html {
     margin-right: 0;
 }
 
+#map {
+    width: 45%;
+}
+
 .column {
     display: flex;
     flex-direction: column;
@@ -125,9 +129,9 @@ article {
     position: relative;
 }
 
-#neighborhoods-per-district svg {
+#neighborhoods-per-district svg, .visualization svg, .visualization div {
     position: sticky;
-    top: 0px;
+    top: 50px;
 }
 
 #neighborhoods-per-district .description {
@@ -181,7 +185,7 @@ article {
 }
 
 .section-1 {
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
 }
 
@@ -270,6 +274,26 @@ article {
 
 .buttons div {
     margin: 1em;
+}
+
+#offense-type-filters div {
+    display: flex;
+    justify-content: space-evenly;
+    /* margin-top: 1em; */
+}
+
+/* #offense-type-filters {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+} */
+
+#offense-type-filters div button {
+    width: 25% !important;
+}
+
+#filters {
+    width: 100%;
 }
 
 
