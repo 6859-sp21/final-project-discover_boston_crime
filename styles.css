@@ -280,9 +280,20 @@ article {
 }
 
 .buttons div {
-    margin: 1em;
+    margin: .5em;
 }
 
+.buttons p {
+    font-size: 24px;
+}
+
+#resource-inequity .visualization {
+    display: block;
+}
+
+#resource-inequity .visualization > p {
+    text-align: right;
+}
 
 
 
