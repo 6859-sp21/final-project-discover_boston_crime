@@ -331,7 +331,7 @@ function getNeighborhoodsPerDistrictData() {
       let head = document.getElementsByTagName("head")[0];
       let script = document.createElement("script");
       script.type = "text/javascript";
-      script.src = "choropleth.js";
+      script.src = "interactiveChoropleth.js";
       head.appendChild(script);
     });
   });

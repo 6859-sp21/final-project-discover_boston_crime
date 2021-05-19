@@ -8,7 +8,7 @@ const tabsElement = document.querySelector("#myTab");
 const tabsContentElement = document.querySelector("#myTabContent");
 
 const barWidth = 700;
-const barHeight = 700;
+const barHeight = 650;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 const svgs = [];
 let sampleData = null;
