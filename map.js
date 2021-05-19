@@ -321,7 +321,20 @@ function initializeMapDataTransforms() {
 }
 
 function initializeMapHTMLElements() {
-  offenseTypes.forEach((type) => {
+  const numberOfRows = 2;
+  const numberOfOffenseGroups = offenseTypes.size;
+  const offenseFilterContainers = Array.from({
+    length: numberOfOffenseGroups / numberOfRows - 1,
+  }).map((_) => document.createElement("div"));
+  offenseFilterContainers.forEach((container) => {
+    offenseFiltersDivElement.appendChild(container);
+  });
+
+  console.log(offenseFilterContainers);
+
+  offenseTypesArray = Array.from(offenseTypes);
+
+  offenseTypesArray.forEach((type, i) => {
     // <button
     //   type="button"
     //   class="btn btn-primary"
@@ -338,7 +351,11 @@ function initializeMapHTMLElements() {
     buttonElement.setAttribute("name", type);
     const textElement = document.createTextNode(type);
     buttonElement.appendChild(textElement);
-    offenseFiltersDivElement.appendChild(buttonElement);
+    console.log(type, i, numberOfOffenseGroups, numberOfRows);
+    console.log(Math.floor(i / (numberOfOffenseGroups / numberOfRows)));
+    offenseFilterContainers[
+      Math.floor(i / (numberOfOffenseGroups / numberOfRows))
+    ].appendChild(buttonElement);
 
     buttonElement.addEventListener("mouseover", () => {
       d3.selectAll(`.${type.replace(/\s/g, "_")}`)

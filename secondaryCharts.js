@@ -7,8 +7,8 @@ let neighborhoodsSelected = new Set();
 const tabsElement = document.querySelector("#myTab");
 const tabsContentElement = document.querySelector("#myTabContent");
 
-const barWidth = window.innerWidth * .4;
-const barHeight = window.innerHeight * .75;
+const barWidth = window.innerWidth * 0.4;
+const barHeight = window.innerHeight * 0.75;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 const svgs = [];
 let sampleData = null;
@@ -205,12 +205,11 @@ class SVG {
       .attr("transform", `translate(0,${barHeight - margin.bottom})`)
       .call(xAxisLabels);
 
-    if(this.bottomAxisLabel == "Education Attainment"){
+    if (this.bottomAxisLabel == "Education Attainment") {
       xAxis.selectAll(".tick text").attr("font-size", "10px");
     } else {
       xAxis.selectAll(".tick text").attr("font-size", "13px");
     }
-    
 
     // console.dir(selection);
 
@@ -369,7 +368,7 @@ class SVG {
             .duration(300)
             .style("opacity", 0.95)
             .style("left", event.pageX + "px")
-            .style("top", event.pageY + "px")
+            .style("top", event.pageY + "px");
         }.bind(this)
       )
       .on("mouseout", function (event, d) {
@@ -393,7 +392,9 @@ class SVG {
         const totalPopulation = dataObject["Total Population"];
         const agePopulation = dataObject[groupLabel];
 
-        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(
+          4
+        )} </p>
             <p class="tooltip-p"> Age Population: ${agePopulation} </p>
             <p class="tooltip-p"> Total Population: ${totalPopulation} </p>`;
         break;
@@ -401,7 +402,9 @@ class SVG {
       case "Race": {
         const totalPopulation = dataObject["Total Population"];
         const racePopulation = dataObject[groupLabel];
-        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(
+          4
+        )} </p>
           <p class="tooltip-p"> Race Population: ${racePopulation} </p>
           <p class="tooltip-p"> Total Population: ${totalPopulation} </p>`;
 
@@ -415,7 +418,9 @@ class SVG {
         const povertyPopulation =
           dataObject[groupLabelPrefix + " Total Poverty"];
 
-        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(
+          4
+        )} </p>
           <p class="tooltip-p"> Age Poverty Population: ${povertyPopulation} </p>
           <p class="tooltip-p"> Total Age Population: ${totalPopulation} </p>`;
         break;
@@ -424,7 +429,9 @@ class SVG {
         const totalPopulation = dataObject["Total Families"];
         const incomePopulation = dataObject[groupLabel];
 
-        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(
+          4
+        )} </p>
         <p class="tooltip-p"> Families in Income Bracket: ${incomePopulation} </p>
         <p class="tooltip-p"> Total Families: ${totalPopulation} </p>`;
         break;
@@ -436,7 +443,9 @@ class SVG {
         const totalPopulation =
           dataObject["Total population 25 years and over"];
 
-        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(4)} </p>
+        resultString += `<p class="tooltip-p"> Percent of Population: ${value.toFixed(
+          4
+        )} </p>
         <p class="tooltip-p"> Number of Adults: ${educationGroupPopulation} </p>
         <p class="tooltip-p"> Total Population over 25: ${totalPopulation} </p>`;
         break;
@@ -445,7 +454,7 @@ class SVG {
         console.log("ERROR: SHOULD NEVER REACH HERE");
         resultString = "ERROR";
     }
-    console.log(resultString)
+    console.log(resultString);
     return resultString;
   }
 
