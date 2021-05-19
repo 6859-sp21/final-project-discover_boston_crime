@@ -7,8 +7,8 @@ let neighborhoodsSelected = new Set();
 const tabsElement = document.querySelector("#myTab");
 const tabsContentElement = document.querySelector("#myTabContent");
 
-const barWidth = 700;
-const barHeight = 650;
+const barWidth = window.innerWidth * .4;
+const barHeight = window.innerHeight * .75;
 const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 const svgs = [];
 let sampleData = null;
@@ -708,18 +708,18 @@ function getDemographicsData() {
       const id = "race_group";
       const labelGroupName = "Race";
       const labelGroups = [
-        "White Alone %",
-        "Black/African-American %",
+        "White %",
+        "Black %",
         "Hispanic %",
-        "Asian alone %",
-        "Other Races %",
+        "Asian %",
+        "Other %",
       ];
       const lowerLabels = [
-        "White Alone",
-        "Black/African-American",
+        "White",
+        "Black",
         "Hispanic",
-        "Asian alone",
-        "Other Races",
+        "Asian",
+        "Other",
       ];
 
       addTabsChart(id, labelGroupName);
