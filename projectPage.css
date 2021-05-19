@@ -61,7 +61,7 @@ body {
 }
 
 #paper {
-    height: 50%;
+    height: 30vh;
     overflow: scroll;
     background-color: black;
     color: white;
