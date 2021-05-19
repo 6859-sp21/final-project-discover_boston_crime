@@ -78,8 +78,8 @@ function initializeHTMLElementsNPD() {
     const districtName = document.createTextNode(district);
     districtElement.appendChild(districtName);
     districtElement.addEventListener("mouseover", (d) => {
-      console.log(district);
-      console.log(`${district}-neighborhood`);
+      //console.log(district);
+      //console.log(`${district}-neighborhood`);
       d.target.classList.add("active");
       d3.selectAll(`.${district}-neighborhood`).attr("fill", (d) => {
         return colorNPD(d.properties["Name"]);
@@ -90,8 +90,8 @@ function initializeHTMLElementsNPD() {
       neighborhoodsDiv.classList.remove("hidden");
     });
     districtElement.addEventListener("mouseout", (d) => {
-      console.log(district);
-      console.log(`${district}-neighborhood`);
+      //console.log(district);
+      //console.log(`${district}-neighborhood`);
       d.target.classList.remove("active");
       d3.selectAll(`.${district}-neighborhood`).attr("fill", "black");
       const neighborhoodsDiv = document.querySelector(
@@ -141,8 +141,8 @@ function initializeHTMLElementsNPD() {
     const legendData = legend.selectAll("g").data(neighborhoods);
     // .join("g")
 
-    console.log(colorNPD.domain().slice());
-    console.dir(legendData);
+    //console.log(colorNPD.domain().slice());
+    //console.dir(legendData);
 
     const legendUpdate = legendData
       .join(
@@ -153,7 +153,7 @@ function initializeHTMLElementsNPD() {
             .attr("width", 25)
             .attr("height", 25)
             .attr("fill", (d) => {
-              console.log(d);
+              //console.log(d);
               return colorNPD(d);
             });
           e.append("text")
@@ -215,41 +215,41 @@ function updateMapNeighborhoodsPerDistrict() {
             .attr("fill", "black")
             .attr("fill-opacity", (d) => {
               if ("Neighborhood_ID" in d.properties) {
-                console.log("neighborhood");
+                //console.log("neighborhood");
                 return "1";
               } else {
-                console.log("district");
+                //console.log("district");
                 return "0";
               }
             })
             .attr("stroke", (d) => {
               if ("Neighborhood_ID" in d.properties) {
-                console.log("neighborhood");
+                //console.log("neighborhood");
                 return "white";
               } else {
-                console.log("district");
+                //console.log("district");
                 return "orange";
               }
             })
             .style("stroke-width", (d) => {
               if ("Neighborhood_ID" in d.properties) {
-                console.log("neighborhood");
+                //console.log("neighborhood");
                 return "1px";
               } else {
-                console.log("district");
+                //console.log("district");
                 return "3px";
               }
             })
             .attr("class", (d) => {
               if ("Neighborhood_ID" in d.properties) {
-                console.log(d);
-                console.log("neighborhood", d.properties["Name"]);
+                //console.log(d);
+                //console.log("neighborhood", d.properties["Name"]);
                 return `${
                   neighborhoodToDistrictMapNPD[d.properties["Name"]]
                 }-neighborhood`;
               } else {
-                console.log(d);
-                console.log("district", d.properties["DISTRICT"]);
+                //console.log(d);
+                //console.log("district", d.properties["DISTRICT"]);
                 return d.properties["DISTRICT"];
               }
             })
@@ -272,8 +272,8 @@ function initializeScroller() {
   // scrollama event handlers
   function handleStepEnter(response) {
     // response = { element, direction, index }
-    console.log(`scroller entering`);
-    console.log(response);
+    //console.log(`scroller entering`);
+    //console.log(response);
     // add to color to current step
     response.element.classList.add("is-active");
     dataNeighborhoodsPerDistrict =
@@ -289,13 +289,13 @@ function initializeScroller() {
 
   function handleStepExit(response) {
     // response = { element, direction, index }
-    console.log(`scroller exiting`);
-    console.log(response);
+    //console.log(`scroller exiting`);
+    //console.log(response);
     // remove color from current step
     response.element.classList.remove("is-active");
   }
 
-  console.log(`initializing scrollama for neighborhoods per district`);
+  //console.log(`initializing scrollama for neighborhoods per district`);
   // 1. setup the scroller with the bare-bones options
   // 		this will also initialize trigger observations
   // 2. bind scrollama event handlers (this can be chained like below)
@@ -317,18 +317,18 @@ function getNeighborhoodsPerDistrictData() {
     "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
   ).then((policeDistrictsTopojson) => {
     policeDistricts = policeDistrictsTopojson;
-    console.log(policeDistricts);
+    //console.log(policeDistricts);
     d3.json(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/boston_neighborhoods.json"
     ).then((neighborhoodsTopojson) => {
       neighborhoodsInDistricts = neighborhoodsTopojson;
-      console.log(neighborhoodsInDistricts);
+      //console.log(neighborhoodsInDistricts);
       initializeConstantsNeighborhoodsPerDistrict();
       initializeMapSvg();
       initializeHTMLElementsNPD();
       initializeScroller();
 
-      console.log("adding mapChoropleth.js in neighborhoodsPerDistrict.js");
+      //console.log("adding mapChoropleth.js in neighborhoodsPerDistrict.js");
       let head = document.getElementsByTagName("head")[0];
       let script = document.createElement("script");
       script.type = "text/javascript";

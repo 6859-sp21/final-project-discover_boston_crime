@@ -16,7 +16,7 @@
     <div id="pie-tooltip"></div>
     <div id="title-page" class="section-1">
         <h1>Explore Boston's Neighborhood Inequity</h1>
-        <a id="scroll-to-vis" href="#instructions">Skip to visualization</a>
+        <a id="scroll-to-vis" href="#main-viz">Skip to visualization</a>
     </div>
     <div id="neighborhoods-per-district" class="section-3">
         <div class="description">
@@ -208,18 +208,29 @@
             </div>
         </div>
     </div>
-    <div id="instructions" class="section-2">
-        <p>instructions</p>
+    <div id="conclusion" class="section-3" >
+        <div class="description">
+            <p>Both crimes and resource inequity affect the lives of Boston residents today.</p>
+            <p>To understand the correlation between these two factors, we can explore them side by side.</p>
+        </div>
+        <div class="visualization">
+
+        </div>
     </div>
-    <div class="row">
+    <div id="instructions" class="section-2">
+        <div>
+
+        </div>
+    </div>
+    <div class="row" id="main-viz">
         <div class="column" id="map">
             <div id="filters">
                 <div id="offense-type-filters" class="btn-group-toggle" data-toggle="buttons">
 
                 </div>
                 <p>>Hover on a crime type to highlight its incidents on the map.</p>
-                <p>>Click on crime type(s) to filter for their incidents.</p>
-                <p>>Click on district(s) on the map to add/remove their demographic data to the bar chart.</p>
+                <p>>Click on crime type(s) to filter for their incidents.**</p>
+                <p>>Click on district(s) on the map to add/remove their demographic data to the bar chart.***</p>
                 <!-- <h2>Hour Filter</h2>
                 <div id="time-filters" class="btn-group-toggle" data-toggle="buttons">
 
@@ -233,18 +244,19 @@
             </div>
         </div>
     </div>
-    <div>
-        <a href="https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system" target="_blank" rel="noopener noreferrer">
-            Boston Crime Dataset</a>
-    </div>
-    <div>
-        <a href="https://data.boston.gov/dataset/neighborhood-demographics" target="_blank" rel="noopener noreferrer">
-            Boston Demographics Dataset</a>
-    </div>
-    <div>
-        <p>To analyze the demographics of each police district, we aggregate the demographics data of each neighborhood contained within it. 
+    <div id="main-footnote">
+        <p>**If all filters are unselected, all crime types are shown on the map.</p>
+        <p>***To analyze the demographics of each police district, we aggregate the demographics data of each neighborhood contained within it. 
             For neighborhoods that don’t fit into a single police district, we assign them to the district that covers the majority of their area.
         </p>
+        <div>
+        <a href="https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system" target="_blank" rel="noopener noreferrer">
+            Boston Crime Dataset</a>
+        </div>
+        <div>
+            <a href="https://data.boston.gov/dataset/neighborhood-demographics" target="_blank" rel="noopener noreferrer">
+                Boston Demographics Dataset</a>
+        </div>
     </div>
     <!-- <section id="scrolly">
         <article>

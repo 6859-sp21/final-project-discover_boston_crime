@@ -9,7 +9,7 @@ const hourIdToBins = new Map();
 const MIN_THRESHOLD = 100;
 
 const width = window.innerWidth * .45;
-const height = window.innerHeight * .9;
+const height = window.innerHeight * .87;
 const scale = 110* window.innerWidth + 16880;
 const albersProjection = d3
   .geoAlbers()
@@ -102,7 +102,7 @@ function initializeMapSvg() {
 
   let drawDistricts = g.selectAll("path").data(allDistricts);
 
-  console.log(drawDistricts);
+  //console.log(drawDistricts);
 
   drawDistricts
     .join(
@@ -211,7 +211,7 @@ function initializeMapSvg() {
 }
 
 function renderMapPoints() {
-  console.log("rendering points");
+  //console.log("rendering points");
   const points = g
     .selectAll("path.crimePoints")
     .data(currData, (d) => d["INCIDENT_NUMBER"]);
@@ -221,8 +221,7 @@ function renderMapPoints() {
   points
     .join(
       function (enter) {
-        console.log("FUCK");
-        console.log(enter);
+        //console.log(enter);
         return enter.append("path").attr("class", (d) => {
           const pointDistrict = d["DISTRICT"];
           crimeCountMap[pointDistrict]++;
@@ -330,7 +329,7 @@ function initializeMapHTMLElements() {
     offenseFiltersDivElement.appendChild(container);
   });
 
-  console.log(offenseFilterContainers);
+  //console.log(offenseFilterContainers);
 
   offenseTypesArray = Array.from(offenseTypes);
 
@@ -351,8 +350,8 @@ function initializeMapHTMLElements() {
     buttonElement.setAttribute("name", type);
     const textElement = document.createTextNode(type);
     buttonElement.appendChild(textElement);
-    console.log(type, i, numberOfOffenseGroups, numberOfRows);
-    console.log(Math.floor(i / (numberOfOffenseGroups / numberOfRows)));
+    //console.log(type, i, numberOfOffenseGroups, numberOfRows);
+    //console.log(Math.floor(i / (numberOfOffenseGroups / numberOfRows)));
     offenseFilterContainers[
       Math.floor(i / (numberOfOffenseGroups / numberOfRows))
     ].appendChild(buttonElement);
@@ -438,7 +437,7 @@ function filterMapData() {
     currData = data;
     return;
   }
-  console.log("filtering data");
+  //console.log("filtering data");
   currData = data.filter((d) => {
     let skip = true;
     if (filtersSelected["Aggregated Offence Code Group"].size === 0) {
@@ -495,7 +494,7 @@ function getMapData() {
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/data/police_districts.json"
     ).then((topojsonBoston) => {
       policeDistricts = topojsonBoston;
-      console.log(policeDistricts);
+      //console.log(policeDistricts);
       initializeMapDataTransforms();
       initializeMapSvg();
       initializeMapHTMLElements();
@@ -504,7 +503,7 @@ function getMapData() {
       renderMapPoints();
       // initializeScrollToVisualization();
 
-      console.log("adding secondaryCharts.js in map.js");
+      //console.log("adding secondaryCharts.js in map.js");
       let head = document.getElementsByTagName("head")[0];
       let script = document.createElement("script");
       script.type = "text/javascript";

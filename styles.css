@@ -311,6 +311,10 @@ article {
     font-size: 0.9vw;
 }
 
+#offense-type-filters {
+    margin-bottom: 0.4vh;
+}
+
 #filters {
     width: 100%;
 }
@@ -318,7 +322,8 @@ article {
 #filters p {
     padding: 0;
     margin: 0;
-    font-size: 1vw;
+    font-size: 0.9vw;
+    font-style: italic;
 }
 
 #resource-inequity .visualization {
@@ -339,6 +344,38 @@ article {
     font-size: 1vw;
 }
 
+#instructions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#instructions div {
+    width: 95%;
+    border-bottom: 3px dotted #3a3b3c;
+}
 
 
+#conclusion .description{
+    padding-top: 25vh;
+    padding-bottom: 25vh;
+}
 
+#conclusion .visualization {
+    background-image: url("https://www.jchs.harvard.edu/sites/default/files/styles/opencrop/public/media/imp/harvard_jchs_mass_historical_housing_history_2019.jpg?itok=aZYG8np4");
+    /* background-position: center top; */
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#main-viz {
+    padding-top: 2vh;
+}
+
+#main-footnote {
+    margin: 0 2vh;
+}
+
+#main-footnote p {
+    margin-bottom: 0em;
+}

@@ -34,7 +34,7 @@ function createPieChart(data, svg) {
   let arc = d3.arc().innerRadius(0).outerRadius(radius);
   let pieArcs = pieFunc(data);
 
-  console.log(pieArcs);
+  //console.log(pieArcs);
 
   pieColor = d3.scaleOrdinal(d3.schemeTableau10).domain(data);
 
@@ -152,7 +152,7 @@ function getData() {
     crimePie = createPieChart(crimePercentData, crimeSVG);
     getLegend(crimeSVG, crimePercentData);
 
-    console.log("adding scroller.js in pieChart.js");
+    //console.log("adding scroller.js in pieChart.js");
     let head = document.getElementsByTagName("head")[0];
     let script = document.createElement("script");
     script.type = "text/javascript";

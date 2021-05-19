@@ -53,16 +53,16 @@ class ChoroplethSVG {
       policeDistricts.objects["Police_Districts"]
     ).features;
 
-    console.log(this);
+    //console.log(this);
     const paths = d3.selectAll(`#${this.containerID} path`);
-    console.log(this.g);
-    console.log(paths);
+    //console.log(this.g);
+    //console.log(paths);
     paths.attr(
       "fill",
       function (d) {
         //console.log(this.data.get(d.properties.DISTRICT).Value)
         //console.log(this.color(this.data.get(d.properties.DISTRICT).Value))
-        console.log(d);
+        //console.log(d);
         const color = this.color(
           this.formattedData.get(d.properties.DISTRICT).Value
         );
@@ -84,13 +84,13 @@ class ChoroplethSVG {
   }
 
   legend() {
-    console.log("legend called");
-    console.log(`selecting #${this.containerID} .legend`);
+    //console.log("legend called");
+   // console.log(`selecting #${this.containerID} .legend`);
     const legend = document.querySelector(`#${this.containerID} .legend`);
-    console.log(legend);
+    //console.log(legend);
     if (legend != null) {
       legend.remove();
-      console.log("removing legend");
+      //console.log("removing legend");
     }
 
     this.svg
@@ -223,7 +223,7 @@ function initializeHTMLElementsChoropleth(
       const title = isCrime? column.slice(0,-2) + " Percent of Total Crime" : "Percent " + column.slice(0,-2) + " Population in District";
       svg.changeFilter(column, title);
       const clickedButton = buttonsContainer.querySelector(".clicked");
-      console.log(clickedButton);
+      //console.log(clickedButton);
       if (clickedButton) {
         clickedButton.classList.remove("clicked");
       }
@@ -394,7 +394,7 @@ function getChoroplethData() {
           true
         );
 
-        console.log("adding pieChart.js in choropleth.js");
+        //console.log("adding pieChart.js in choropleth.js");
         let head = document.getElementsByTagName("head")[0];
         let script = document.createElement("script");
         script.type = "text/javascript";
