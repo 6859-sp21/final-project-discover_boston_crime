@@ -112,10 +112,8 @@ class ChoroplethSVG {
     if (!this.isCrimeCount) {
       const maxVal =
         Math.ceil(
-          d3.max(
-            Array.from(this.formattedData.values()).map((d) => d["Value"])
-          ) * 10
-        ) / 10;
+          d3.max(Array.from(this.formattedData.values()).map((d) => d["Value"])) * 100
+        ) / 100;
 
       this.color = d3.scaleQuantize([0, maxVal], this.colorScheme[8]);
       //console.log(this.formattedData);
