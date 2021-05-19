@@ -88,7 +88,7 @@ h1 {
 .description {
     text-align: center;
     padding: 1rem;
-    font-size: 1.5rem;
+    font-size: 1.5vw;
     color: white;
 }
 
@@ -96,16 +96,11 @@ h1 {
     width: 75%;
 }
 
-tr {
-    padding: 15px;
-    text-align: left;
-    font-size: 24px;
-}
 
 .list p {
     margin: 0;
     padding: .1em 0em !important;
-    font-size: 24px;
+    font-size: 1.5vw;
 }
 
 .row.list {
@@ -116,7 +111,7 @@ tr {
 .list li {
     margin: 0;
     padding: 0 !important;
-    font-size: 24px;
+    font-size: 1.5vw;
 }
 
 article {
@@ -185,7 +180,7 @@ article {
 
 #title-page h1 {
     max-width: 40%;
-    font-size: 72px;
+    font-size: 5vw;
 }
 
 .section-1 {
@@ -228,12 +223,14 @@ article {
 
 #crime-type-maps .visualization p {
     text-align: center;
-    font-size: 24px;
+    font-size: 1.5vw;
+    margin-bottom: .1rem;
 }
 
 #demographics-comparison .visualization p{
     text-align: center;
-    font-size: 24px;
+    font-size: 1.5vw;
+    margin-bottom: .1rem;
 }
 
 @keyframes show-vis {
@@ -262,7 +259,7 @@ article {
 }
 
 .buttons {
-    font-size: 20px;
+    font-size: 1.2vw;
 }
 
 .district-button.active, .buttons div.active {
@@ -292,7 +289,7 @@ article {
 }
 
 .buttons p {
-    font-size: 24px;
+    font-size: 1.5vw;
 }
 
 #offense-type-filters div {

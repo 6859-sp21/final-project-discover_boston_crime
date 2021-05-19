@@ -1,5 +1,4 @@
-const pieWidth = 600;
-const pieHeight = 600;
+const pieWidth = window.innerWidth * .35;
 //const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 const radius = pieWidth / 2 - margin.top;
 let pieSVG = null;
@@ -68,7 +67,7 @@ function createPieChart(data, svg) {
 
     //   pieTooltipD3Element.style("opacity", 0).html("");
     // })
-    .attr("transform", "translate(" + pieWidth / 2 + "," + pieHeight / 2 + ")");
+    .attr("transform", "translate(" + pieWidth / 2 + "," + pieWidth / 2 + ")");
 }
 
 function getLegend(svg, data) {
@@ -98,6 +97,7 @@ function getLegend(svg, data) {
           .attr("x", -24)
           .attr("y", 9.5)
           .attr("dy", "0.35em")
+          .attr("font-size", ".9vw")
           .text((d) => d.name)
           .attr("text-anchor", "end");
         return e;
@@ -117,7 +117,7 @@ function createPieSVG(container) {
     .select(container)
     .append("svg")
     .attr("width", pieWidth)
-    .attr("height", pieHeight)
+    .attr("height", pieWidth)
     .attr("class", "overflow-show");
 
   return pieSVG;

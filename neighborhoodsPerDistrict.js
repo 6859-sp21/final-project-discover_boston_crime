@@ -39,7 +39,7 @@ const neighborhoodsContainerNPD = document.querySelector(
 
 const albersProjectionNeighborhoodsPerDistrict = d3
   .geoAlbers()
-  .scale(230000)
+  .scale(110 * window.innerWidth + 38800)
   .rotate([71.057, 0])
   .center([0, 42.313])
   .translate([
@@ -161,7 +161,8 @@ function initializeHTMLElementsNPD() {
             .attr("y", 9.5)
             .attr("dy", "0.55em")
             .text((d) => d)
-            .attr("text-anchor", "end");
+            .attr("text-anchor", "end")
+            .attr("font-size", "1vw");
           return e;
         },
         (update) => update,

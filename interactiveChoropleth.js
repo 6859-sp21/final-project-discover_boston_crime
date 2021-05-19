@@ -24,7 +24,7 @@ class ChoroplethSVG {
     this.choropleth = null;
     this.isCrimeCount = isCrimeCount; //boolean for if doing crime count or not
     this.containerID = containerID;
-    this.scale = this.isCrimeCount? 210000: 170000
+    this.scale = this.isCrimeCount? 70 * window.innerWidth + 75600: 75 * window.innerWidth + 46000;
     this.albersProjection = d3
     .geoAlbers()
     .scale(this.scale)
@@ -96,7 +96,8 @@ class ChoroplethSVG {
     this.svg
       .append("g")
       .attr("class", "legend")
-      .attr("transform", `translate(${this.isCrimeCount ? 200 : 10}, 20)`)
+      .attr("transform", `translate(${this.isCrimeCount ? window.innerWidth * 0.1 : 10}, 
+        ${this.isCrimeCount ? 50 - window.innerHeight * 0.05 : 50 - window.innerHeight * .03})`)
       .append(
         function () {
           return colorLegend({
@@ -112,7 +113,7 @@ class ChoroplethSVG {
   createG() {
     this.g = this.svg
       .append("g")
-      .attr("transform", `translate(${this.isCrimeCount ? 250 : 50}, 0)`);
+      .attr("transform", `translate(${this.isCrimeCount ? window.innerWidth * 0.1 : -300 + window.innerWidth * .22}, ${-200 + window.innerHeight * .2})`);
   }
 
   assignColor() {
@@ -196,7 +197,7 @@ class ChoroplethSVG {
 function initializeChoroplethSVG(
   container,
   choroplethWidth = 580,
-  choroplethHeight = 700
+  choroplethHeight = 250 + window.innerHeight * .55
 ) {
   choroplethSVG = d3
     .select(container)

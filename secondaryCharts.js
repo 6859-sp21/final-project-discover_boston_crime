@@ -186,10 +186,10 @@ class SVG {
   axis() {
     const yAxis = this.svg
       .append("g")
-      .attr("transform", `translate(${margin.left},0)`)
+      .attr("transform", `translate(${margin.left },0)`)
       .call(d3.axisLeft(this.y));
 
-    yAxis.selectAll(".tick text").attr("font-size", "13px");
+    yAxis.selectAll(".tick text").attr("font-size", ".85vw");
 
     const xAxisLabels = d3
       .axisBottom(this.x0)
@@ -206,9 +206,9 @@ class SVG {
       .call(xAxisLabels);
 
     if (this.bottomAxisLabel == "Education Attainment") {
-      xAxis.selectAll(".tick text").attr("font-size", "10px");
+      xAxis.selectAll(".tick text").attr("font-size", ".595vw");
     } else {
-      xAxis.selectAll(".tick text").attr("font-size", "13px");
+      xAxis.selectAll(".tick text").attr("font-size", ".85vw");
     }
 
     // console.dir(selection);
@@ -237,7 +237,7 @@ class SVG {
       .append("text")
       .call(d3.axisBottom(this.x0))
       .attr("fill", "black")
-      .attr("font-size", "16px")
+      .attr("font-size", "1.1vw")
       .attr("font-weight", "bold")
       .attr("x", barWidth / 2)
       .attr("y", barHeight + margin.bottom * 1.5)
@@ -246,10 +246,10 @@ class SVG {
     this.svg
       .append("text")
       .call(d3.axisLeft(this.y))
-      .attr("transform", `translate(-5, ${barHeight / 3.5}) rotate(-90)`)
+      .attr("transform", `translate(${-margin.left * .5}, ${barHeight / 3.5}) rotate(-90)`)
       .attr("text-anchor", "end")
       .attr("fill", "black")
-      .attr("font-size", "16px")
+      .attr("font-size", "1.1vw")
       .attr("font-weight", "bold")
       .text("Percent of District Population");
   }
@@ -488,6 +488,7 @@ class SVG {
             .attr("x", -24)
             .attr("y", 9.5)
             .attr("dy", "0.35em")
+            .attr("font-size", ".9vw")
             .text((d) => d)
             .attr("text-anchor", "end");
           return e;
