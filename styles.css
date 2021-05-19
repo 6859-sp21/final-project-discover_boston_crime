@@ -36,8 +36,6 @@ html {
     width: 55%;
 }
 
-
-
 .column {
     display: flex;
     flex-direction: column;
@@ -300,6 +298,7 @@ article {
 #offense-type-filters div {
     display: flex;
     justify-content: space-evenly;
+    
     /* margin-top: 1em; */
 }
 
@@ -327,18 +326,14 @@ article {
 }
 
 #myTab {
-    width: 80%;
     display: flex;
     justify-content: center;
+    width: 80%;
 }
 
 #myTab button {
     font-size: 1vw;
 }
-
-
-
-
 
 
 

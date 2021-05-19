@@ -8,11 +8,12 @@ const hourBins = 4;
 const hourIdToBins = new Map();
 const MIN_THRESHOLD = 100;
 
-const width = window.innerWidth * 0.45;
-const height = window.innerHeight * 0.9;
+const width = window.innerWidth * .45;
+const height = window.innerHeight * .9;
+const scale = 110* window.innerWidth + 16880;
 const albersProjection = d3
   .geoAlbers()
-  .scale(150000)
+  .scale(scale)
   .rotate([71.057, 0])
   .center([0, 42.313])
   .translate([width / 2, height / 2]);

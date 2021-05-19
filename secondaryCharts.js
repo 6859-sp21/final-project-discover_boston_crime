@@ -717,18 +717,18 @@ function getDemographicsData() {
       const id = "race_group";
       const labelGroupName = "Race";
       const labelGroups = [
-        "White Alone %",
-        "Black/African-American %",
+        "White %",
+        "Black %",
         "Hispanic %",
-        "Asian alone %",
-        "Other Races %",
+        "Asian %",
+        "Other %",
       ];
       const lowerLabels = [
-        "White Alone",
-        "Black/African-American",
+        "White",
+        "Black",
         "Hispanic",
-        "Asian alone",
-        "Other Races",
+        "Asian",
+        "Other",
       ];
 
       addTabsChart(id, labelGroupName);
