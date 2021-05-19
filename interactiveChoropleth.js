@@ -269,11 +269,8 @@ function getChoroplethData() {
       d3.csv(
         "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/boston_crimes_per_neighborhood.csv"
       ).then((crimeData) => {
-        
-//Neighborhood	Total Population	White Alone	White Alone %	Black/African-American	Black/African-American %	Hispanic	Hispanic %	Asian alone	Asian alone %	Other Races	Other Races %
-//	Neighborhood	Total Crimes	Larceny	Larceny %	Disorderly Conduct	Disorderly Conduct %
-
-        const crimeColumnNames = ["Larceny %", "Disorderly Conduct %"];
+        const crimeColumnNames = ["Larceny %", "Disorderly Conduct %", "Drug Violation %", 
+        "Vandalism %", "Assault %", "Firearms and Explosives %", "Burglary %", "Robbery %"];
         const totalCrimeMapContainer =
           document.querySelector("#crime-count-map");
         let totalCrimeChoroplethSVG = initializeChoroplethSVG(
