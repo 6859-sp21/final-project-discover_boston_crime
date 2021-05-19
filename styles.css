@@ -32,6 +32,10 @@ html {
     width: 45%;
 }
 
+#side-charts {
+    width: 55%;
+}
+
 .column {
     display: flex;
     flex-direction: column;
@@ -294,6 +298,7 @@ article {
 #offense-type-filters div {
     display: flex;
     justify-content: space-evenly;
+    
     /* margin-top: 1em; */
 }
 
@@ -305,6 +310,7 @@ article {
 
 #offense-type-filters div button {
     width: 25% !important;
+    font-size: .9vw;
 }
 
 #filters {
@@ -319,9 +325,15 @@ article {
     text-align: right;
 }
 
+#myTab {
+    display: flex;
+    justify-content: center;
+    width: 80%;
+}
 
-
-
+#myTab button {
+    font-size: 1vw;
+}
 
 
 
