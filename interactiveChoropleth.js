@@ -30,27 +30,29 @@ class ChoroplethSVG {
     this.drawGeoJson();
   }
 
-  //change title, call other methods to change 
+  //change title, call other methods to change
   changeFilter(newLabel, newTitle) {
-      this.title = newTitle;
-      this.label = newLabel;
-      this.formattedData = this.formatData();
-      this.assignColor();
-      this.updateGeoJson();
-      this.legend();
+    this.title = newTitle;
+    this.label = newLabel;
+    this.formattedData = this.formatData();
+    this.assignColor();
+    this.updateGeoJson();
+    this.legend();
   }
 
   updateGeoJson() {
     const allDistricts = topojson.feature(
-        policeDistricts,
-        policeDistricts.objects["Police_Districts"]
-      ).features;
-      
+      policeDistricts,
+      policeDistricts.objects["Police_Districts"]
+    ).features;
+
     console.log(this);
-    const paths = d3.selectAll(`#${this.containerID} path`)
-    console.log(this.g)
+    const paths = d3.selectAll(`#${this.containerID} path`);
+    console.log(this.g);
     console.log(paths);
-    paths.attr("fill", function (d) {
+    paths.attr(
+      "fill",
+      function (d) {
         //console.log(this.data.get(d.properties.DISTRICT).Value)
         //console.log(this.color(this.data.get(d.properties.DISTRICT).Value))
         console.log(d);
@@ -59,13 +61,12 @@ class ChoroplethSVG {
         );
         return color;
       }.bind(this)
-    )
+    );
   }
-
 
   formatData() {
     let neighborhoodToValueMap = new Map();
-  
+
     for (var i = 0; i < this.data.length; i++) {
       let neighborhood = this.data[i]["Neighborhood"];
       let value = this.data[i][this.label];
@@ -75,13 +76,12 @@ class ChoroplethSVG {
     return neighborhoodToValueMap;
   }
 
-
   legend() {
     console.log("legend called");
-    console.log(`selecting #${this.containerID} .legend`)
+    console.log(`selecting #${this.containerID} .legend`);
     const legend = document.querySelector(`#${this.containerID} .legend`);
     console.log(legend);
-    if (legend  != null) {
+    if (legend != null) {
       legend.remove();
       console.log("removing legend");
     }
@@ -89,7 +89,7 @@ class ChoroplethSVG {
     this.svg
       .append("g")
       .attr("class", "legend")
-      .attr("transform", `translate(${this.isCrimeCount ? 200: 10}, 20)`)
+      .attr("transform", `translate(${this.isCrimeCount ? 200 : 10}, 20)`)
       .append(
         function () {
           return colorLegend({
@@ -103,12 +103,14 @@ class ChoroplethSVG {
   }
 
   createG() {
-    this.g = this.svg.append("g").attr("transform", `translate(${this.isCrimeCount ? 300 : 100}, 0)`);
+    this.g = this.svg
+      .append("g")
+      .attr("transform", `translate(${this.isCrimeCount ? 300 : 100}, 0)`);
   }
 
   assignColor() {
     if (!this.isCrimeCount) {
-      const maxVal = 
+      const maxVal =
         Math.ceil(
           d3.max(Array.from(this.formattedData.values()).map((d) => d["Value"])) * 100
         ) / 100;
@@ -128,13 +130,13 @@ class ChoroplethSVG {
 
       this.color = d3.scaleQuantize(
         [0, maxTick],
-        this.colorScheme[maxTick/100]
+        this.colorScheme[maxTick / 100]
       );
     }
   }
 
   // updateGeoJson() {
-    
+
   // }
 
   drawGeoJson() {
@@ -156,7 +158,7 @@ class ChoroplethSVG {
                 .duration(1000)
                 .attr("stroke", "black")
                 .style("stroke-width", "2px")
-                .attr("data-district", d => {
+                .attr("data-district", (d) => {
                   return d.properties.DISTRICT;
                 })
                 .attr(
@@ -198,21 +200,37 @@ function initializeChoroplethSVG(
   return choroplethSVG;
 }
 
-
-
-function initializeHTMLElementsChoropleth(svg, buttonsContainer, columnNames) {
-  columnNames.forEach(column => {
-    const button = document.createElement("button");
+function initializeHTMLElementsChoropleth(
+  svg,
+  buttonsContainer,
+  columnNames,
+  defaultSelected
+) {
+  columnNames.forEach((column) => {
+    const button = document.createElement("div");
     const buttonText = document.createTextNode(column);
-    button.appendChild(buttonText)
-    button.addEventListener("click", d => {
+    button.appendChild(buttonText);
+    button.addEventListener("click", (d) => {
       svg.changeFilter(column, column);
-    })
-    buttonsContainer.appendChild(button)
-  })
+      const clickedButton = buttonsContainer.querySelector(".clicked");
+      console.log(clickedButton);
+      if (clickedButton) {
+        clickedButton.classList.remove("clicked");
+      }
+      button.classList.add("clicked");
+    });
+    button.addEventListener("mouseover", (d) => {
+      button.classList.add("active");
+    });
+    button.addEventListener("mouseout", (d) => {
+      button.classList.remove("active");
+    });
+    if (defaultSelected === column) {
+      button.classList.add("clicked");
+    }
+    buttonsContainer.appendChild(button);
+  });
 }
-
-
 
 function getChoroplethData() {
   d3.json(
@@ -225,8 +243,13 @@ function getChoroplethData() {
     d3.csv(
       "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/neighborhood_data_race.csv"
     ).then((raceData) => {
-      const raceColumnNames = ["White Alone %", "Black/African-American %", "Hispanic %", "Asian alone %", "Other Races %"]
-
+      const raceColumnNames = [
+        "White Alone %",
+        "Black/African-American %",
+        "Hispanic %",
+        "Asian alone %",
+        "Other Races %",
+      ];
 
       const containerIDrace1 = "race-map-1";
       const raceSVG1Container = document.querySelector(`#${containerIDrace1}`);
@@ -245,7 +268,12 @@ function getChoroplethData() {
       );
       //add button event listeners to svg
       const race1Buttons = document.querySelector("#buttons-race-1");
-      initializeHTMLElementsChoropleth(raceSVG1, race1Buttons, raceColumnNames);
+      initializeHTMLElementsChoropleth(
+        raceSVG1,
+        race1Buttons,
+        raceColumnNames,
+        "White Alone %"
+      );
 
       const containerIDrace2 = "race-map-2";
       const raceSVG2Container = document.querySelector(`#${containerIDrace2}`);
@@ -264,13 +292,26 @@ function getChoroplethData() {
       );
 
       const race2Buttons = document.querySelector("#buttons-race-2");
-      initializeHTMLElementsChoropleth(raceSVG2, race2Buttons, raceColumnNames);
+      initializeHTMLElementsChoropleth(
+        raceSVG2,
+        race2Buttons,
+        raceColumnNames,
+        "Black/African-American %"
+      );
 
       d3.csv(
         "https://raw.githubusercontent.com/6859-sp21/final-project-discover_boston_crime/main/boston_crimes_per_neighborhood.csv"
       ).then((crimeData) => {
-        const crimeColumnNames = ["Larceny %", "Disorderly Conduct %", "Drug Violation %", 
-        "Vandalism %", "Assault %", "Firearms and Explosives %", "Burglary %", "Robbery %"];
+        const crimeColumnNames = [
+          "Larceny %",
+          "Disorderly Conduct %",
+          "Drug Violation %",
+          "Vandalism %",
+          "Assault %",
+          "Firearms and Explosives %",
+          "Burglary %",
+          "Robbery %",
+        ];
         const totalCrimeMapContainer =
           document.querySelector("#crime-count-map");
         let totalCrimeChoroplethSVG = initializeChoroplethSVG(
@@ -288,13 +329,15 @@ function getChoroplethData() {
         );
 
         const containerIDcrime1 = "crime-type-map-1";
-        const crimeMapContainer1 = document.querySelector(`#${containerIDcrime1}`);
+        const crimeMapContainer1 = document.querySelector(
+          `#${containerIDcrime1}`
+        );
         let crimeMapChoroplethSVG1 = initializeChoroplethSVG(
-            crimeMapContainer1,
+          crimeMapContainer1,
           window.innerWidth / 3
         );
-        const crimeMapSVG1  = new ChoroplethSVG(
-            crimeMapChoroplethSVG1,
+        const crimeMapSVG1 = new ChoroplethSVG(
+          crimeMapChoroplethSVG1,
           crimeData,
           d3.schemeBlues,
           "Larceny %",
@@ -303,19 +346,24 @@ function getChoroplethData() {
           containerIDcrime1
         );
         const crime1Buttons = document.querySelector("#buttons-crime-type-1");
-        initializeHTMLElementsChoropleth(crimeMapSVG1, crime1Buttons, crimeColumnNames);
+        initializeHTMLElementsChoropleth(
+          crimeMapSVG1,
+          crime1Buttons,
+          crimeColumnNames,
+          "Larceny %"
+        );
 
         const containerIDcrime2 = "crime-type-map-2";
         const crimeMapContainer2 = document.querySelector(
           `#${containerIDcrime2}`
         );
         let crimeMapChoroplethSVG2 = initializeChoroplethSVG(
-            crimeMapContainer2,
+          crimeMapContainer2,
           window.innerWidth / 3
         );
 
-        const crimeMapSVG2  = new ChoroplethSVG(
-            crimeMapChoroplethSVG2,
+        const crimeMapSVG2 = new ChoroplethSVG(
+          crimeMapChoroplethSVG2,
           crimeData,
           d3.schemeOrRd,
           "Disorderly Conduct %",
@@ -325,7 +373,12 @@ function getChoroplethData() {
         );
 
         const crime2Buttons = document.querySelector("#buttons-crime-type-2");
-        initializeHTMLElementsChoropleth(crimeMapSVG2, crime2Buttons, crimeColumnNames);
+        initializeHTMLElementsChoropleth(
+          crimeMapSVG2,
+          crime2Buttons,
+          crimeColumnNames,
+          "Disorderly Conduct %"
+        );
 
         console.log("adding pieChart.js in choropleth.js");
         let head = document.getElementsByTagName("head")[0];
